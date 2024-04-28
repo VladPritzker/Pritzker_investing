@@ -1,58 +1,80 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate hook for redirection
 import './registrationPage.css';  
 
 function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [username, setUsername] = useState('');  
-  const [confirmPassword, setConfirmPassword] = useState('');  
+  const [username, setUsername] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const navigate = useNavigate(); // Create an instance of useNavigate for redirection
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (isLogin) {
-      // Login logic here (can be implemented later)
-      console.log('Login with:', email, password);
+      // Handle login
+      const loginData = {
+        action: 'login',
+        email: email,
+        password: password
+      };
+
+      // Fetch login data
+      try {
+        const response = await postUserData(loginData);
+        if (response.ok) {
+          const result = await response.json();
+          console.log('Login successful:', result);
+          navigate(`/account/${result.id}`); // Redirect to the user account page
+        } else {
+          throw new Error('Login failed.');
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        alert(error.message);
+      }
     } else {
-      // Before sending, check if passwords match
+      // Handle registration
       if (password !== confirmPassword) {
         alert('Passwords do not match.');
         return;
       }
 
-      // Setup the data object for registration
       const userData = {
+        action: 'register',
         username: username,
         email: email,
         password: password
       };
 
-      // Obtain CSRF token from cookies
-      const csrftoken = getCookie('csrftoken');
-
-      // Use fetch API to post the data to your Django backend
+      // Fetch registration data
       try {
-        const response = await fetch('http://127.0.0.1:8000/users/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrftoken  // Include CSRF token in the headers
-          },
-          body: JSON.stringify(userData)
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to register user.');
+        const response = await postUserData(userData);
+        if (response.ok) {
+          alert('Registration successful. Please login.');
+          window.location.reload(); // Reload the page to reset form or redirect as needed
+        } else {
+          throw new Error('Registration failed.');
         }
-
-        const result = await response.json();
-        console.log('Registration successful:', result);
-        // You can redirect the user to login page or dashboard here
       } catch (error) {
         console.error('Registration error:', error);
-        alert('Registration failed. ' + error.message);
+        alert(error.message);
       }
     }
+  };
+
+  // Function to post user data for login or registration
+  const postUserData = async (data) => {
+    const csrftoken = getCookie('csrftoken'); // Obtain CSRF token from cookies
+    return await fetch('http://127.0.0.1:8000/users/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken // Include CSRF token in the headers
+      },
+      body: JSON.stringify(data)
+    });
   };
 
   // Function to obtain CSRF token from cookies
