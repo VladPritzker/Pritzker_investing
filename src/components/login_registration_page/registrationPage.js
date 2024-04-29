@@ -26,7 +26,7 @@ function LoginPage() {
         if (response.ok) {
           const result = await response.json();
           console.log('Login successful:', result);
-          navigate(`/account/${result.id}`); // Redirect to the user account page
+          navigate(`/account/${result.id}`, { state: { user: result } });
         } else {
           throw new Error('Login failed.');
         }
