@@ -8,6 +8,14 @@ function RecordModal({ user, onClose, onSave }) {
     
     const handleAddRecord = async () => {
         if (!user) return;
+        if (recordName.trim() === '') {
+            alert('Please enter a record name.');
+            return;
+        }
+        if (isNaN(recordAmount) || recordAmount.trim() === '') {
+            alert('Please enter a valid amount.');
+            return;
+        }
         
         const recordData = {
             user_id: user.id,

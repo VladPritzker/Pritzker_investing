@@ -1,0 +1,90 @@
+.modal-content {
+    padding: 40px;
+    background: #f8f9fa; /* Light background color */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 60%; /* Adjust the width as needed */
+    margin: auto; /* Center the modal content */
+    transition: transform 0.3s ease-in-out;
+    animation: formAnimation 0.5s forwards;
+}
+
+.modal-content table {
+    width: 100%; /* Ensure the table fills the modal content */
+    border-collapse: collapse; /* Collapse table borders */
+}
+
+.modal-content th,
+.modal-content td {
+    padding: 12px;
+    border-bottom: 1px solid #dee2e6; /* Light border color */
+    text-align: left;
+}
+
+.modal-content th {
+    background-color: #007bff; /* Header background color */
+    color: #fff; /* Header text color */
+}
+
+.modal-content th:first-child,
+.modal-content td:first-child {
+    border-left: 1px solid #dee2e6; /* Add left border for first column */
+}
+
+.modal-content th:last-child,
+.modal-content td:last-child {
+    border-right: 1px solid #dee2e6; /* Add right border for last column */
+}
+
+.modal-content tr:nth-child(even) {
+    background-color: #f1f1f1; /* Alternate row background color */
+}
+
+.modal-content tr:hover {
+    background-color: #e9ecef; /* Hover background color */
+}
+
+.modal-content h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.modal-content button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff; /* Button background color */
+    color: #fff; /* Button text color */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    letter-spacing: 1px;
+    transition: background-color 0.3s; /* Smooth button hover effect */
+}
+
+.modal-content button:hover {
+    background-color: #0056b3; /* Darker background color on hover */
+}
+
+.close {
+    color: #6c757d; /* Close button color */
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000; /* Darker close button color on hover */
+    text-decoration: none;
+    cursor: pointer;
+}
+
+@keyframes formAnimation {
+    from {
+        transform: scale(0.95);
+    }
+    to {
+        transform: scale(1);
+    }
+}
