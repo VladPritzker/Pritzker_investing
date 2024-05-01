@@ -67,7 +67,6 @@ function FinancialRecordsModal({ user, onClose }) {
         <div className="modal">
             <div className="modal-content">
             <span className="close" onClick={onClose}>&times;</span>
-
                 <h2>Financial Records List</h2>
                 <div className="filters">
                     <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
@@ -79,7 +78,7 @@ function FinancialRecordsModal({ user, onClose }) {
                     <input type="number" placeholder="Max amount"  value={maxAmount} onChange={e => setMaxAmount(e.target.value)} />
                     
                 </div>
-                <table>
+                <table className="financial-records-table">
                     <thead>
                         <tr>
                             <th>Title</th>
@@ -106,6 +105,7 @@ function FinancialRecordsModal({ user, onClose }) {
             </div>
         </div>
     );
+    
 }
 
 export default FinancialRecordsModal;
