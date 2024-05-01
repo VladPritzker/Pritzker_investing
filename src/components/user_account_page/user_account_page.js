@@ -26,16 +26,13 @@ function UserAccountPage() {
         setShowRecordList(true);
     };
 
-    const handleRefreshDataClick = async (e) => {
-        e.preventDefault(); // Prevent form submission or any default action
-
+    const handleRefreshDataClick = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/financial_records/?user_id=${user.id}`);
+            const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/`); // Adjust the URL to use the user ID
             if (response.ok) {
                 const updatedUser = await response.json();
                 console.log('Data refreshed successfully:', updatedUser);
-                setUser(updatedUser);  // This should update the state
-                console.log(user)
+                setUser(updatedUser);  // Update the state with the refreshed user data
             } else {
                 const errorData = await response.json();
                 console.error('Failed to refresh data:', errorData);
