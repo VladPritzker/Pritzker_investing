@@ -77,6 +77,10 @@ function UserAccountPage() {
         }
     };
 
+    const handleCloseRecordsModal = () => {
+        setShowRecordList(false);  // This function will be passed to the modal to close it
+    };
+
     
     return (
         <div className="login-container">
@@ -97,7 +101,7 @@ function UserAccountPage() {
                 <RecordModal user={user} onClose={() => setShowAddRecordModal(false)} onSave={handleSaveRecord} />
             )}
             {showRecordList && (
-                <FinancialRecordsModal user={user} onClose={() => setShowRecordList(false)}  />
+                <FinancialRecordsModal user={user} onClose={handleCloseRecordsModal} />
             )}
 
         </div>
