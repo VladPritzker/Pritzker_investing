@@ -67,7 +67,7 @@ function FinancialRecordsModal({ user, onClose }) {
         <div className="modal">
             <div className="modal-content">
             <span className="close" onClick={onClose}>&times;</span>
-                <h2>Financial Records List</h2>
+                <h2>Spending Records List</h2>
                 <div className="filters">
                     <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
                     <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />

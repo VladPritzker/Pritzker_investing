@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import RecordModal from './RecordModal/RecordModal';
 import FinancialRecordsModal from '../user_account_page/FinancialRecordsModal/FinancialRecordsModal';
+import InvestingRecordsModal from '../user_account_page/InvestingModal/InvestingModal';
+
 import { useLocation, useNavigate } from 'react-router-dom';
 
 
@@ -11,6 +13,7 @@ function UserAccountPage() {
 
     const [showAddRecordModal, setShowAddRecordModal] = useState(false);
     const [showRecordList, setShowRecordList] = useState(false);
+    const [showInvestList, setShowInvestList] = useState(false);
 
     const handleLogout = () => {
         localStorage.removeItem('userToken');
@@ -24,6 +27,9 @@ function UserAccountPage() {
 
     const handleFinancialRecordsListClick = () => {
         setShowRecordList(true);
+    };
+    const handleInvestRecordsListClick = () => {
+        setShowInvestList(true);
     };
 
     const handleRefreshDataClick = async () => {
@@ -91,14 +97,20 @@ function UserAccountPage() {
                 <p>Money Invested: {user?.money_invested}</p>
                 <p>Money Spent: {user?.money_spent}</p>
                 <p>Balance: {user?.balance}</p>
-                <button type="button" style={{ marginBottom: '10px' }} onClick={handleAddRecordClick}>Add Record</button>
-                <button type="button" style={{ marginBottom: '10px' }} onClick={handleFinancialRecordsListClick}>Financial Records List</button>
-                <button type="button" style={{ marginBottom: '10px' }} onClick={handleRefreshDataClick}>Refresh data</button>
+                <button type="button" style={{ marginBottom: '10px' }} onClick={handleAddRecordClick}>Add Spending Record</button>
+                <button type="button" style={{ marginBottom: '50px' }} onClick={handleFinancialRecordsListClick}>Spending Records List</button>
 
+                <button type="button" style={{ marginBottom: '10px' }} >Add Investing Record</button>
+                <button id="refresh" type="button" style={{ marginBottom: '50px' }} onClick={handleInvestRecordsListClick}>Investing Records List</button>
+
+                <button type="button" style={{ marginBottom: '10px' }} onClick={handleRefreshDataClick}>Refresh data</button>
                 <button onClick={handleLogout}>Logout</button>
             </form>
             {showAddRecordModal && (
                 <RecordModal user={user} onClose={() => setShowAddRecordModal(false)} onSave={handleSaveRecord} />
+            )}
+            {showInvestList && (
+                <InvestingRecordsModal user={user} onClose={() => setShowInvestList(false)} onSave={handleSaveRecord} />
             )}
             {showRecordList && (
                 <FinancialRecordsModal user={user} onClose={handleCloseRecordsModal} />
