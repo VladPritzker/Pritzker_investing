@@ -33,7 +33,7 @@
 
 .financial-records-table th,
 .financial-records-table td {
-    width: 40%; /* Ensures equal width for three columns, adjust as needed */
+    width: 10%; /* Ensures equal width for three columns, adjust as needed */
     text-align: center;
     padding: 8px;
 }

@@ -11,6 +11,7 @@ function InvestingRecordsModal({ user, onClose }) {
         maxAmount: '',
         title: ''
     });
+    const [roundedTotal, setRoundedTotal] = useState(0);
 
     // Fetching records from the backend
     useEffect(() => {
@@ -21,6 +22,9 @@ function InvestingRecordsModal({ user, onClose }) {
                     const data = await response.json();
                     setInvestingRecords(data);
                     setDisplayRecords(data);
+                    const totalAmount = data.reduce((total, record) => total + parseFloat(record.amount), 0);
+                    const roundedTotal = Math.round(totalAmount * 100) / 100; // Round to two decimal places
+                    setRoundedTotal(roundedTotal);
                 } else {
                     throw new Error('Failed to fetch investing records.');
                 }
@@ -45,7 +49,8 @@ function InvestingRecordsModal({ user, onClose }) {
                    recordDate >= start && recordDate <= end &&
                    amount >= minAmount && amount <= maxAmount;
         });
-
+        
+        setRoundedTotal(filtered.reduce((total, record) => total + parseFloat(record.amount), 0));
         setDisplayRecords(filtered);
     }, [filterCriteria, investingRecords]);
 
@@ -68,6 +73,9 @@ function InvestingRecordsModal({ user, onClose }) {
                             <th>Title</th>
                             <th>Amount</th>
                             <th>Date</th>
+                            <th>Tenor</th>
+                            <th>Type</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -76,9 +84,17 @@ function InvestingRecordsModal({ user, onClose }) {
                                 <td>{record.title}</td>
                                 <td>{record.amount}</td>
                                 <td>{record.record_date}</td>
+                                <td>{record.tenor}</td>
+                                <td>{record.type_invest}</td>
                             </tr>
                         ))}
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Total Amount - </th>
+                            <th>{roundedTotal}</th>
+                        </tr>
+                    </tfoot> 
                 </table>
             </div>
         </div>
