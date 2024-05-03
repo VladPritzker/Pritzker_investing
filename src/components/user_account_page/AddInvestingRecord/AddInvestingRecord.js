@@ -67,6 +67,10 @@ function AddInvestingRecord({ user, onClose,  token }) {
             alert('Please ensure all fields are filled out correctly.');
             return;
         }
+        if(recordTypeInvest.trim() === ''){
+            alert('Please select a valid investment type');
+            return;
+        }
     
         const recordData = {
             user_id: user.id,
