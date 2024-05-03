@@ -1,19 +1,46 @@
 import React, { useState, useEffect } from 'react';
-import './InvestingModal.css'; // Assume similar styling to FinancialRecordsModal or customize as needed
+import '../InvestingModal/InvestingModal.css';
 
 function InvestingRecordsModal({ user, onClose }) {
     const [investingRecords, setInvestingRecords] = useState([]);
     const [displayRecords, setDisplayRecords] = useState([]);
-    const [filterCriteria, setFilterCriteria] = useState({
-        startDate: '',
-        endDate: '',
-        minAmount: '',
-        maxAmount: '',
-        title: ''
-    });
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [minAmount, setMinAmount] = useState('');
+    const [maxAmount, setMaxAmount] = useState('');
+    const [minTenor, setMinTenor] = useState('');
+    const [maxTenor, setMaxTenor] = useState('');
+    const [filterTitle, setFilterTitle] = useState('');
+    const [filterType, setFilterType] = useState('');
     const [roundedTotal, setRoundedTotal] = useState(0);
 
-    // Fetching records from the backend
+    const investmentTypes = [
+        "Stocks",
+        "Bonds",
+        "Mutual fund",
+        "ETFs",
+        "Commodities",
+        "Funds",
+        "Brokerage account",
+        "Real Estate",
+        "Cash",
+        "Options",
+        "Annuities",
+        "Index funds",
+        "CDS",
+        "Cryptocurrencies",
+        "Retirement",
+        "Investment trusts",
+        "Collectibles",
+        "Private companies",
+        "Corporate bonds",
+        "Alternative investments",
+        "Money market funds",
+        "Certificates of deposit",
+        "Treasurys",
+        "Cash investments"
+    ];
+
     useEffect(() => {
         const fetchInvestingRecords = async () => {
             try {
@@ -23,10 +50,9 @@ function InvestingRecordsModal({ user, onClose }) {
                     setInvestingRecords(data);
                     setDisplayRecords(data);
                     const totalAmount = data.reduce((total, record) => total + parseFloat(record.amount), 0);
-                    const roundedTotal = Math.round(totalAmount * 100) / 100; // Round to two decimal places
-                    setRoundedTotal(roundedTotal);
+                    setRoundedTotal(Math.round(totalAmount * 100) / 100);
                 } else {
-                    throw new Error('Failed to fetch investing records.');
+                    console.error('Failed to fetch investing records.');
                 }
             } catch (error) {
                 console.error('Error fetching investing records:', error);
@@ -36,36 +62,69 @@ function InvestingRecordsModal({ user, onClose }) {
         fetchInvestingRecords();
     }, [user.id]);
 
-    // Handling filter changes
     useEffect(() => {
-        let filtered = investingRecords.filter(record => {
-            const recordDate = new Date(record.record_date);
-            const start = filterCriteria.startDate ? new Date(filterCriteria.startDate) : new Date(-8640000000000000);
-            const end = filterCriteria.endDate ? new Date(filterCriteria.endDate) : new Date(8640000000000000);
-            const amount = parseFloat(record.amount);
-            const minAmount = filterCriteria.minAmount ? parseFloat(filterCriteria.minAmount) : -Infinity;
-            const maxAmount = filterCriteria.maxAmount ? parseFloat(filterCriteria.maxAmount) : Infinity;
-            return record.title.toLowerCase().includes(filterCriteria.title.toLowerCase()) &&
-                   recordDate >= start && recordDate <= end &&
-                   amount >= minAmount && amount <= maxAmount;
-        });
-        
-        setRoundedTotal(filtered.reduce((total, record) => total + parseFloat(record.amount), 0));
-        setDisplayRecords(filtered);
-    }, [filterCriteria, investingRecords]);
+        let filtered = investingRecords;
 
-    // Render component
+        if (startDate || endDate) {
+            filtered = filtered.filter(record => {
+                const recordDate = new Date(record.record_date);
+                const start = startDate ? new Date(startDate) : new Date(-8640000000000000);
+                const end = endDate ? new Date(endDate) : new Date(8640000000000000);
+                return recordDate >= start && recordDate <= end;
+            });
+        }
+
+        if (filterTitle) {
+            filtered = filtered.filter(record => record.title.toLowerCase().includes(filterTitle.toLowerCase()));
+        }
+
+        if (minAmount || maxAmount) {
+            filtered = filtered.filter(record => {
+                const recordAmount = parseFloat(record.amount);
+                const min = parseFloat(minAmount) || -Infinity;
+                const max = parseFloat(maxAmount) || Infinity;
+                return recordAmount >= min && recordAmount <= max;
+            });
+        }
+
+        if (minTenor || maxTenor) {
+            filtered = filtered.filter(record => {
+                const recordTenor = parseFloat(record.tenor);
+                const min = parseFloat(minTenor) || -Infinity;
+                const max = parseFloat(maxTenor) || Infinity;
+                return recordTenor >= min && recordTenor <= max;
+            });
+        }
+
+        if (filterType) {
+            filtered = filtered.filter(record => record.type_invest === filterType);
+        }
+
+        setDisplayRecords(filtered);
+        setRoundedTotal(filtered.reduce((total, record) => total + parseFloat(record.amount), 0));
+    }, [startDate, endDate, filterTitle, minAmount, maxAmount, minTenor, maxTenor, filterType, investingRecords]);
+
     return (
         <div className="modal">
             <div className="modal-content">
                 <span className="close" onClick={onClose}>&times;</span>
                 <h2>Investing Records List</h2>
                 <div className="filters">
-                    <input type="date" value={filterCriteria.startDate} onChange={e => setFilterCriteria({...filterCriteria, startDate: e.target.value})} />
-                    <input type="date" value={filterCriteria.endDate} onChange={e => setFilterCriteria({...filterCriteria, endDate: e.target.value})} />
-                    <input type="text" placeholder="Filter by title" value={filterCriteria.title} onChange={e => setFilterCriteria({...filterCriteria, title: e.target.value})} />
-                    <input type="number" placeholder="Min amount" value={filterCriteria.minAmount} onChange={e => setFilterCriteria({...filterCriteria, minAmount: e.target.value})} />
-                    <input type="number" placeholder="Max amount" value={filterCriteria.maxAmount} onChange={e => setFilterCriteria({...filterCriteria, maxAmount: e.target.value})} />
+                    <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
+                    <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
+                    <input type="text" placeholder="Filter by title" value={filterTitle} onChange={e => setFilterTitle(e.target.value)} />
+                    <input type="number" placeholder="Min amount" value={minAmount} onChange={e => setMinAmount(e.target.value)} />
+                    <input type="number" placeholder="Max amount" value={maxAmount} onChange={e => setMaxAmount(e.target.value)} />
+                    <input type="number" placeholder="Min tenor" value={minTenor} onChange={e => setMinTenor(e.target.value)} />
+                    <input type="number" placeholder="Max tenor" value={maxTenor} onChange={e => setMaxTenor(e.target.value)} />
+                    <div className="select-container">
+                        <select value={filterType} onChange={e => setFilterType(e.target.value)}>
+                            <option value="">All Types</option>
+                            {investmentTypes.map(type => (
+                                <option key={type} value={type}>{type}</option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
                 <table className="financial-records-table">
                     <thead>
@@ -75,7 +134,6 @@ function InvestingRecordsModal({ user, onClose }) {
                             <th>Date</th>
                             <th>Tenor</th>
                             <th>Type</th>
-
                         </tr>
                     </thead>
                     <tbody>
@@ -91,10 +149,10 @@ function InvestingRecordsModal({ user, onClose }) {
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th>Total Amount - </th>
+                            <th>Total Amount</th>
                             <th>{roundedTotal}</th>
                         </tr>
-                    </tfoot> 
+                    </tfoot>
                 </table>
             </div>
         </div>

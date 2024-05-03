@@ -46,11 +46,11 @@
 
 /* Enhancing interactivity */
 .close {
-    float: right;
+    position: absolute;
+    right: 10px;
+    top: 0;
     cursor: pointer;
-    color: #6c757d;
-    font-size: 28px;
-    font-weight: bold;
+    font-size: 24px;
 }
 
 .close:hover,
@@ -67,4 +67,59 @@
     to {
         transform: translateY(0) scale(1);
     }
+}
+.title-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    z-index: 1000; /* Make sure it's above other content */
+}
+
+.title-modal-content {
+    position: relative;
+}
+
+/* InvestingModal.css */
+
+.select-container {
+    position: relative;
+    display: inline-block;
+    width: 50%;
+    margin-bottom: 20px;
+}
+
+.select-container select {
+    width: 100%;
+    padding: 20px;
+    border: 2px solid #007bff; /* Blue border */
+    border-radius: 5px;
+    appearance: none; /* Removes default browser styles */
+    background-color: white;
+    font-size: 16px;
+    color: #333;
+}
+
+.select-container::after {
+    content: '\25BC'; /* Down arrow symbol */
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    color: #007bff;
+    pointer-events: none; /* Ensures the arrow doesn't interfere with the dropdown click */
+    font-size: 12px;
+}
+
+.select-container select:hover {
+    border-color: #0056b3; /* Darker blue on hover */
+}
+
+.select-container select:focus {
+    outline: none;
+    border-color: #003580; /* Even darker blue on focus */
 }
