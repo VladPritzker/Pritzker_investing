@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import '../RecordModal/RecordModal.css';
+import investmentTypes from './investmentTypes.json'; // Adjust the path as necessary
+
 
 function AddInvestingRecord({ user, onClose,  token }) {
     const [recordName, setRecordName] = useState('');
@@ -7,32 +9,8 @@ function AddInvestingRecord({ user, onClose,  token }) {
     const [recordTenor, setRecordTenor] = useState('');
     const [recordTypeInvest, setRecordTypeInvest] = useState('');
     
-    const investmentTypes = [
-        "Stocks",
-        "Bonds",
-        "Mutual fund",
-        "ETFs",
-        "Commodities",
-        "Funds",
-        "Brokerage account",
-        "Real Estate",
-        "Cash",
-        "Options",
-        "Annuities",
-        "Index funds",
-        "CDS",
-        "Cryptocurrencies",
-        "Retirement",
-        "Investment trusts",
-        "Collectibles",
-        "Private companies",
-        "Corporate bonds",
-        "Alternative investments",
-        "Money market funds",
-        "Certificates of deposit",
-        "Treasurys",
-        "Cash investments"
-    ];
+    
+    
     function getCookie(name) {
         const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
         return cookieValue ? cookieValue.pop() : '';
@@ -116,8 +94,8 @@ function AddInvestingRecord({ user, onClose,  token }) {
                 <div className="select-container">
                         <select  onChange={(e) => setRecordTypeInvest(e.target.value)}>
                             <option value={recordTypeInvest}>All Types</option>
-                            {investmentTypes.map(type => (
-                                <option key={type} value={type}>{type}</option>
+                            {Object.entries(investmentTypes).map(([type, id]) => (
+                                <option key={id} value={id}>{type}</option>
                             ))}
                         </select>
                 </div>

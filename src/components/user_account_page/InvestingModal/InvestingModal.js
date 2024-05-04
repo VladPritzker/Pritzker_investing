@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../InvestingModal/InvestingModal.css';
+import investmentTypes from '../AddInvestingRecord/investmentTypes.json';
+
 
 function InvestingRecordsModal({ user, onClose }) {
     const [investingRecords, setInvestingRecords] = useState([]);
@@ -14,32 +16,7 @@ function InvestingRecordsModal({ user, onClose }) {
     const [filterType, setFilterType] = useState('');
     const [roundedTotal, setRoundedTotal] = useState(0);
 
-    const investmentTypes = [
-        "Stocks",
-        "Bonds",
-        "Mutual fund",
-        "ETFs",
-        "Commodities",
-        "Funds",
-        "Brokerage account",
-        "Real Estate",
-        "Cash",
-        "Options",
-        "Annuities",
-        "Index funds",
-        "CDS",
-        "Cryptocurrencies",
-        "Retirement",
-        "Investment trusts",
-        "Collectibles",
-        "Private companies",
-        "Corporate bonds",
-        "Alternative investments",
-        "Money market funds",
-        "Certificates of deposit",
-        "Treasurys",
-        "Cash investments"
-    ];
+    
 
     useEffect(() => {
         const fetchInvestingRecords = async () => {
@@ -120,8 +97,8 @@ function InvestingRecordsModal({ user, onClose }) {
                     <div className="select-container">
                         <select value={filterType} onChange={e => setFilterType(e.target.value)}>
                             <option value="">All Types</option>
-                            {investmentTypes.map(type => (
-                                <option key={type} value={type}>{type}</option>
+                            {Object.entries(investmentTypes).map(([type, id]) => (
+                                <option key={id} value={id}>{type}</option>
                             ))}
                         </select>
                     </div>

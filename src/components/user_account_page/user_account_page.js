@@ -1,22 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import RecordModal from './RecordModal/RecordModal';
 import FinancialRecordsModal from '../user_account_page/FinancialRecordsModal/FinancialRecordsModal';
 import InvestingRecordsModal from '../user_account_page/InvestingModal/InvestingModal';
 import AddInvestingRecord from  '../user_account_page/AddInvestingRecord/AddInvestingRecord';
-import { useLocation, useNavigate } from 'react-router-dom';
+import NotesModal from '../user_account_page/Notes/notes'
+
 
 
 function UserAccountPage() {
     const location = useLocation();
     const navigate = useNavigate();
     const [user, setUser] = useState(location.state?.user); // Define setUser here
-    const [token, setToken] = useState(localStorage.getItem('userToken'));
 
 
     const [showAddRecordModal, setShowAddRecordModal] = useState(false);
     const [showRecordList, setShowRecordList] = useState(false);
     const [showInvestList, setShowInvestList] = useState(false);
     const [showAddInvestRecordModal, setShowAddInvestRecordModal] = useState(false);
+    const [showNotesModal, setShowNotesModal] = useState(false);
 
     const handleLogout = () => {
         localStorage.removeItem('userToken');
@@ -66,22 +68,24 @@ function UserAccountPage() {
     return (
         <div className="login-container">
             <form className="login-form">
+                <button onClick={handleLogout}>Logout</button>
                 <h1>User Data</h1>
                 <p>Username: {user?.username}</p>
                 <p>Email: {user?.email}</p>
+                <p>Goal: 200 000</p>
                 <p>Money Invested: {user?.money_invested}</p>
                 <p>Money Spent: {user?.money_spent}</p>
                 <p>Balance: {user?.balance}</p>
-                <p>Goal: 200 000</p>
                 <button type="button" style={{ marginBottom: '10px',  marginTop: '20px' }} >Add Money to Balance</button>
                 <button type="button" style={{ marginBottom: '10px', }} onClick={handleAddRecordClick}>Add Spending Record</button>
                 <button type="button" style={{ marginBottom: '50px' }} onClick={handleFinancialRecordsListClick}>Spending Records List</button>
 
-                <button type="button" style={{ marginBottom: '10px' }}onClick={handleAddInvestRecordClick} >Add Investing Record</button>
+                <button type="button" style={{ marginBottom: '10px' }} onClick={handleAddInvestRecordClick} >Add Investing Record</button>
                 <button id="refresh" type="button" style={{ marginBottom: '50px' }} onClick={handleInvestRecordsListClick}>Investing Records List</button>
+                <button type="button" style={{ marginBottom: '10px', }} onClick={() => setShowNotesModal(true)}>Show Notes</button>
+
 
                 <button type="button" style={{ marginBottom: '10px' }} onClick={handleRefreshDataClick}>Refresh data</button>
-                <button onClick={handleLogout}>Logout</button>
             </form>
             {showAddRecordModal && (
                 <RecordModal user={user} onClose={() => setShowAddRecordModal(false)}  />
@@ -95,6 +99,10 @@ function UserAccountPage() {
             {showAddInvestRecordModal && (
                 <AddInvestingRecord user={user} onClose={() => setShowAddInvestRecordModal(false)}/>
             )}
+            {showNotesModal && (
+                <NotesModal user={user} onClose={() => setShowNotesModal(false)} />
+            )}
+
 
 
         </div>

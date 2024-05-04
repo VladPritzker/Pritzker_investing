@@ -1,0 +1,125 @@
+.modal-content {
+    padding: 20px; /* Adjusted padding for visual appeal */
+    background: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 600px; /* Width as needed */
+    margin: auto;
+    overflow: hidden; /* Ensures content does not bleed outside the modal */
+}
+
+.financial-records-table {
+    width: 100%;
+    table-layout: fixed; /* Important for consistent column widths */
+    border-collapse: collapse;
+}
+
+.financial-records-table thead,
+.financial-records-table tfoot {
+    display: table; /* Needed to align with tbody */
+    width: calc(100% - 17px); /* Adjust based on the scrollbar width, usually 15-20px */
+    table-layout: fixed; /* Fixing layout to match tbody */
+    background: #007bff;
+}
+
+
+
+.financial-records-table tbody {
+    display: block;
+    overflow-y: auto; /* Enables scrolling */
+    max-height: 300px; /* Sets a maximum height with scroll */
+    width: 100%;
+}
+
+.financial-records-table th,
+.financial-records-table td {
+    width: 10%; /* Ensures equal width for three columns, adjust as needed */
+    text-align: center;
+    padding: 8px;
+}
+
+.financial-records-table th {
+    color: white; /* For better visibility on blue background */
+}
+
+
+
+/* Enhancing interactivity */
+.close {
+    position: absolute;
+    right: 10px;
+    top: 0;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+}
+
+/* Animation for modal entry for better UX */
+@keyframes formAnimation {
+    from {
+        transform: translateY(-20px) scale(0.9);
+    }
+    to {
+        transform: translateY(0) scale(1);
+    }
+}
+.title-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    z-index: 1000; /* Make sure it's above other content */
+}
+
+.title-modal-content {
+    position: relative;
+}
+
+/* InvestingModal.css */
+
+.select-container {
+    position: relative;
+    display: inline-block;
+    width: 50%;
+    margin-bottom: 20px;
+}
+
+.select-container select {
+    width: 100%;
+    padding: 20px;
+    border: 2px solid #007bff; /* Blue border */
+    border-radius: 5px;
+    appearance: none; /* Removes default browser styles */
+    background-color: white;
+    font-size: 16px;
+    color: #333;
+}
+
+.select-container::after {
+    content: '\25BC'; /* Down arrow symbol */
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    color: #007bff;
+    pointer-events: none; /* Ensures the arrow doesn't interfere with the dropdown click */
+    font-size: 12px;
+}
+
+.select-container select:hover {
+    border-color: #0056b3; /* Darker blue on hover */
+}
+
+.select-container select:focus {
+    outline: none;
+    border-color: #003580; /* Even darker blue on focus */
+}
