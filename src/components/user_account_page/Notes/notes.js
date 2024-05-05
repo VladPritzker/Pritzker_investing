@@ -10,47 +10,53 @@ const priorityOptions = [
 
 function NotesModal({ user, onClose }) {
     const [notesData, setNotesData] = useState([]);
-    const [filters, setFilters] = useState({
-        title: '',
-        dateFrom: '',
-        dateTo: '',
-        priority: '',
-        done: false,
-        hide: false
-    });
+    const [titleFilter, setTitleFilter] = useState('');
+    const [dateFromFilter, setDateFromFilter] = useState('');
+    const [dateToFilter, setDateToFilter] = useState('');
+    const [priorityFilter, setPriorityFilter] = useState('');
     const [showHidden, setShowHidden] = useState(false);
 
     useEffect(() => {
-        const fetchNotes = async () => {
-            const queryParams = new URLSearchParams({
-                ...filters,
-                user_id: user.id
-            });
-            try {
-                const response = await axios.get(`http://127.0.0.1:8000/notes/?${queryParams}`);
-                const notes = response.data.map(note => ({
-                    ...note,
-                    done: note.done === 1,
-                    hide: note.hide === 1
-                }));
-                // Filter notes based on the "showHidden" flag and the priority filter
-                const filteredNotes = notes.filter(note => 
-                    (filters.hide === note.hide) &&
-                    (filters.priority === '' || note.priority === filters.priority)
-                );
-                setNotesData(filteredNotes);
-            } catch (error) {
-                console.error('Error fetching notes:', error);
-            }
-        };
-
         fetchNotes();
-    }, [filters, user.id, showHidden]); // Include showHidden in the dependency array
+    }, [titleFilter, dateFromFilter, dateToFilter, priorityFilter, showHidden, user.id]);
+
+    const fetchNotes = async () => {
+        const queryParams = new URLSearchParams({
+            user_id: user.id,
+            title: titleFilter,
+            dateFrom: dateFromFilter,
+            dateTo: dateToFilter,
+            priority: priorityFilter
+        });
+        try {
+            const response = await axios.get(`http://127.0.0.1:8000/notes/?${queryParams}`);
+            const notes = response.data.map(note => ({
+                ...note,
+                done: note.done === 1,
+                hide: note.hide === 1
+            }));
+            updateNotesDisplay(notes);
+        } catch (error) {
+            console.error('Error fetching notes:', error);
+        }
+    };
+
+    const updateNotesDisplay = (notes) => {
+        let filteredNotes = notes.filter(note => 
+            (priorityFilter === '' || note.priority === priorityFilter) && 
+            (showHidden || !note.hide)
+        );
+        setNotesData(filteredNotes);
+    };
 
     const toggleDone = async (noteId, doneStatus) => {
+        
         try {
             await axios.patch(`http://127.0.0.1:8000/notes/${user.id}/${noteId}/`, { done: !doneStatus });
-            setNotesData(prev => prev.map(note => note.id === noteId ? { ...note, done: !doneStatus } : note));
+            
+            setNotesData(notesData.map(note => 
+                note.id === noteId ? {...note, done: !note.done} : note
+            ));
         } catch (error) {
             console.error('Error updating note:', error);
         }
@@ -59,18 +65,42 @@ function NotesModal({ user, onClose }) {
     const toggleHide = async (noteId, hideStatus) => {
         try {
             await axios.patch(`http://127.0.0.1:8000/notes/${user.id}/${noteId}/`, { hide: !hideStatus });
-            setNotesData(prev => prev.map(note => note.id === noteId ? { ...note, hide: !hideStatus } : note));
+            // Update notesData locally and conditionally filter notes based on hide status
+            setNotesData(prevNotes => {
+                // Update the hide status of the specific note
+                const updatedNotes = prevNotes.map(note => 
+                    note.id === noteId ? { ...note, hide: !hideStatus } : note
+                );
+    
+                // If 'showHidden' is false, filter out the hidden notes, otherwise show all
+                return showHidden ? updatedNotes : updatedNotes.filter(note => !note.hide);
+            });
         } catch (error) {
             console.error('Error updating note:', error);
         }
     };
+    
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        if (name === 'hide') {
-            setShowHidden(checked);
-        } else {
-            setFilters(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+        switch (name) {
+            case 'title':
+                setTitleFilter(value);
+                break;
+            case 'dateFrom':
+                setDateFromFilter(value);
+                break;
+            case 'dateTo':
+                setDateToFilter(value);
+                break;
+            case 'priority':
+                setPriorityFilter(value);
+                break;
+            case 'hide':
+                setShowHidden(checked);
+                break;
+            default:
+                break;
         }
     };
 
@@ -80,10 +110,10 @@ function NotesModal({ user, onClose }) {
                 <span className="close" onClick={onClose}>&times;</span>
                 <h2>Notes List</h2>
                 <div className="filters">
-                    <input type="text" name="title" placeholder="Filter by title" value={filters.title} onChange={handleChange} />
-                    <input type="date" name="dateFrom" placeholder="From date" value={filters.dateFrom} onChange={handleChange} />
-                    <input type="date" name="dateTo" placeholder="To date" value={filters.dateTo} onChange={handleChange} />
-                    <select name="priority" value={filters.priority} onChange={(e) => setFilters({...filters, priority: e.target.value})}>
+                    <input type="text" name="title" placeholder="Filter by title" value={titleFilter} onChange={handleChange} />
+                    <input type="date" name="dateFrom" placeholder="From date" value={dateFromFilter} onChange={handleChange} />
+                    <input type="date" name="dateTo" placeholder="To date" value={dateToFilter} onChange={handleChange} />
+                    <select name="priority" value={priorityFilter} onChange={handleChange}>
                         <option value="">Select Priority</option>
                         {priorityOptions.map(option => (
                             <option key={option.id} value={option.type}>{option.type}</option>
@@ -91,7 +121,7 @@ function NotesModal({ user, onClose }) {
                     </select>
                     <label>
                         Show Hidden Notes
-                        <input type="checkbox" checked={showHidden} onChange={(e) => setShowHidden(e.target.checked)} name="hide" />
+                        <input type="checkbox" checked={showHidden} onChange={handleChange} name="hide" />
                     </label>
                 </div>
 
