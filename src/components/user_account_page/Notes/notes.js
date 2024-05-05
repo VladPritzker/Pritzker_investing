@@ -23,16 +23,26 @@ function NotesModal({ user, onClose }) {
     }, [filters, showHiddenNotes, user.id]);
 
     const fetchNotes = async () => {
-        const params = new URLSearchParams({
-            ...filters,
-            user_id: user.id
-        }).toString();
-
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/notes/?${params}`);
+            const response = await axios.get(`http://127.0.0.1:8000/notes/${user.id}/`);
             if (response.status === 200) {
-                const visibleNotes = response.data.filter(note => showHiddenNotes || !note.hide);
-                setNotes(visibleNotes);
+                let filteredNotes = response.data;
+                if (filters.title) {
+                    filteredNotes = filteredNotes.filter(note => note.title.toLowerCase().includes(filters.title.toLowerCase()));
+                }
+                if (filters.dateFrom) {
+                    filteredNotes = filteredNotes.filter(note => new Date(note.date) >= new Date(filters.dateFrom));
+                }
+                if (filters.dateTo) {
+                    filteredNotes = filteredNotes.filter(note => new Date(note.date) <= new Date(filters.dateTo));
+                }
+                if (filters.priority) {
+                    filteredNotes = filteredNotes.filter(note => note.priority === filters.priority);
+                }
+                if (!showHiddenNotes) {
+                    filteredNotes = filteredNotes.filter(note => !note.hide);
+                }
+                setNotes(filteredNotes);
             }
         } catch (error) {
             console.error('Failed to fetch notes:', error);
@@ -48,6 +58,15 @@ function NotesModal({ user, onClose }) {
         }
     };
 
+    const toggleNoteDone = async (noteId, doneStatus) => {
+        try {
+            await axios.patch(`http://127.0.0.1:8000/notes/${user.id}/${noteId}/`, { done: !doneStatus });
+            fetchNotes(); // Refresh list to reflect changes
+        } catch (error) {
+            console.error('Error updating note done status:', error);
+        }
+    };
+
     const handleChange = (e) => {
         const { name, value, checked, type } = e.target;
         if (type === 'checkbox' && name === 'showHiddenNotes') {
@@ -57,6 +76,18 @@ function NotesModal({ user, onClose }) {
         }
     };
 
+    const clearFilters = () => {
+        setFilters({
+            title: '',
+            dateFrom: '',
+            dateTo: '',
+            priority: ''
+        });
+        setShowHiddenNotes(false);
+    };
+
+
+    
     return (
         <div className="modal">
             <div className="modal-content">
@@ -66,16 +97,24 @@ function NotesModal({ user, onClose }) {
                     <input type="text" name="title" placeholder="Filter by title" value={filters.title} onChange={handleChange} />
                     <input type="date" name="dateFrom" value={filters.dateFrom} onChange={handleChange} />
                     <input type="date" name="dateTo" value={filters.dateTo} onChange={handleChange} />
-                    <select name="priority" value={filters.priority} onChange={handleChange}>
-                        <option value="">All Priorities</option>
-                        {priorityOptions.map(option => (
-                            <option key={option.id} value={option.type}>{option.type}</option>
-                        ))}
-                    </select>
-                    <label>
-                        Show Hidden Notes
-                        <input type="checkbox" checked={showHiddenNotes} onChange={handleChange} name="showHiddenNotes" />
-                    </label>
+                    
+                    <div className="filter-row">
+    <div className="select-container">
+        <select name="priority" value={filters.priority} onChange={handleChange}>
+            <option value="">All Priorities</option>
+            {priorityOptions.map(option => (
+                <option key={option.id} value={option.type}>{option.type}</option>
+            ))}
+        </select>
+    </div>
+    <div className="custom-checkbox">
+        <label>
+            Show Hidden Notes
+            <input type="checkbox" checked={showHiddenNotes} onChange={handleChange} name="showHiddenNotes" />
+        </label>
+    </div>
+    <button className="clear-filters" onClick={clearFilters}>Clear Filters</button>
+</div>
                 </div>
                 <table className="financial-records-table">
                     <thead>
@@ -95,7 +134,7 @@ function NotesModal({ user, onClose }) {
                                 <td>{note.note}</td>
                                 <td>{note.date}</td>
                                 <td>{note.priority}</td>
-                                <td><input type="checkbox" checked={note.done} readOnly /></td>
+                                <td><input type="checkbox" checked={note.done} onChange={() => toggleNoteDone(note.id, note.done)} /></td>
                                 <td>
                                     <input type="checkbox" checked={note.hide} onChange={() => toggleNoteVisibility(note.id, note.hide)} />
                                 </td>

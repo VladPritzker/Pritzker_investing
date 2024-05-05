@@ -1,12 +1,13 @@
-.modal-content {
-    padding: 20px; /* Adjusted padding for visual appeal */
+modal-content {
+    padding: 20px;
     background: #f8f9fa;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 600px; /* Width as needed */
+    width: 600px;
     margin: auto;
-    overflow: hidden; /* Ensures content does not bleed outside the modal */
+    overflow: hidden;
 }
+
 
 .financial-records-table {
     width: 100%;
@@ -107,9 +108,6 @@
     border-color: #0056b3; /* Darker blue on hover */
 }
 
-
-
-
 .filter-row {
     display:flex;
     align-items: center; /* Align items vertically */
@@ -124,4 +122,35 @@
 .custom-checkbox{
     display: flex;
     width: 10px;
+}
+
+.filter-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.clear-filters {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+.clear-filters:hover {
+    background-color: #0056b3;
+}
+
+.custom-checkbox {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.custom-checkbox input[type="checkbox"] {
+    margin-left: 10px;
 }
