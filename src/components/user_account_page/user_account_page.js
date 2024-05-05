@@ -76,7 +76,7 @@ function UserAccountPage() {
                 <p>Money Invested: {user?.money_invested}</p>
                 <p>Money Spent: {user?.money_spent}</p>
                 <p>Balance: {user?.balance}</p>
-                <button type="button" style={{ marginBottom: '10px',  marginTop: '20px' }} >Add Money to Balance</button>
+                <button type="button" style={{ marginBottom: '10px',  marginTop: '20px' }} >Update user data</button>
                 <button type="button" style={{ marginBottom: '10px', }} onClick={handleAddRecordClick}>Add Spending Record</button>
                 <button type="button" style={{ marginBottom: '50px' }} onClick={handleFinancialRecordsListClick}>Spending Records List</button>
 

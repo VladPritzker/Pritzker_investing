@@ -60,38 +60,26 @@
 }
 
 /* Animation for modal entry for better UX */
-@keyframes formAnimation {
-    from {
-        transform: translateY(-20px) scale(0.9);
-    }
-    to {
-        transform: translateY(0) scale(1);
-    }
-}
-.title-modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 20px;
-    background: white;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    z-index: 1000; /* Make sure it's above other content */
-}
 
-.title-modal-content {
-    position: relative;
-}
-
-/* InvestingModal.css */
 
 .select-container {
     position: relative;
     display: inline-block;
-    width: 50%;
+    width: 80%;
     margin-bottom: 20px;
+    margin-left: -60px;
+    margin-right: 40px;
 }
+
+/* InvestingModal.css */
+
+.select-container select {
+    width: 100%; /* Fill the available space */
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
 
 .select-container select {
     width: 100%;
@@ -119,7 +107,21 @@
     border-color: #0056b3; /* Darker blue on hover */
 }
 
-.select-container select:focus {
-    outline: none;
-    border-color: #003580; /* Even darker blue on focus */
+
+
+
+.filter-row {
+    display:flex;
+    align-items: center; /* Align items vertically */
+    justify-content: space-between; /* Distribute space between elements */
+    margin-top: 10px; /* Space from previous elements */
+}
+
+.row{
+    display: inline-block;
+}
+
+.custom-checkbox{
+    display: flex;
+    width: 10px;
 }
