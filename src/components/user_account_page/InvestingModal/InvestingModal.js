@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import '../InvestingModal/InvestingModal.css';
 import investmentTypes from '../AddInvestingRecord/investmentTypes.json';
+import AddInvestingRecord from '../AddInvestingRecord/AddInvestingRecord';
+
 
 
 function InvestingRecordsModal({ user, onClose }) {
@@ -15,6 +17,7 @@ function InvestingRecordsModal({ user, onClose }) {
     const [filterTitle, setFilterTitle] = useState('');
     const [filterType, setFilterType] = useState('');
     const [roundedTotal, setRoundedTotal] = useState(0);
+    const [showAddInvesting, setShowAddInvesting] = useState(false);
 
     
 
@@ -100,6 +103,7 @@ function InvestingRecordsModal({ user, onClose }) {
                 <span className="close" onClick={onClose}>&times;</span>
                 <h2>Investing Records List</h2>
                 <div className="filters">
+                    <button style={{marginBottom: '10px'}} onClick={() => setShowAddInvesting(true)}>Add Investings</button>
                     <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
                     <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
                     <input type="text" placeholder="Filter by title" value={filterTitle} onChange={e => setFilterTitle(e.target.value)} />
@@ -145,6 +149,7 @@ function InvestingRecordsModal({ user, onClose }) {
                     </tfoot>
                 </table>
             </div>
+            {showAddInvesting && <AddInvestingRecord user={user} onClose={() => setShowAddInvesting(false)} />}
         </div>
     );
 }

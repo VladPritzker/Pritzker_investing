@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../FinancialRecordsModal/FinancialRecordsModal.css';
+import AddNewSpendings from '../RecordModal/RecordModal'; // 
+
 
 function FinancialRecordsModal({ user, onClose }) {
     const [financialRecords, setFinancialRecords] = useState([]);
@@ -10,6 +12,8 @@ function FinancialRecordsModal({ user, onClose }) {
     const [maxAmount, setMaxAmount] = useState('');
     const [filterTitle, setFilterTitle] = useState('');
     const [roundedTotal, setRoundedTotal] = useState(0);
+    const [showAddSpening, setShowAddSpending] = useState(false);
+
 
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -87,9 +91,9 @@ function FinancialRecordsModal({ user, onClose }) {
                     <input type="text" placeholder="Filter by title" value={filterTitle} onChange={e => setFilterTitle(e.target.value)} />
                     
                     <input type="number" placeholder="Min amount" value={minAmount} onChange={e => setMinAmount(e.target.value)} />
-                    <input type="number" placeholder="Max amount"  value={maxAmount} onChange={e => setMaxAmount(e.target.value)} />
-                    
+                    <input type="number" placeholder="Max amount"  value={maxAmount} onChange={e => setMaxAmount(e.target.value)} />                    
                 </div>
+                <button style={{marginBottom: '10px'}} onClick={() => showAddSpening(true)}>Add Spenings</button>
                 <table className="financial-records-table">
                     <thead>
                         <tr>
@@ -115,6 +119,8 @@ function FinancialRecordsModal({ user, onClose }) {
                     </tfoot>   
                 </table>
             </div>
+            {showAddSpening && <AddNewSpendings user={user} onClose={() => showAddSpening(false)} />}
+
         </div>
     );
     

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../InvestingModal/InvestingModal.css';
+import AddNote from '../AddNote/addNoteModal';
 
 const priorityOptions = [
     { id: 1, type: "High Priority" },
@@ -17,7 +18,7 @@ function NotesModal({ user, onClose }) {
         dateTo: '',
         priority: ''
     });
-
+    const [showAddNodteModal, setShowAddNoteModal] = useState(false);
     useEffect(() => {
         fetchNotes();
     }, [filters, showHiddenNotes, user.id]);
@@ -109,6 +110,7 @@ function NotesModal({ user, onClose }) {
                     <input type="text" name="title" placeholder="Filter by title" value={filters.title} onChange={handleChange} />
                     <input type="date" name="dateFrom" value={filters.dateFrom} onChange={handleChange} />
                     <input type="date" name="dateTo" value={filters.dateTo} onChange={handleChange} />
+                    <button style={{marginBottom: '10px'}} onClick={() => setShowAddNoteModal(true)}>Add note</button>
                     <div className="filter-row" style={{display: "-webkit-box"}}>
                         <div style={{width: '100%', }} className="select-container">
                             <select name="priority" value={filters.priority} onChange={handleChange}>
@@ -154,6 +156,7 @@ function NotesModal({ user, onClose }) {
                     </tbody>
                 </table>
             </div>
+            {showAddNodteModal && <AddNote user={user} onClose={() => setShowAddNoteModal(false)} />}
         </div>
     );
 }
