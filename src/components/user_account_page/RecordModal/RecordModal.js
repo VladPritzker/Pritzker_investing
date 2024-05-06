@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../RecordModal/RecordModal.css';
 function RecordModal({ user, onClose }) {
     const [recordName, setRecordName] = useState('');
@@ -45,6 +45,19 @@ function RecordModal({ user, onClose }) {
             alert(`Network error: ${error.message}`);
         }
     };
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === "Escape") {
+                onClose();
+            }
+        };
+
+        document.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [onClose]);
 
     return (
         <div className="modal">

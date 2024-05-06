@@ -5,6 +5,7 @@ import FinancialRecordsModal from '../user_account_page/FinancialRecordsModal/Fi
 import InvestingRecordsModal from '../user_account_page/InvestingModal/InvestingModal';
 import AddInvestingRecord from  '../user_account_page/AddInvestingRecord/AddInvestingRecord';
 import NotesModal from '../user_account_page/Notes/notes'
+import AddNoteModal from '../user_account_page/AddNote/addNoteModal'
 
 
 
@@ -19,6 +20,7 @@ function UserAccountPage() {
     const [showInvestList, setShowInvestList] = useState(false);
     const [showAddInvestRecordModal, setShowAddInvestRecordModal] = useState(false);
     const [showNotesModal, setShowNotesModal] = useState(false);
+    const [showAddNote, setShowAddNotesModal] = useState(false);
 
     const handleLogout = () => {
         localStorage.removeItem('userToken');
@@ -82,6 +84,8 @@ function UserAccountPage() {
 
                 <button type="button" style={{ marginBottom: '10px' }} onClick={handleAddInvestRecordClick} >Add Investing Record</button>
                 <button id="refresh" type="button" style={{ marginBottom: '50px' }} onClick={handleInvestRecordsListClick}>Investing Records List</button>
+                
+                <button type="button" style={{ marginBottom: '10px', }} onClick={() => setShowAddNotesModal(true)}>Add Note</button>
                 <button type="button" style={{ marginBottom: '10px', }} onClick={() => setShowNotesModal(true)}>Show Notes</button>
 
 
@@ -101,6 +105,9 @@ function UserAccountPage() {
             )}
             {showNotesModal && (
                 <NotesModal user={user} onClose={() => setShowNotesModal(false)} />
+            )}
+            {showAddNote && (
+                <AddNoteModal user={user} onClose={() => setShowAddNotesModal(false)} />
             )}
 
 

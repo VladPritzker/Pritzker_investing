@@ -3,9 +3,9 @@ import axios from 'axios';
 import '../InvestingModal/InvestingModal.css';
 
 const priorityOptions = [
-  { id: 1, type: "High Priority" },
-  { id: 2, type: "Medium Priority" },
-  { id: 3, type: "Low Priority" }
+    { id: 1, type: "High Priority" },
+    { id: 2, type: "Medium Priority" },
+    { id: 3, type: "Low Priority" }
 ];
 
 function NotesModal({ user, onClose }) {
@@ -21,6 +21,20 @@ function NotesModal({ user, onClose }) {
     useEffect(() => {
         fetchNotes();
     }, [filters, showHiddenNotes, user.id]);
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === "Escape") {
+                onClose();
+            }
+        };
+
+        document.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [onClose]);
 
     const fetchNotes = async () => {
         try {
@@ -86,8 +100,6 @@ function NotesModal({ user, onClose }) {
         setShowHiddenNotes(false);
     };
 
-
-    
     return (
         <div className="modal">
             <div className="modal-content">
@@ -97,24 +109,23 @@ function NotesModal({ user, onClose }) {
                     <input type="text" name="title" placeholder="Filter by title" value={filters.title} onChange={handleChange} />
                     <input type="date" name="dateFrom" value={filters.dateFrom} onChange={handleChange} />
                     <input type="date" name="dateTo" value={filters.dateTo} onChange={handleChange} />
-                    
-                    <div className="filter-row">
-    <div className="select-container">
-        <select name="priority" value={filters.priority} onChange={handleChange}>
-            <option value="">All Priorities</option>
-            {priorityOptions.map(option => (
-                <option key={option.id} value={option.type}>{option.type}</option>
-            ))}
-        </select>
-    </div>
-    <div className="custom-checkbox">
-        <label>
-            Show Hidden Notes
-            <input type="checkbox" checked={showHiddenNotes} onChange={handleChange} name="showHiddenNotes" />
-        </label>
-    </div>
-    <button className="clear-filters" onClick={clearFilters}>Clear Filters</button>
-</div>
+                    <div className="filter-row" style={{display: "-webkit-box"}}>
+                        <div style={{width: '100%', }} className="select-container">
+                            <select name="priority" value={filters.priority} onChange={handleChange}>
+                                <option value="">All Priorities</option>
+                                {priorityOptions.map(option => (
+                                    <option key={option.id} value={option.type}>{option.type}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="custom-checkbox" >
+                            <label style={{display: 'inline-flex', width: '80%'}}>
+                                <div style={{width: '300px', marginTop:'20px', marginLeft: '-40px'}}>Show Hidden Notes</div>
+                                <input style={{width: '30px',padding: '10px',marginLeft: '-30px',  marginTop:'25px'}} type="checkbox" checked={showHiddenNotes} onChange={handleChange} name="showHiddenNotes" />
+                            </label>
+                        </div>
+                        <button style={{ marginTop:'10px'}} className="clear-filters" onClick={clearFilters}>Clear Filters</button>
+                    </div>
                 </div>
                 <table className="financial-records-table">
                     <thead>
@@ -127,7 +138,7 @@ function NotesModal({ user, onClose }) {
                             <th>Hide</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody style={{marginLeft: '-15px'}}>
                         {notes.map(note => (
                             <tr key={note.id}>
                                 <td>{note.title}</td>

@@ -11,7 +11,19 @@ function FinancialRecordsModal({ user, onClose }) {
     const [filterTitle, setFilterTitle] = useState('');
     const [roundedTotal, setRoundedTotal] = useState(0);
 
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === "Escape") {
+                onClose();
+            }
+        };
 
+        document.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [onClose]);
     useEffect(() => {
         const fetchFinancialRecords = async () => {
             try {
