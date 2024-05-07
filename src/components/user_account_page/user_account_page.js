@@ -61,7 +61,6 @@ function UserAccountPage() {
                 <p>Money Invested: {user?.money_invested}</p>
                 <p>Money Spent: {user?.money_spent}</p>
                 <p>Balance: {user?.balance}</p>
-                <button type="button" style={{ marginBottom: '10px',  marginTop: '20px' }} >Update user data</button>
                 <button type="button" style={{ marginBottom: '10px', }} onClick={() => setShowNotesModal(true)}>Show Notes</button>
                 
                 <button type="button" style={{ marginBottom: '50px' }} onClick={handleFinancialRecordsListClick}>Spending Records List</button>
@@ -76,7 +75,7 @@ function UserAccountPage() {
                 <FinancialRecordsModal user={user} onClose={()=> setShowRecordList(false)} />
             )}        
             {showNotesModal && (
-                <NotesModal user={user} onClose={() => setShowNotesModal(false)} />
+                <NotesModal user={user} onClose={() => setShowNotesModal(false)}/>
             )}
         </div>
     );

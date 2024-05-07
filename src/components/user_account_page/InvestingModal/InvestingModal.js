@@ -115,7 +115,7 @@ function InvestingRecordsModal({ user, onClose }) {
                         <select value={filterType} onChange={e => setFilterType(e.target.value)}>
                             <option value="">All Types</option>
                             {Object.entries(investmentTypes).map(([type, id]) => (
-                                <option key={id} value={id}>{type}</option>
+                                <option key={id} value={type}>{type}</option>
                             ))}
                         </select>
                     </div>

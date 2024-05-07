@@ -1,3 +1,4 @@
+
 .modal-content {
     padding: 20px;
     background: #f8f9fa;
@@ -5,7 +6,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 600px;
     margin: auto;
-    overflow: hidden;
+    /* overflow: ; */
 }
 
 .financial-records-table {
@@ -112,3 +113,65 @@
 .clear-filters:hover {
     background-color: #0056b3;
 }
+
+/* Path: notes_modal.css */
+.note-details-modal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    z-index: 1050;
+    left: 0;
+    top: 0;
+    width: 30%;
+    height: 50%;
+    overflow: auto;
+    background-color: rgba(255, 255, 255, 0.997); /* Light background for a cleaner look */
+    justify-content: center;
+    margin-left: 35%;
+    margin-top: 10%;
+    border: 2px solid rgba(0, 123, 255, 0.75); /* Solid blue border with transparency */
+    border-radius: 12px; /* Rounded corners */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25); /* Soft shadow for depth */
+    background: linear-gradient(to bottom right, #ffffff, #f1f1f1); /* Subtle gradient from white to light gray */
+}
+
+.note-details-modal-content {
+    padding: 40px; /* Increased padding for better spacing */
+    background: #ffffff; /* Ensures bright background */
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgb(54, 50, 50); /* Stronger shadow for a pop-out effect */
+    width: 400px; /* Wider content area */
+    transition: transform 0.3s ease-in-out;
+    position: relative; /* For positioning the close button absolutely within */
+}
+
+.note-details-modal h4 {
+    color: #333; /* Darker text for better visibility */
+    margin-bottom: 20px;
+    font-size: 24px; /* Larger text */
+}
+
+.note-details-modal p {
+    display: contents;
+    text-align: left; /* Aligned text for standard reading */
+    color: #000000; /* Softer black for easier reading */
+    font-size: 18px; /* Larger font size for readability */
+    line-height: 1.6; /* Improved line spacing */
+}
+
+.note-details-modal button {
+    padding: 12px 24px; /* Larger buttons */
+    background-color: #007bff; /* Standard blue */
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    letter-spacing: 1px; /* Added letter spacing for clarity */
+    margin-top: 20px; /* Space from the text */
+}
+
+.note-details-modal button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+

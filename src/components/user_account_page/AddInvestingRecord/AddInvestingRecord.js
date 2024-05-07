@@ -107,7 +107,7 @@ function AddInvestingRecord({ user, onClose,  token }) {
                         <select  onChange={(e) => setRecordTypeInvest(e.target.value)}>
                             <option value={recordTypeInvest}>All Types</option>
                             {Object.entries(investmentTypes).map(([type, id]) => (
-                                <option key={id} value={id}>{type}</option>
+                                <option key={id} value={type}>{type}</option>
                             ))}
                         </select>
                 </div>

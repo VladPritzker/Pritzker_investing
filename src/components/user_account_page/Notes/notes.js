@@ -12,7 +12,9 @@ const priorityOptions = [
 function NotesModal({ user, onClose }) {
     const [notes, setNotes] = useState([]);
     const [showHiddenNotes, setShowHiddenNotes] = useState(false);
+    const [activeNote, setActiveNote] = useState(null);
     const [filters, setFilters] = useState({
+        
         title: '',
         dateFrom: '',
         dateTo: '',
@@ -101,6 +103,19 @@ function NotesModal({ user, onClose }) {
         setShowHiddenNotes(false);
     };
 
+
+
+    const handleNoteClick = (note) => {
+        if (note.note.length > 10) {
+            setActiveNote(note);
+        }
+    };
+
+    const closeNoteDetails = () => {
+        setActiveNote(null);
+    };
+
+    
     return (
         <div className="modal">
             <div className="modal-content">
@@ -144,7 +159,9 @@ function NotesModal({ user, onClose }) {
                         {notes.map(note => (
                             <tr key={note.id}>
                                 <td>{note.title}</td>
-                                <td>{note.note}</td>
+                                <td onClick={() => handleNoteClick(note)}>
+                                    {note.note.length > 10 ? `${note.note.substring(0, 10)}...` : note.note}
+                                </td>
                                 <td>{note.date}</td>
                                 <td>{note.priority}</td>
                                 <td><input type="checkbox" checked={note.done} onChange={() => toggleNoteDone(note.id, note.done)} /></td>
@@ -157,6 +174,13 @@ function NotesModal({ user, onClose }) {
                 </table>
             </div>
             {showAddNodteModal && <AddNote user={user} onClose={() => setShowAddNoteModal(false)} />}
+            {activeNote && (
+                    <div className="note-details-modal">
+                        <h4>Full Note</h4>
+                        <p>{activeNote.note}</p>
+                        <button onClick={closeNoteDetails}>Close</button>
+                    </div>
+                )}
         </div>
     );
 }
