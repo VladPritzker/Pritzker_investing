@@ -3,10 +3,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import FinancialRecordsModal from '../user_account_page/FinancialRecordsModal/FinancialRecordsModal';
 import InvestingRecordsModal from '../user_account_page/InvestingModal/InvestingModal';
 import NotesModal from '../user_account_page/Notes/notes'
+import { useParams } from 'react-router-dom';
+
 
 
 
 function UserAccountPage() {
+    const { userId } = useParams(); // Correctly fetching userId from the path
+
     const location = useLocation();
     const navigate = useNavigate();
     const [user, setUser] = useState(location.state?.user); // Define setUser here
@@ -30,9 +34,10 @@ function UserAccountPage() {
     useEffect(() => {
         const fetchTimezone = async () => {
             try {
-                const response = await fetch('https://ipinfo.io?token=your_token_here');
+                const response = await fetch('http://worldtimeapi.org/api/ip');
+                if (!response.ok) throw new Error('Failed to fetch timezone data');
                 const data = await response.json();
-                const timezone = data.timezone; // This API provides the timezone
+                const timezone = data.timezone; // Get the timezone from the API response
                 setLocalTime(new Date().toLocaleTimeString('en-US', { timeZone: timezone }));
             } catch (error) {
                 console.error('Failed to fetch timezone:', error);
@@ -41,6 +46,7 @@ function UserAccountPage() {
         
         fetchTimezone();
     }, []);
+    
     
 
     const handleLogout = () => {
@@ -94,11 +100,9 @@ function UserAccountPage() {
                 <button id="refresh" type="button" style={{ marginBottom: '50px' }} onClick={handleInvestRecordsListClick}>Investing Records List</button>            
                 <button type="button" style={{ marginBottom: '10px' }} onClick={handleRefreshDataClick}>Refresh data</button>
                 <div className="login-form-time">
-                    <form style={{marginTop: '10px', height: "20%"}}>
-                <div>Time: {localTime}</div>
-                    {/* Additional UI code */}
-                    </form>
-                    {/* Modals and additional components */}
+                    <div style={{marginTop: '10px', height: "20%"}}>
+                        <div>Time: {localTime}</div>                    
+                    </div>                    
                 </div>
             </form>
             {showInvestList && (

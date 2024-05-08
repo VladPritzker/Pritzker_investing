@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../FinancialRecordsModal/FinancialRecordsModal.css';
 import AddNewSpendings from '../RecordModal/RecordModal'; // 
+import MonthlyExpensesModal from'../FinancialRecordsModal/Monthly_Expenses/Monthly_Expenses'; 
 
 
 function FinancialRecordsModal({ user, onClose }) {
@@ -13,6 +14,7 @@ function FinancialRecordsModal({ user, onClose }) {
     const [filterTitle, setFilterTitle] = useState('');
     const [roundedTotal, setRoundedTotal] = useState(0);
     const [showAddSpening, setShowAddSpending] = useState(false);
+    const [showMonthlyExpenses, setShowMonthlyExpenses] = useState(false);
 
 
     useEffect(() => {
@@ -28,14 +30,16 @@ function FinancialRecordsModal({ user, onClose }) {
             document.removeEventListener("keydown", handleKeyDown);
         };
     }, [onClose]);
+
     useEffect(() => {
         const fetchFinancialRecords = async () => {
             try {
                 const response = await fetch(`http://127.0.0.1:8000/financial_records/?user_id=${user.id}`);
                 if (response.ok) {
                     const data = await response.json();
+                    console.log(data); // Log the data to check structure
                     setFinancialRecords(data);
-                    setDisplayRecords(data); // Initially display all records
+                    setDisplayRecords(data);
                     const totalAmount = data.reduce((total, record) => total + parseFloat(record.amount), 0);
                     const roundedTotal = Math.round(totalAmount * 100) / 100; // Round to two decimal places
                     setRoundedTotal(roundedTotal);
@@ -46,7 +50,7 @@ function FinancialRecordsModal({ user, onClose }) {
                 console.error('Error fetching financial records:', error);
             }
         };
-
+    
         fetchFinancialRecords();
     }, [user.id]);
 
@@ -93,6 +97,7 @@ function FinancialRecordsModal({ user, onClose }) {
                     <input type="number" placeholder="Min amount" value={minAmount} onChange={e => setMinAmount(e.target.value)} />
                     <input type="number" placeholder="Max amount"  value={maxAmount} onChange={e => setMaxAmount(e.target.value)} />                    
                 </div>
+                <button style={{marginBottom: '10px'}} onClick={() => setShowMonthlyExpenses(true)}>Monthly Expenses</button>
                 <button style={{marginBottom: '10px'}} onClick={() => setShowAddSpending(true)}>Add Spenings</button>
                 <table className="financial-records-table">
                     <thead>
@@ -120,6 +125,8 @@ function FinancialRecordsModal({ user, onClose }) {
                 </table>
             </div>
             {showAddSpening && <AddNewSpendings user={user} onClose={() => setShowAddSpending(false)} />}
+            {showMonthlyExpenses && <MonthlyExpensesModal user={user} onClose={() => setShowMonthlyExpenses(false)} />}
+
 
         </div>
     );
