@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import FinancialRecordsModal from '../user_account_page/FinancialRecordsModal/FinancialRecordsModal';
 import InvestingRecordsModal from '../user_account_page/InvestingModal/InvestingModal';
@@ -10,11 +10,37 @@ function UserAccountPage() {
     const location = useLocation();
     const navigate = useNavigate();
     const [user, setUser] = useState(location.state?.user); // Define setUser here
+    const [localTime, setLocalTime] = useState(new Date().toLocaleTimeString());
+
 
 
     const [showRecordList, setShowRecordList] = useState(false);
     const [showInvestList, setShowInvestList] = useState(false);
     const [showNotesModal, setShowNotesModal] = useState(false);
+
+    useEffect(() => {
+        // Update the time every second
+        const timer = setInterval(() => {
+            setLocalTime(new Date().toLocaleTimeString());
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, []);
+
+    useEffect(() => {
+        const fetchTimezone = async () => {
+            try {
+                const response = await fetch('https://ipinfo.io?token=your_token_here');
+                const data = await response.json();
+                const timezone = data.timezone; // This API provides the timezone
+                setLocalTime(new Date().toLocaleTimeString('en-US', { timeZone: timezone }));
+            } catch (error) {
+                console.error('Failed to fetch timezone:', error);
+            }
+        };
+        
+        fetchTimezone();
+    }, []);
     
 
     const handleLogout = () => {
@@ -52,7 +78,7 @@ function UserAccountPage() {
     };    
     return (
         <div className="login-container">
-            <form className="login-form">
+                <form className="login-form">                
                 <button onClick={handleLogout}>Logout</button>
                 <h1>User Data</h1>
                 <p>Username: {user?.username}</p>
@@ -67,6 +93,13 @@ function UserAccountPage() {
 
                 <button id="refresh" type="button" style={{ marginBottom: '50px' }} onClick={handleInvestRecordsListClick}>Investing Records List</button>            
                 <button type="button" style={{ marginBottom: '10px' }} onClick={handleRefreshDataClick}>Refresh data</button>
+                <div className="login-form-time">
+                    <form style={{marginTop: '10px', height: "20%"}}>
+                <div>Time: {localTime}</div>
+                    {/* Additional UI code */}
+                    </form>
+                    {/* Modals and additional components */}
+                </div>
             </form>
             {showInvestList && (
                 <InvestingRecordsModal user={user} onClose={() => setShowInvestList(false)} />
