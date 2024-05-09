@@ -88,6 +88,7 @@ function MonthlyExpensesModal({ user, onClose }) {
                 <h2>Monthly Expenses</h2>
                 <button style={{marginTop: '10px', marginBottom: '10px'}} onClick={() => setShowAddExpenseModal(true)}>Add New Expense</button>
                 {showAddExpenseModal && (
+                    
                     <div>
                         <input style={{marginTop: '10px', marginBottom: '10px'}} type="text" placeholder="Title" value={newExpenseTitle} onChange={e => setNewExpenseTitle(e.target.value)} />
                         <input style={{marginTop: '10px', marginBottom: '10px'}} type="number" placeholder="Amount" value={newExpenseAmount} onChange={e => setNewExpenseAmount(e.target.value)} />
