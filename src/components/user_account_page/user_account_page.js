@@ -3,13 +3,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import FinancialRecordsModal from '../user_account_page/FinancialRecordsModal/FinancialRecordsModal';
 import InvestingRecordsModal from '../user_account_page/InvestingModal/InvestingModal';
 import NotesModal from '../user_account_page/Notes/notes'
-import { useParams } from 'react-router-dom';
+
 
 
 
 
 function UserAccountPage() {
-    const { userId } = useParams(); // Correctly fetching userId from the path
 
     const location = useLocation();
     const navigate = useNavigate();
