@@ -97,8 +97,8 @@ function FinancialRecordsModal({ user, onClose }) {
                     <input type="number" placeholder="Min amount" value={minAmount} onChange={e => setMinAmount(e.target.value)} />
                     <input type="number" placeholder="Max amount"  value={maxAmount} onChange={e => setMaxAmount(e.target.value)} />                    
                 </div>
-                <button style={{marginBottom: '10px'}} onClick={() => setShowMonthlyExpenses(true)}>Monthly Expenses</button>
                 <button style={{marginBottom: '10px'}} onClick={() => setShowAddSpending(true)}>Add Spenings</button>
+                <button style={{marginBottom: '10px'}} onClick={() => setShowMonthlyExpenses(true)}>Monthly Expenses</button>
                 <table className="financial-records-table">
                     <thead>
                         <tr>

@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate hook for redirection
 import './registrationPage.css';  
+import investmentTypes from './investImg.json'; 
+import { Carousel } from 'react-responsive-carousel';
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 
 function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);  
@@ -83,6 +86,11 @@ function LoginPage() {
     return cookieValue ? cookieValue.pop() : '';
   }
 
+  
+  const handleLinkClick = (url, e) => {
+    e.stopPropagation(); // This prevents the carousel from sliding on link click
+    window.open(url, '_blank', 'noopener,noreferrer'); // Opens the link in a new tab
+  };
   return (
     <div className="login-container">
       <form onSubmit={handleSubmit} className="login-form">
@@ -96,10 +104,20 @@ function LoginPage() {
           <input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
         )}
         <button type="submit">{isLogin ? 'Login' : 'Register'}</button>
-        <button type="button" onClick={() => setIsLogin(!isLogin)} className="toggle">
+        <button style={{marginBottom: '10%'}} type="button" onClick={() => setIsLogin(!isLogin)} className="toggle">
           {isLogin ? 'Need an account? Register' : 'Have an account? Login'}
         </button>
-      </form>
+        <Carousel autoPlay infiniteLoop showThumbs={false} showStatus={false} className="login-carousel">
+          {Object.entries(investmentTypes).map(([key, { src, href }]) => (
+            <div key={key}>
+              <a onClick={(e) => handleLinkClick(href, e)} style={{ cursor: 'pointer' }}>
+                <img src={src} alt={key} />
+                <p className="legend">{key}</p>
+              </a>
+            </div>
+          ))}
+        </Carousel>
+      </form>      
     </div>
   );
 }
