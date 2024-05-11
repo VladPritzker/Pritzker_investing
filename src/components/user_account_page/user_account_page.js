@@ -95,7 +95,7 @@ function UserAccountPage() {
                 <p>Balance: {user?.balance}</p>
                 <button type="button" style={{ marginBottom: '10px', }} onClick={() => setShowNotesModal(true)}>Show Notes</button>
                 
-                <button type="button" style={{ marginBottom: '50px' }} onClick={handleFinancialRecordsListClick}>Spending Records List</button>
+                <button type="button" style={{ marginBottom: '10px' }} onClick={handleFinancialRecordsListClick}>Spending Records List</button>
 
                 <button id="refresh" type="button" style={{ marginBottom: '50px' }} onClick={handleInvestRecordsListClick}>Investing Records List</button>            
                 <button type="button" style={{ marginBottom: '10px' }} onClick={handleRefreshDataClick}>Refresh data</button>

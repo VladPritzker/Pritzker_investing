@@ -77,3 +77,11 @@
     margin-top: 10px;
   }
   
+  .login-container .slick-slide img {
+    width: 100%;        /* Ensures the image stretches to cover the slide */
+    height: 300px;      /* Fixed height for all images */
+    object-fit: cover;  /* Ensures images cover the area without distorting aspect ratio */
+  }
+  
+
+  

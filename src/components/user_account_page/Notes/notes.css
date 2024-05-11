@@ -63,7 +63,7 @@
 }
 
 .select-container select {
-    width: 100%;
+    width: 200px;
     padding: 8px;
     border-radius: 5px;
     border: 1px solid #ccc;
@@ -108,6 +108,7 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    width: 50px;
 }
 
 .clear-filters:hover {

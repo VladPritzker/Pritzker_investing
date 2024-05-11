@@ -2,8 +2,63 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate hook for redirection
 import './registrationPage.css';  
 import investmentTypes from './investImg.json'; 
-import { Carousel } from 'react-responsive-carousel';
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import Slider from 'react-slick';
+import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick-theme.css";
+
+
+
+function SampleNextArrow(props) {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{ ...style, display: "block", background: "none", color: "slategre"}}
+      onClick={onClick}
+    />
+  );
+}
+
+function SamplePrevArrow(props) {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{ ...style, display: "block", background: "none", color: "slategre" }}
+      onClick={onClick}
+    />
+  );
+}
+
+function Footer() {
+  return (
+      <div className="footer">
+          <div className="legal">
+              <h4>LEGAL PAGES</h4>
+              <a href="/regulatory-info">Regulatory Information</a>
+              <a href="/terms">Terms of Service</a>
+              <a href="/privacy">Privacy Policy</a>
+              <a href="/eeo">EEO Statement and Legal Notices</a>
+          </div>
+          <div className="company">
+              <h4>COMPANY</h4>
+              <a href="/story">Our Story</a>
+              {/* Add other links similarly */}
+          </div>
+          <div className="community">
+              <h4>COMMUNITY</h4>
+              <a href="/become-instructor">Become An Instructor</a>
+              {/* Add other links similarly */}
+          </div>
+          <div className="social-links">
+              <a href="https://www.facebook.com">Facebook</a>
+              <a href="https://www.instagram.com">Instagram</a>
+              <a href="https://www.youtube.com">YouTube</a>
+              <a href="https://www.indeed.com">Indeed</a>
+          </div>
+      </div>
+  );
+}
 
 function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);  
@@ -13,6 +68,17 @@ function LoginPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const navigate = useNavigate(); // Create an instance of useNavigate for redirection
 
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 2000,
+    nextArrow: <SampleNextArrow />,
+    prevArrow: <SamplePrevArrow />
+  };
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (isLogin) {
@@ -88,11 +154,17 @@ function LoginPage() {
 
   
   const handleLinkClick = (url, e) => {
-    e.stopPropagation(); // This prevents the carousel from sliding on link click
-    window.open(url, '_blank', 'noopener,noreferrer'); // Opens the link in a new tab
+    e.preventDefault(); // Prevents default link action
+    window.open(url, '_blank');
   };
+
+
   return (
     <div className="login-container">
+      <div className="logo-container">
+                <img src="../../../public/favicon.ico" alt="Logo" className="logo" />
+      </div>
+
       <form onSubmit={handleSubmit} className="login-form">
         <h2>{isLogin ? 'Login' : 'Register'}</h2>
         {!isLogin && (
@@ -107,16 +179,17 @@ function LoginPage() {
         <button style={{marginBottom: '10%'}} type="button" onClick={() => setIsLogin(!isLogin)} className="toggle">
           {isLogin ? 'Need an account? Register' : 'Have an account? Login'}
         </button>
-        <Carousel autoPlay infiniteLoop showThumbs={false} showStatus={false} className="login-carousel">
+        <Slider {...settings} >
           {Object.entries(investmentTypes).map(([key, { src, href }]) => (
             <div key={key}>
-              <a onClick={(e) => handleLinkClick(href, e)} style={{ cursor: 'pointer' }}>
+              <a href={href} onClick={(e) => handleLinkClick(href, e)} style={{ cursor: 'pointer', textDecoration: 'inherit', color: 'inherit' }}>
                 <img src={src} alt={key} />
-                <p className="legend">{key}</p>
+                <div style={{marginTop: '10px'}} className="legend">{key}</div>
               </a>
             </div>
           ))}
-        </Carousel>
+        </Slider>
+        <Footer />
       </form>      
     </div>
   );

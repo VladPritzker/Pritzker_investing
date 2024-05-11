@@ -127,7 +127,7 @@ function NotesModal({ user, onClose }) {
                     <input type="date" name="dateTo" value={filters.dateTo} onChange={handleChange} />
                     <button style={{marginBottom: '10px'}} onClick={() => setShowAddNoteModal(true)}>Add note</button>
                     <div className="filter-row" style={{display: "-webkit-box"}}>
-                        <div style={{width: '100%', }} className="select-container">
+                        <div style={{width: '100%', display: 'ruby' }} className="select-container">
                             <select name="priority" value={filters.priority} onChange={handleChange}>
                                 <option value="">All Priorities</option>
                                 {priorityOptions.map(option => (
@@ -136,12 +136,12 @@ function NotesModal({ user, onClose }) {
                             </select>
                         </div>
                         <div className="custom-checkbox" >
-                            <label style={{display: 'inline-flex', width: '80%'}}>
+                            <label style={{display: 'ruby', width: '80%'}}>
                                 <div style={{width: '300px', marginTop:'20px', marginLeft: '-40px'}}>Show Hidden Notes</div>
-                                <input style={{width: '30px',padding: '10px',marginLeft: '-30px',  marginTop:'25px'}} type="checkbox" checked={showHiddenNotes} onChange={handleChange} name="showHiddenNotes" />
+                                <input style={{width: '30px',padding: '10px',marginLeft: '-30px',  marginTop:'20px'}} type="checkbox" checked={showHiddenNotes} onChange={handleChange} name="showHiddenNotes" />
                             </label>
                         </div>
-                        <button style={{ marginTop:'10px'}} className="clear-filters" onClick={clearFilters}>Clear Filters</button>
+                        <button style={{ marginTop:'10px', width: '150px'}} className="clear-filters" onClick={clearFilters}>Clear Filters</button>
                     </div>
                 </div>
                 <table className="financial-records-table">
