@@ -30,35 +30,7 @@ function SamplePrevArrow(props) {
   );
 }
 
-function Footer() {
-  return (
-      <div className="footer">
-          <div className="legal">
-              <h4>LEGAL PAGES</h4>
-              <a href="/regulatory-info">Regulatory Information</a>
-              <a href="/terms">Terms of Service</a>
-              <a href="/privacy">Privacy Policy</a>
-              <a href="/eeo">EEO Statement and Legal Notices</a>
-          </div>
-          <div className="company">
-              <h4>COMPANY</h4>
-              <a href="/story">Our Story</a>
-              {/* Add other links similarly */}
-          </div>
-          <div className="community">
-              <h4>COMMUNITY</h4>
-              <a href="/become-instructor">Become An Instructor</a>
-              {/* Add other links similarly */}
-          </div>
-          <div className="social-links">
-              <a href="https://www.facebook.com">Facebook</a>
-              <a href="https://www.instagram.com">Instagram</a>
-              <a href="https://www.youtube.com">YouTube</a>
-              <a href="https://www.indeed.com">Indeed</a>
-          </div>
-      </div>
-  );
-}
+
 
 function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);  
@@ -160,11 +132,10 @@ function LoginPage() {
 
 
   return (
-    <div className="login-container">
-      <div className="logo-container">
-                <img src="../../../public/favicon.ico" alt="Logo" className="logo" />
-      </div>
+    
 
+    
+    <div className="login-container">    
       <form onSubmit={handleSubmit} className="login-form">
         <h2>{isLogin ? 'Login' : 'Register'}</h2>
         {!isLogin && (
@@ -188,10 +159,10 @@ function LoginPage() {
               </a>
             </div>
           ))}
-        </Slider>
-        <Footer />
-      </form>      
-    </div>
+        </Slider>        
+      </form>    
+      
+          </div>
   );
 }
 
