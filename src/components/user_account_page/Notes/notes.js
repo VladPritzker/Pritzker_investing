@@ -14,13 +14,13 @@ function NotesModal({ user, onClose }) {
     const [showHiddenNotes, setShowHiddenNotes] = useState(false);
     const [activeNote, setActiveNote] = useState(null);
     const [filters, setFilters] = useState({
-        
         title: '',
         dateFrom: '',
         dateTo: '',
         priority: ''
     });
-    const [showAddNodteModal, setShowAddNoteModal] = useState(false);
+    const [showAddNoteModal, setShowAddNoteModal] = useState(false);
+
     useEffect(() => {
         fetchNotes();
     }, [filters, showHiddenNotes, user.id]);
@@ -103,8 +103,6 @@ function NotesModal({ user, onClose }) {
         setShowHiddenNotes(false);
     };
 
-
-
     const handleNoteClick = (note) => {
         if (note.note.length > 10) {
             setActiveNote(note);
@@ -115,7 +113,11 @@ function NotesModal({ user, onClose }) {
         setActiveNote(null);
     };
 
-    
+    const handleAddNoteClose = () => {
+        setShowAddNoteModal(false);
+        fetchNotes(); // Refresh notes list after adding a new note
+    };
+
     return (
         <div className="modal">
             <div className="modal-content">
@@ -173,14 +175,14 @@ function NotesModal({ user, onClose }) {
                     </tbody>
                 </table>
             </div>
-            {showAddNodteModal && <AddNote user={user} onClose={() => setShowAddNoteModal(false)} />}
+            {showAddNoteModal && <AddNote user={user} onClose={handleAddNoteClose} />}
             {activeNote && (
-                    <div className="note-details-modal">
-                        <h4>Full Note</h4>
-                        <p>{activeNote.note}</p>
-                        <button onClick={closeNoteDetails}>Close</button>
-                    </div>
-                )}
+                <div className="note-details-modal">
+                    <h4>Full Note</h4>
+                    <p>{activeNote.note}</p>
+                    <button onClick={closeNoteDetails}>Close</button>
+                </div>
+            )}
         </div>
     );
 }

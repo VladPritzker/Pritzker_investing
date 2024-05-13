@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../FinancialRecordsModal/FinancialRecordsModal.css';
-import AddNewSpendings from '../RecordModal/RecordModal'; // 
-import MonthlyExpensesModal from'../FinancialRecordsModal/Monthly_Expenses/Monthly_Expenses'; 
-
+import AddNewSpendings from '../RecordModal/RecordModal'; 
+import MonthlyExpensesModal from '../FinancialRecordsModal/Monthly_Expenses/Monthly_Expenses'; 
 
 function FinancialRecordsModal({ user, onClose }) {
     const [financialRecords, setFinancialRecords] = useState([]);
@@ -13,9 +12,8 @@ function FinancialRecordsModal({ user, onClose }) {
     const [maxAmount, setMaxAmount] = useState('');
     const [filterTitle, setFilterTitle] = useState('');
     const [roundedTotal, setRoundedTotal] = useState(0);
-    const [showAddSpening, setShowAddSpending] = useState(false);
+    const [showAddSpending, setShowAddSpending] = useState(false);
     const [showMonthlyExpenses, setShowMonthlyExpenses] = useState(false);
-
 
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -31,26 +29,26 @@ function FinancialRecordsModal({ user, onClose }) {
         };
     }, [onClose]);
 
-    useEffect(() => {
-        const fetchFinancialRecords = async () => {
-            try {
-                const response = await fetch(`http://127.0.0.1:8000/financial_records/?user_id=${user.id}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log(data); // Log the data to check structure
-                    setFinancialRecords(data);
-                    setDisplayRecords(data);
-                    const totalAmount = data.reduce((total, record) => total + parseFloat(record.amount), 0);
-                    const roundedTotal = Math.round(totalAmount * 100) / 100; // Round to two decimal places
-                    setRoundedTotal(roundedTotal);
-                } else {
-                    throw new Error('Failed to fetch financial records.');
-                }
-            } catch (error) {
-                console.error('Error fetching financial records:', error);
+    const fetchFinancialRecords = async () => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/financial_records/?user_id=${user.id}`);
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data); // Log the data to check structure
+                setFinancialRecords(data);
+                setDisplayRecords(data);
+                const totalAmount = data.reduce((total, record) => total + parseFloat(record.amount), 0);
+                const roundedTotal = Math.round(totalAmount * 100) / 100; // Round to two decimal places
+                setRoundedTotal(roundedTotal);
+            } else {
+                throw new Error('Failed to fetch financial records.');
             }
-        };
-    
+        } catch (error) {
+            console.error('Error fetching financial records:', error);
+        }
+    };
+
+    useEffect(() => {
         fetchFinancialRecords();
     }, [user.id]);
 
@@ -77,28 +75,31 @@ function FinancialRecordsModal({ user, onClose }) {
                 const max = maxAmount ? parseFloat(maxAmount) : Infinity;
                 return recordAmount >= min && recordAmount <= max;
             });
-            
         }
+
         setRoundedTotal(filtered.reduce((total, record) => total + parseFloat(record.amount), 0));
         setDisplayRecords(filtered);
     }, [startDate, endDate, financialRecords, filterTitle, minAmount, maxAmount]);
 
+    const handleAddSpendingClose = () => {
+        setShowAddSpending(false);
+        fetchFinancialRecords(); // Refresh financial records list after adding a new record
+    };
+
     return (
         <div className="modal">
             <div className="modal-content">
-            <span className="close" onClick={onClose}>&times;</span>
+                <span className="close" onClick={onClose}>&times;</span>
                 <h2>Spending Records List</h2>
                 <div className="filters">
                     <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
                     <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
-                    
                     <input type="text" placeholder="Filter by title" value={filterTitle} onChange={e => setFilterTitle(e.target.value)} />
-                    
                     <input type="number" placeholder="Min amount" value={minAmount} onChange={e => setMinAmount(e.target.value)} />
-                    <input type="number" placeholder="Max amount"  value={maxAmount} onChange={e => setMaxAmount(e.target.value)} />                    
+                    <input type="number" placeholder="Max amount" value={maxAmount} onChange={e => setMaxAmount(e.target.value)} />
                 </div>
-                <button style={{marginBottom: '10px'}} onClick={() => setShowAddSpending(true)}>Add Spenings</button>
-                <button style={{marginBottom: '10px'}} onClick={() => setShowMonthlyExpenses(true)}>Monthly Expenses</button>
+                <button style={{ marginBottom: '10px' }} onClick={() => setShowAddSpending(true)}>Add Spending</button>
+                <button style={{ marginBottom: '10px' }} onClick={() => setShowMonthlyExpenses(true)}>Monthly Expenses</button>
                 <table className="financial-records-table">
                     <thead>
                         <tr>
@@ -116,21 +117,18 @@ function FinancialRecordsModal({ user, onClose }) {
                             </tr>
                         ))}
                     </tbody>
-                     <tfoot>
+                    <tfoot>
                         <tr>
                             <th>Total Amount - </th>
                             <th>{roundedTotal}</th>
                         </tr>
-                    </tfoot>   
+                    </tfoot>
                 </table>
             </div>
-            {showAddSpening && <AddNewSpendings user={user} onClose={() => setShowAddSpending(false)} />}
-            {showMonthlyExpenses && <MonthlyExpensesModal user={user} onClose={() => setShowMonthlyExpenses(false)} />}
-
-
+            {showAddSpending && <AddNewSpendings user={user} onClose={handleAddSpendingClose} />}
+            {showMonthlyExpenses && <MonthlyExpensesModal user={user} onClose={handleAddSpendingClose} />}
         </div>
     );
-    
 }
 
 export default FinancialRecordsModal;
