@@ -122,12 +122,12 @@ function NotesModal({ user, onClose }) {
         <div className="modal">
             <div className="modal-content">
                 <span className="close" onClick={onClose}>&times;</span>
-                <h2>Notes List</h2>
+                <h2>Tasks List</h2>
                 <div className="filters">
                     <input type="text" name="title" placeholder="Filter by title" value={filters.title} onChange={handleChange} />
                     <input type="date" name="dateFrom" value={filters.dateFrom} onChange={handleChange} />
                     <input type="date" name="dateTo" value={filters.dateTo} onChange={handleChange} />
-                    <button style={{marginBottom: '10px'}} onClick={() => setShowAddNoteModal(true)}>Add note</button>
+                    <button style={{marginBottom: '10px'}} onClick={() => setShowAddNoteModal(true)}>Add Task</button>
                     <div className="filter-row" style={{display: "-webkit-box"}}>
                         <div style={{width: '100%', display: 'ruby' }} className="select-container">
                             <select name="priority" value={filters.priority} onChange={handleChange}>
@@ -139,7 +139,7 @@ function NotesModal({ user, onClose }) {
                         </div>
                         <div className="custom-checkbox" >
                             <label style={{display: 'ruby', width: '80%'}}>
-                                <div style={{width: '300px', marginTop:'20px', marginLeft: '-40px'}}>Show Hidden Notes</div>
+                                <div style={{width: '300px', marginTop:'20px', marginLeft: '-40px'}}>Show Hidden Tasks</div>
                                 <input style={{width: '30px',padding: '10px',marginLeft: '-30px',  marginTop:'20px'}} type="checkbox" checked={showHiddenNotes} onChange={handleChange} name="showHiddenNotes" />
                             </label>
                         </div>
@@ -178,7 +178,7 @@ function NotesModal({ user, onClose }) {
             {showAddNoteModal && <AddNote user={user} onClose={handleAddNoteClose} />}
             {activeNote && (
                 <div className="note-details-modal">
-                    <h4>Full Note</h4>
+                    <h4>Full Task</h4>
                     <p>{activeNote.note}</p>
                     <button onClick={closeNoteDetails}>Close</button>
                 </div>
