@@ -144,10 +144,7 @@ function UserAccountPage() {
                     <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('money_invested')}>Update</button>
                     <p style={{ marginLeft: '10px' }}><strong>Money Invested:</strong> ${numberFormat(user?.money_invested)}</p>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                    <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('money_spent')}>Update</button>
-                    <p style={{ marginLeft: '10px' }}><strong>Money Spent:</strong> ${numberFormat(user?.money_spent)}</p>
-                </div>
+                
                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                     <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('balance')}>Update</button>
                     <p style={{ marginLeft: '10px' }}><strong>Balance:</strong> ${numberFormat(user?.balance)}</p>
