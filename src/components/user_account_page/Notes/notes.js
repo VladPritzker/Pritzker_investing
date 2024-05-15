@@ -108,7 +108,7 @@ function NotesModal({ user, onClose }) {
             setActiveNote(note);
         }
     };
-
+    
     const closeNoteDetails = () => {
         setActiveNote(null);
     };

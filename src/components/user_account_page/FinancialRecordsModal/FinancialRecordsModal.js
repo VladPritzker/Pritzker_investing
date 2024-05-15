@@ -86,6 +86,11 @@ function FinancialRecordsModal({ user, onClose }) {
         fetchFinancialRecords(); // Refresh financial records list after adding a new record
     };
 
+    const handleMonthlySpenidngClose = () => {
+        setShowMonthlyExpenses(false)
+        fetchFinancialRecords(); // Refresh financial records list after adding a new record
+
+    }
     return (
         <div className="modal">
             <div className="modal-content">
@@ -126,7 +131,7 @@ function FinancialRecordsModal({ user, onClose }) {
                 </table>
             </div>
             {showAddSpending && <AddNewSpendings user={user} onClose={handleAddSpendingClose} />}
-            {showMonthlyExpenses && <MonthlyExpensesModal user={user} onClose={handleAddSpendingClose} />}
+            {showMonthlyExpenses && <MonthlyExpensesModal user={user} onClose={handleMonthlySpenidngClose} />}
         </div>
     );
 }
