@@ -4,7 +4,7 @@ import '../uploadPhoto/uploadphoto.css';
 const PhotoUploadModal = ({ onClose, onUpload }) => {
     return (
         <div className="modal">
-            <div className="modal-content">
+            <div className="modal-content" style={{width: '20%'}}>
                 <span className="close" onClick={onClose}>&times;</span>
                 <h2>Upload Photo</h2>
                 <input type="file" onChange={onUpload} />
