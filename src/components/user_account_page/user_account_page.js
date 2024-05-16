@@ -3,16 +3,18 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import FinancialRecordsModal from '../user_account_page/FinancialRecordsModal/FinancialRecordsModal';
 import InvestingRecordsModal from '../user_account_page/InvestingModal/InvestingModal';
 import NotesModal from '../user_account_page/Notes/notes';
+import PhotoUploadModal from '../user_account_page/uploadPhoto/uploadphoto';
 import '../user_account_page/user_account_page.css';
 
 function UserAccountPage() {
     const location = useLocation();
     const navigate = useNavigate();
-    const [user, setUser] = useState(location.state?.user);
+    const [user, setUser] = useState(null); // Initialize as null
     const [localTime, setLocalTime] = useState(new Date().toLocaleTimeString());
     const [showRecordList, setShowRecordList] = useState(false);
     const [showInvestList, setShowInvestList] = useState(false);
     const [showNotesModal, setShowNotesModal] = useState(false);
+    const [showPhotoInput, setShowPhotoInput] = useState(false);
 
     const numberFormat = (number) =>
         new Intl.NumberFormat('en-US', { style: 'decimal', maximumFractionDigits: 2 }).format(number);
@@ -40,6 +42,27 @@ function UserAccountPage() {
 
         fetchTimezone();
     }, []);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const storedUser = location.state?.user; // Get the user from location state
+            if (storedUser?.id) {
+                try {
+                    const response = await fetch(`http://127.0.0.1:8000/users/${storedUser.id}/`);
+                    if (response.ok) {
+                        const updatedUser = await response.json();
+                        setUser(updatedUser);
+                    } else {
+                        console.error('Failed to fetch user data');
+                    }
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                }
+            }
+        };
+
+        fetchUserData();
+    }, [location.state?.user]);
 
     const handleLogout = () => {
         localStorage.removeItem('userToken');
@@ -98,6 +121,41 @@ function UserAccountPage() {
         }
     };
 
+    const handlePhotoUpload = async (event) => {
+        const files = event.target.files;
+        if (!files || files.length === 0) {
+            console.error('No files selected');
+            return;
+        }
+
+        const file = files[0];
+        const formData = new FormData();
+        formData.append('photo', file);
+
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/upload_photo/`, {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Photo uploaded successfully:', data.file_url);
+                setUser(prevUser => ({ ...prevUser, photo: data.file_url }));
+                setShowPhotoInput(false);
+            } else {
+                const errorData = await response.json();
+                console.error('Failed to upload photo:', errorData);
+            }
+        } catch (error) {
+            console.error('Error uploading photo:', error);
+        }
+    };
+
+    const handlePhotoUploadClick = () => {
+        setShowPhotoInput(true);
+    };
+
     const goalDifference = user?.balance_goal ? (user.balance_goal - user.balance).toFixed(2) : null;
 
     const styles = {
@@ -116,13 +174,22 @@ function UserAccountPage() {
             backgroundColor: '#004494'
         }
     };
-    
+
     return (
         <div className="login-container">
             <form className="login-form">
                 <div className="content-container">
-                    <div className="buttons">
-                        <button className='logout' style={{marginBottom: "20%"}}onClick={handleLogout}>Logout</button>
+                    <div className="buttons" style={{marginTop: '5%'}}>
+                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', marginLeft: '35%' }}>
+                            <button type="button" className="upload-button" style={styles.updateButton} onClick={handlePhotoUploadClick}>Upload</button>
+                        </div>
+                        {user?.photo && (
+                            <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                                <h3>Profile Photo</h3>
+                                <img src={`http://127.0.0.1:8000/media/${user.photo}`} alt="User Photo" width="100" />
+                            </div>
+                        )}
+                        <button className='logout' style={{marginBottom: "20%"}} onClick={handleLogout}>Logout</button>
                         <button type="button" onClick={() => setShowNotesModal(true)}>Tasks</button>
                         <button type="button" onClick={handleFinancialRecordsListClick}>Spendings</button>
                         <button id="refresh" type="button" onClick={handleInvestRecordsListClick}>Investings</button>
@@ -176,7 +243,7 @@ function UserAccountPage() {
                                 <span style={{ color: "red", marginLeft: '10px' }}>${numberFormat(user?.spent_by_year)}</span>
                             </p>
                         </div>
-                        <p style={{marginLeft: '14%'}}><strong>Time:</strong> {localTime}</p>
+                        <p style={{marginLeft: '12.5%'}}><strong>Time:</strong> {localTime}</p>
                     </div>
                 </div>
             </form>
@@ -188,6 +255,12 @@ function UserAccountPage() {
             )}
             {showNotesModal && (
                 <NotesModal user={user} onClose={() => setShowNotesModal(false)} />
+            )}
+            {showPhotoInput && (
+                <PhotoUploadModal
+                    onClose={() => setShowPhotoInput(false)}
+                    onUpload={handlePhotoUpload}
+                />
             )}
         </div>
     );

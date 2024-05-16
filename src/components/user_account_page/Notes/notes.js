@@ -12,7 +12,8 @@ const priorityOptions = [
 function NotesModal({ user, onClose }) {
     const [notes, setNotes] = useState([]);
     const [showHiddenNotes, setShowHiddenNotes] = useState(false);
-    const [activeNote, setActiveNote] = useState(null);
+
+    const [editNote, setEditNote] = useState(null);
     const [filters, setFilters] = useState({
         title: '',
         dateFrom: '',
@@ -107,14 +108,13 @@ function NotesModal({ user, onClose }) {
     };
 
     const handleNoteClick = (note) => {
-        if (note.note.length > 10) {
-            setActiveNote(note);
-        }
+        setEditNote({
+            ...note,
+            isEditing: true,
+        });
     };
 
-    const closeNoteDetails = () => {
-        setActiveNote(null);
-    };
+    
 
     const handleAddNoteClose = () => {
         setShowAddNoteModal(false);
@@ -141,7 +141,7 @@ function NotesModal({ user, onClose }) {
         setDraggedIndex(null);
         const updatedNotes = notes.map((note, index) => ({ ...note, order: index + 1 }));
         setNotes(updatedNotes);
-    
+
         try {
             await axios.patch(`http://127.0.0.1:8000/notes/${user.id}/reorder/`, updatedNotes);
         } catch (error) {
@@ -149,11 +149,34 @@ function NotesModal({ user, onClose }) {
         }
     };
 
+    const handleEditChange = (e) => {
+        const { name, value } = e.target;
+        setEditNote(prevNote => ({
+            ...prevNote,
+            [name]: value,
+        }));
+    };
+
+    const saveNoteDetails = async () => {
+        try {
+            const response = await axios.patch(`http://127.0.0.1:8000/notes/${user.id}/${editNote.id}/`, editNote);
+            setEditNote(null);
+            fetchNotes();
+        } catch (error) {
+            console.error('Failed to save note details:', error);
+        }
+    };
+    
+
+    const cancelEdit = () => {
+        setEditNote(null);
+    };
+
     return (
         <div className="modal">
             <div className="modal-content">
                 <span className="close" onClick={onClose}>&times;</span>
-                <h2>Tasks List</h2> {/* Updated title */}
+                <h2>Tasks List </h2>
                 <div className="filters">
                     <input type="text" name="title" placeholder="Filter by title" value={filters.title} onChange={handleChange} />
                     <input type="date" name="dateFrom" value={filters.dateFrom} onChange={handleChange} />
@@ -177,10 +200,10 @@ function NotesModal({ user, onClose }) {
                         <button style={{ marginTop: '10px', width: '150px' }} className="clear-filters" onClick={clearFilters}>Clear Filters</button>
                     </div>
                 </div>
-                <div>
-                Number of tasks displayed ({notes.length})
-                </div>
                 <table className="financial-records-table">
+                <p>
+                (Tasks displayed {notes.length} )
+                </p>
                     <thead>
                         <tr>
                             <th>Title</th>
@@ -201,7 +224,7 @@ function NotesModal({ user, onClose }) {
                                 onDrop={() => handleDragOver(index)}  // Handle dropping the row
                                 onDragEnd={handleDragEnd}
                             >
-                                <td>{note.title}</td>
+                                <td onClick={() => handleNoteClick(note)}>{note.title}</td>
                                 <td onClick={() => handleNoteClick(note)}>
                                     {note.note.length > 10 ? `${note.note.substring(0, 10)}...` : note.note}
                                 </td>
@@ -217,13 +240,26 @@ function NotesModal({ user, onClose }) {
                 </table>
             </div>
             {showAddNoteModal && <AddNote user={user} onClose={handleAddNoteClose} />}
-            {activeNote && (
+            {editNote && (
                 <div className="note-details-modal">
-                    <h4>Full Task</h4>
-                    <p>{activeNote.note}</p>
-                    <button onClick={closeNoteDetails}>Close</button>
+                    <h4>Edit Task</h4>
+                    <div>
+                        <label>
+                            Title:
+                            <input stype="text" name="title" value={editNote.title} onChange={handleEditChange} />
+                        </label>
+                    </div>
+                    <div style={{marginTop: '5%'}}>
+                        <label>
+                            Note:
+                            <textarea    name="note" value={editNote.note} onChange={handleEditChange} />
+                        </label>
+                    </div>
+                    <button style={{width: '95px', padding: '5px 5px 5px 5px'}} onClick={saveNoteDetails}>Save</button>
+                    <button style={{width: '95px', padding: '5px 5px 5px 5px'}} onClick={cancelEdit}>Cancel</button>
                 </div>
             )}
+           
         </div>
     );
 }
