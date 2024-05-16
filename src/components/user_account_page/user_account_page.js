@@ -123,13 +123,13 @@ function UserAccountPage() {
                 <div className="content-container">
                     <div className="buttons">
                         <button className='logout' style={{marginBottom: "20%"}}onClick={handleLogout}>Logout</button>
-                        <button type="button" onClick={() => setShowNotesModal(true)}>Show Tasks list</button>
-                        <button type="button" onClick={handleFinancialRecordsListClick}>Spending Records List</button>
-                        <button id="refresh" type="button" onClick={handleInvestRecordsListClick}>Investing Records List</button>
-                        <button type="button" onClick={handleRefreshDataClick}>Refresh data</button>
+                        <button type="button" onClick={() => setShowNotesModal(true)}>Tasks</button>
+                        <button type="button" onClick={handleFinancialRecordsListClick}>Spendings</button>
+                        <button id="refresh" type="button" onClick={handleInvestRecordsListClick}>Investings</button>
+                        <button type="button" onClick={handleRefreshDataClick}>Refresh</button>
                     </div>
                     <div className="data-rows">
-                        <h1>User Data</h1>
+                        <h1 style={{marginLeft: '-40%'}}>User Data</h1>
                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                             <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('username')}>Update</button>
                             <p style={{ marginLeft: '10px' }}><strong>Username:</strong> {user?.username}</p>
@@ -176,7 +176,7 @@ function UserAccountPage() {
                                 <span style={{ color: "red", marginLeft: '10px' }}>${numberFormat(user?.spent_by_year)}</span>
                             </p>
                         </div>
-                        <p><strong>Time:</strong> {localTime}</p>
+                        <p style={{marginLeft: '14%'}}><strong>Time:</strong> {localTime}</p>
                     </div>
                 </div>
             </form>

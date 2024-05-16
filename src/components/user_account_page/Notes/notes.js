@@ -20,6 +20,7 @@ function NotesModal({ user, onClose }) {
         priority: ''
     });
     const [showAddNoteModal, setShowAddNoteModal] = useState(false);
+    const [draggedIndex, setDraggedIndex] = useState(null);
 
     useEffect(() => {
         fetchNotes();
@@ -59,6 +60,8 @@ function NotesModal({ user, onClose }) {
                 if (!showHiddenNotes) {
                     filteredNotes = filteredNotes.filter(note => !note.hide);
                 }
+                // Sort notes by order attribute
+                filteredNotes.sort((a, b) => a.order - b.order);
                 setNotes(filteredNotes);
             }
         } catch (error) {
@@ -108,7 +111,7 @@ function NotesModal({ user, onClose }) {
             setActiveNote(note);
         }
     };
-    
+
     const closeNoteDetails = () => {
         setActiveNote(null);
     };
@@ -118,18 +121,46 @@ function NotesModal({ user, onClose }) {
         fetchNotes(); // Refresh notes list after adding a new note
     };
 
+    const handleDragStart = (index) => {
+        setDraggedIndex(index);
+    };
+
+    const handleDragOver = (index) => {
+        if (draggedIndex === index) return;
+
+        const updatedNotes = [...notes];
+        const draggedItem = updatedNotes[draggedIndex];
+        updatedNotes.splice(draggedIndex, 1);
+        updatedNotes.splice(index, 0, draggedItem);
+
+        setDraggedIndex(index);
+        setNotes(updatedNotes);
+    };
+
+    const handleDragEnd = async () => {
+        setDraggedIndex(null);
+        const updatedNotes = notes.map((note, index) => ({ ...note, order: index + 1 }));
+        setNotes(updatedNotes);
+    
+        try {
+            await axios.patch(`http://127.0.0.1:8000/notes/${user.id}/reorder/`, updatedNotes);
+        } catch (error) {
+            console.error('Error updating note order:', error);
+        }
+    };
+
     return (
         <div className="modal">
             <div className="modal-content">
                 <span className="close" onClick={onClose}>&times;</span>
-                <h2>Tasks List</h2>
+                <h2>Tasks List</h2> {/* Updated title */}
                 <div className="filters">
                     <input type="text" name="title" placeholder="Filter by title" value={filters.title} onChange={handleChange} />
                     <input type="date" name="dateFrom" value={filters.dateFrom} onChange={handleChange} />
                     <input type="date" name="dateTo" value={filters.dateTo} onChange={handleChange} />
-                    <button style={{marginBottom: '10px'}} onClick={() => setShowAddNoteModal(true)}>Add Task</button>
-                    <div className="filter-row" style={{display: "-webkit-box"}}>
-                        <div style={{width: '100%', display: 'ruby' }} className="select-container">
+                    <button style={{ marginBottom: '10px' }} onClick={() => setShowAddNoteModal(true)}>Add Task</button>
+                    <div className="filter-row" style={{ display: "-webkit-box" }}>
+                        <div style={{ width: '100%', display: 'ruby' }} className="select-container">
                             <select name="priority" value={filters.priority} onChange={handleChange}>
                                 <option value="">All Priorities</option>
                                 {priorityOptions.map(option => (
@@ -137,14 +168,17 @@ function NotesModal({ user, onClose }) {
                                 ))}
                             </select>
                         </div>
-                        <div className="custom-checkbox" >
-                            <label style={{display: 'ruby', width: '80%'}}>
-                                <div style={{width: '300px', marginTop:'20px', marginLeft: '-40px'}}>Show Hidden Tasks</div>
-                                <input style={{width: '30px',padding: '10px',marginLeft: '-30px',  marginTop:'20px'}} type="checkbox" checked={showHiddenNotes} onChange={handleChange} name="showHiddenNotes" />
+                        <div className="custom-checkbox">
+                            <label style={{ display: 'ruby', width: '80%' }}>
+                                <div style={{ width: '300px', marginTop: '20px', marginLeft: '-40px' }}>Show Hidden Tasks</div>
+                                <input style={{ width: '30px', padding: '10px', marginLeft: '-30px', marginTop: '20px' }} type="checkbox" checked={showHiddenNotes} onChange={handleChange} name="showHiddenNotes" />
                             </label>
                         </div>
-                        <button style={{ marginTop:'10px', width: '150px'}} className="clear-filters" onClick={clearFilters}>Clear Filters</button>
+                        <button style={{ marginTop: '10px', width: '150px' }} className="clear-filters" onClick={clearFilters}>Clear Filters</button>
                     </div>
+                </div>
+                <div>
+                Number of tasks displayed ({notes.length})
                 </div>
                 <table className="financial-records-table">
                     <thead>
@@ -157,9 +191,16 @@ function NotesModal({ user, onClose }) {
                             <th>Hide</th>
                         </tr>
                     </thead>
-                    <tbody style={{marginLeft: '-15px'}}>
-                        {notes.map(note => (
-                            <tr key={note.id}>
+                    <tbody style={{ marginLeft: '-15px' }}>
+                        {notes.map((note, index) => (
+                            <tr
+                                key={note.id}
+                                draggable
+                                onDragStart={() => handleDragStart(index)}
+                                onDragOver={(e) => e.preventDefault()}  // Allow the row to be a drop target
+                                onDrop={() => handleDragOver(index)}  // Handle dropping the row
+                                onDragEnd={handleDragEnd}
+                            >
                                 <td>{note.title}</td>
                                 <td onClick={() => handleNoteClick(note)}>
                                     {note.note.length > 10 ? `${note.note.substring(0, 10)}...` : note.note}
