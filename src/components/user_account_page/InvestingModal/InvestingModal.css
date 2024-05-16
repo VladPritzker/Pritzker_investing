@@ -20,6 +20,7 @@
     width: calc(100% - 17px); /* Adjust based on the scrollbar width, usually 15-20px */
     table-layout: fixed; /* Fixing layout to match tbody */
     background: #007bff;
+    margin-top: 10px;
 }
 
 

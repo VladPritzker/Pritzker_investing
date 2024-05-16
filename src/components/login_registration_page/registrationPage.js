@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate hook for redirection
-import './registrationPage.css';  
+import '../login_registration_page/registrationPage.css';  
 import investmentTypes from './investImg.json'; 
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
+
 
 
 
@@ -136,7 +137,7 @@ function LoginPage() {
 
     
     <div className="login-container">    
-      <form onSubmit={handleSubmit} className="login-form">
+      <form onSubmit={handleSubmit} className="login-form login">
         <h2>{isLogin ? 'Login' : 'Register'}</h2>
         {!isLogin && (
           <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />

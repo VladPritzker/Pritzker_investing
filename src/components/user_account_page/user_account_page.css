@@ -14,15 +14,14 @@
     background: rgba(255, 255, 255, 0.8);
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 300px;
+    width: 1000px;
     transition: transform 0.3s ease-in-out;
     animation: formAnimation 0.5s forwards;
 }
 
-.login-form-time{
+.login-form-time {
     padding: 40px;
     background: rgba(255, 255, 255, 0.8);
-    
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 300px;
     transition: transform 0.3s ease-in-out;
@@ -35,7 +34,7 @@
 }
 
 .login-form input, .login-form p {
-    width: 100%;
+    width: 50%;
     padding: 12px;
     margin-top: 8px;
     margin-bottom: 16px;
@@ -82,4 +81,47 @@
     margin-top: 10px;
 }
 
+.content-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+}
 
+.buttons {
+    display: grid;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-right: 20px;
+    margin-top: 20%;
+}
+
+.logout{
+    display: grid;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-right: 20px;
+    margin-bottom: 20%;
+
+}
+
+.buttons button {
+    margin-bottom: 10px;
+    width: auto;
+    padding: 10px 20px;
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    letter-spacing: 1px;
+}
+
+.buttons button:hover {
+    background-color: #004494;
+}
+
+.data-rows {
+    flex: 1;
+}

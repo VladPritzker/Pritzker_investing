@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../InvestingModal/InvestingModal.css';
 import investmentTypes from '../AddInvestingRecord/investmentTypes.json';
 import AddInvestingRecord from '../AddInvestingRecord/AddInvestingRecord';
-
-
+import ConfirmDeleteModal from '../InvestingModal/ConfirmDelete/confirmDelete'; // Import the new component
 
 function InvestingRecordsModal({ user, onClose }) {
     const [investingRecords, setInvestingRecords] = useState([]);
@@ -18,29 +17,34 @@ function InvestingRecordsModal({ user, onClose }) {
     const [filterType, setFilterType] = useState('');
     const [roundedTotal, setRoundedTotal] = useState(0);
     const [showAddInvesting, setShowAddInvesting] = useState(false);
+    const [showConfirmDelete, setShowConfirmDelete] = useState(false); // State for showing the confirmation dialog
+    const [recordToDelete, setRecordToDelete] = useState(null); // State for the record to delete
 
-    
+    const formatNumber = (number) => {
+        return number.toLocaleString();
+    };
+
+    const fetchInvestingRecords = async () => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/investing_records/?user_id=${user.id}`);
+            if (response.ok) {
+                const data = await response.json();
+                setInvestingRecords(data);
+                setDisplayRecords(data);
+                const totalAmount = data.reduce((total, record) => total + parseFloat(record.amount), 0);
+                setRoundedTotal(Math.round(totalAmount * 100) / 100);
+            } else {
+                console.error('Failed to fetch investing records.');
+            }
+        } catch (error) {
+            console.error('Error fetching investing records:', error);
+        }
+    };
 
     useEffect(() => {
-        const fetchInvestingRecords = async () => {
-            try {
-                const response = await fetch(`http://127.0.0.1:8000/investing_records/?user_id=${user.id}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    setInvestingRecords(data);
-                    setDisplayRecords(data);
-                    const totalAmount = data.reduce((total, record) => total + parseFloat(record.amount), 0);
-                    setRoundedTotal(Math.round(totalAmount * 100) / 100);
-                } else {
-                    console.error('Failed to fetch investing records.');
-                }
-            } catch (error) {
-                console.error('Error fetching investing records:', error);
-            }
-        };
-
         fetchInvestingRecords();
     }, [user.id]);
+
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (e.key === "Escape") {
@@ -97,13 +101,54 @@ function InvestingRecordsModal({ user, onClose }) {
         setRoundedTotal(filtered.reduce((total, record) => total + parseFloat(record.amount), 0));
     }, [startDate, endDate, filterTitle, minAmount, maxAmount, minTenor, maxTenor, filterType, investingRecords]);
 
+    const deleteRecord = async (id) => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/investing_records/`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id }),
+            });
+
+            if (response.ok) {
+                setInvestingRecords(investingRecords.filter(record => record.id !== id));
+                setDisplayRecords(displayRecords.filter(record => record.id !== id));
+                const totalAmount = displayRecords.reduce((total, record) => total + parseFloat(record.amount), 0);
+                setRoundedTotal(Math.round(totalAmount * 100) / 100);
+            } else {
+                console.error('Failed to delete investing record.');
+            }
+        } catch (error) {
+            console.error('Error deleting investing record:', error);
+        }
+    };
+
+    const handleDeleteClick = (record) => {
+        setRecordToDelete(record);
+        setShowConfirmDelete(true);
+    };
+
+    const confirmDelete = () => {
+        if (recordToDelete) {
+            deleteRecord(recordToDelete.id);
+            setShowConfirmDelete(false);
+            setRecordToDelete(null);
+        }
+    };
+
+    const cancelDelete = () => {
+        setShowConfirmDelete(false);
+        setRecordToDelete(null);
+    };
+
     return (
         <div className="modal">
             <div className="modal-content">
                 <span className="close" onClick={onClose}>&times;</span>
                 <h2>Investing Records List</h2>
                 <div className="filters">
-                    <button style={{marginBottom: '10px'}} onClick={() => setShowAddInvesting(true)}>Add Investings</button>
+                    <button style={{ marginBottom: '10px' }} onClick={() => setShowAddInvesting(true)}>Add Investings</button>
                     <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
                     <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
                     <input type="text" placeholder="Filter by title" value={filterTitle} onChange={e => setFilterTitle(e.target.value)} />
@@ -114,8 +159,8 @@ function InvestingRecordsModal({ user, onClose }) {
                     <div className="select-container">
                         <select value={filterType} onChange={e => setFilterType(e.target.value)}>
                             <option value="">All Types</option>
-                            {Object.entries(investmentTypes).map(([type, id]) => (
-                                <option key={id} value={type}>{type}</option>
+                            {Object.entries(investmentTypes).map(([type, details]) => (
+                                <option key={type} value={type}>{type} (Rate: {details.rate})</option>
                             ))}
                         </select>
                     </div>
@@ -128,28 +173,37 @@ function InvestingRecordsModal({ user, onClose }) {
                             <th>Date</th>
                             <th>Tenor</th>
                             <th>Type</th>
+                            <th>Amount at Maturity</th>
+                            <th>Rate</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {displayRecords.map(record => (
                             <tr key={record.id}>
                                 <td>{record.title}</td>
-                                <td>{record.amount}</td>
+                                <td>{formatNumber(record.amount)}</td>
                                 <td>{record.record_date}</td>
-                                <td>{record.tenor}</td>
+                                <td>{record.tenor ? formatNumber(record.tenor) : ''}</td>
                                 <td>{record.type_invest}</td>
+                                <td>{record.amount_at_maturity ? formatNumber(record.amount_at_maturity) : ''}</td>
+                                <td>{record.rate ? formatNumber(record.rate) : ''}</td>
+                                <td>
+                                    <button onClick={() => handleDeleteClick(record)}>Delete</button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
                     <tfoot>
                         <tr>
                             <th>Total Amount</th>
-                            <th>{roundedTotal}</th>
+                            <th>{formatNumber(roundedTotal)}</th>
                         </tr>
                     </tfoot>
                 </table>
             </div>
-            {showAddInvesting && <AddInvestingRecord user={user} onClose={() => setShowAddInvesting(false)} />}
+            {showAddInvesting && <AddInvestingRecord user={user} onClose={() => { setShowAddInvesting(false); fetchInvestingRecords(); }} fetchInvestingRecords={fetchInvestingRecords} />}
+            {showConfirmDelete && <ConfirmDeleteModal onClose={cancelDelete} onConfirm={confirmDelete} />}
         </div>
     );
 }
