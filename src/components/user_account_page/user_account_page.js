@@ -191,13 +191,31 @@ function UserAccountPage() {
         }
     };
 
+    const stylesUp = {
+        updateButton: {
+            width: '60px',
+            padding: "5px 5px 5px 5px",
+            fontSize: '12px',
+            marginRight: '10px',
+            backgroundColor: '#0056b3',
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            marginLeft: '-20%'                        
+
+        },
+        updateButtonHover: {
+            backgroundColor: '#004494'
+        }
+    };
     return (
         <div className="login-container">
             <form className="login-form">
                 <div className="content-container">
                     <div className="buttons" style={{marginTop: '5%'}}>
                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', marginLeft: '35%' }}>
-                            <button type="button" className="upload-button" style={styles.updateButton} onClick={handlePhotoUploadClick}>Upload</button>
+                            <button type="button" className="upload-button" style={stylesUp.updateButton} onClick={handlePhotoUploadClick}>Upload</button>
                             <button type="button" onClick={handleRefreshDataClick} style={styles.updateButton}>Refresh</button>
                         </div>
                         {user?.photo && (
