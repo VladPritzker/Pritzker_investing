@@ -16,6 +16,9 @@ function UserAccountPage() {
     const [showNotesModal, setShowNotesModal] = useState(false);
     const [showPhotoInput, setShowPhotoInput] = useState(false);
 
+    const [showMonthlySpending, setShowMonthlySpending] = useState(false);
+    const [showYearlySpending, setShowYearlySpending] = useState(false);
+
     const numberFormat = (number) =>
         new Intl.NumberFormat('en-US', { style: 'decimal', maximumFractionDigits: 2 }).format(number);
 
@@ -71,6 +74,19 @@ function UserAccountPage() {
 
     const handleFinancialRecordsListClick = () => {
         setShowRecordList(true);
+    };
+
+    const showMonthlyYearlySpending = () => {
+        if (!showMonthlySpending && !showYearlySpending) {
+            setShowMonthlySpending(true);
+            setShowYearlySpending(true);
+            return;
+        } 
+        else if (showMonthlySpending && showYearlySpending) {
+            setShowMonthlySpending(false);
+            setShowYearlySpending(false);
+            return;
+        }    
     };
     const handleInvestRecordsListClick = () => {
         setShowInvestList(true);
@@ -168,7 +184,7 @@ function UserAccountPage() {
             color: 'white',
             border: 'none',
             borderRadius: '5px',
-            cursor: 'pointer'
+            cursor: 'pointer'                        
         },
         updateButtonHover: {
             backgroundColor: '#004494'
@@ -182,6 +198,7 @@ function UserAccountPage() {
                     <div className="buttons" style={{marginTop: '5%'}}>
                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', marginLeft: '35%' }}>
                             <button type="button" className="upload-button" style={styles.updateButton} onClick={handlePhotoUploadClick}>Upload</button>
+                            <button type="button" onClick={handleRefreshDataClick} style={styles.updateButton}>Refresh</button>
                         </div>
                         {user?.photo && (
                             <div style={{ textAlign: 'center', marginBottom: '10px' }}>
@@ -192,8 +209,7 @@ function UserAccountPage() {
                         <button className='logout' style={{marginBottom: "20%"}} onClick={handleLogout}>Logout</button>
                         <button type="button" onClick={() => setShowNotesModal(true)}>Tasks</button>
                         <button type="button" onClick={handleFinancialRecordsListClick}>Spendings</button>
-                        <button id="refresh" type="button" onClick={handleInvestRecordsListClick}>Investings</button>
-                        <button type="button" onClick={handleRefreshDataClick}>Refresh</button>
+                        <button id="refresh" type="button" onClick={handleInvestRecordsListClick}>Investings</button>                        
                     </div>
                     <div className="data-rows">
                         <h1 style={{marginLeft: '-40%'}}>User Data</h1>
@@ -224,26 +240,30 @@ function UserAccountPage() {
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                             <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('spent_by_week')}>Update</button>
-                            <h2 style={{ marginLeft: '10px' }}>
+                            <h2 onClick={showMonthlyYearlySpending} style={{ marginLeft: '10px' }}>
                                 <strong>Spent this Week:</strong>
                                 <span style={{ color: "red", marginLeft: '10px' }}>${numberFormat(user?.spent_by_week)}</span>
                             </h2>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                            <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('spent_by_month')}>Update</button>
-                            <h2 style={{ marginLeft: '10px' }}>
-                                <strong>Spent this Month:</strong>
-                                <span style={{ color: "red", marginLeft: '10px' }}>${numberFormat(user?.spent_by_month)}</span>
-                            </h2>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                            <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('spent_by_year')}>Update</button>
-                            <h2 style={{ marginLeft: '10px' }}>
-                                <strong>Spent this Year:</strong>
-                                <span style={{ color: "red", marginLeft: '10px' }}>${numberFormat(user?.spent_by_year)}</span>
-                            </h2>
-                        </div>
-                        <p style={{marginLeft: '12.5%'}}><strong>Time:</strong> {localTime}</p>
+                        {showMonthlySpending && (
+                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                                <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('spent_by_month')}>Update</button>
+                                <h2 style={{ marginLeft: '10px' }}>
+                                    <strong>Spent this Month:</strong>
+                                    <span style={{ color: "red", marginLeft: '10px' }}>${numberFormat(user?.spent_by_month)}</span>
+                                </h2>
+                            </div>
+                        )}
+                        {showYearlySpending && (
+                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                                <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('spent_by_year')}>Update</button>
+                                <h2 style={{ marginLeft: '10px' }}>
+                                    <strong>Spent this Year:</strong>
+                                    <span style={{ color: "red", marginLeft: '10px' }}>${numberFormat(user?.spent_by_year)}</span>
+                                </h2>
+                            </div>
+                        )}
+                        <p style={{marginLeft: '8%'}}><strong>Time:</strong> {localTime}</p>
                     </div>
                 </div>
             </form>

@@ -144,7 +144,7 @@ function InvestingRecordsModal({ user, onClose }) {
 
     return (
         <div className="modal">
-            <div className="modal-content">
+            <div  className="modal-content">
                 <span className="close" onClick={onClose}>&times;</span>
                 <h2>Investing Records List</h2>
                 <div className="filters">

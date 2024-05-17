@@ -1,7 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import '../FinancialRecordsModal/FinancialRecordsModal.css';
-import AddNewSpendings from '../RecordModal/RecordModal'; 
-import MonthlyExpensesModal from '../FinancialRecordsModal/Monthly_Expenses/Monthly_Expenses'; 
+import { Line } from 'react-chartjs-2';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+} from 'chart.js';
+import './FinancialRecordsModal.css';
+import AddNewSpendings from '../RecordModal/RecordModal';
+import MonthlyExpensesModal from './Monthly_Expenses/Monthly_Expenses';
+import ConfirmDeleteModal from '../FinancialRecordsModal/deletConf/deleteConf.js';
+import ChartModal from './spendingsChart/spendingsChart.js'
+
+
+// Register Chart.js components
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+);
 
 function FinancialRecordsModal({ user, onClose }) {
     const [financialRecords, setFinancialRecords] = useState([]);
@@ -14,6 +39,10 @@ function FinancialRecordsModal({ user, onClose }) {
     const [roundedTotal, setRoundedTotal] = useState(0);
     const [showAddSpending, setShowAddSpending] = useState(false);
     const [showMonthlyExpenses, setShowMonthlyExpenses] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [recordToDelete, setRecordToDelete] = useState(null);
+    const [showChartModal, setShowChartModal] = useState(false);
+    const [filterType, setFilterType] = useState('date');
 
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -87,10 +116,99 @@ function FinancialRecordsModal({ user, onClose }) {
     };
 
     const handleMonthlySpenidngClose = () => {
-        setShowMonthlyExpenses(false)
+        setShowMonthlyExpenses(false);
         fetchFinancialRecords(); // Refresh financial records list after adding a new record
+    };
 
-    }
+    const handleDeleteClick = (record) => {
+        setRecordToDelete(record);
+        setShowDeleteModal(true);
+    };
+
+    const handleDeleteConfirm = async () => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/financial_records/${user.id}/${recordToDelete.id}/`, {
+                method: 'DELETE',
+            });
+            if (response.ok) {
+                setShowDeleteModal(false);
+                fetchFinancialRecords(); // Refresh the list after deletion
+            } else {
+                console.error('Failed to delete record');
+            }
+        } catch (error) {
+            console.error('Error deleting record:', error);
+        }
+    };
+
+    const handleDeleteCancel = () => {
+        setShowDeleteModal(false);
+        setRecordToDelete(null);
+    };
+
+    const handleChartModalOpen = () => {
+        setShowChartModal(true);
+    };
+
+    const handleChartModalClose = () => {
+        setShowChartModal(false);
+    };
+
+    const getFilteredRecords = () => {
+        let filtered = [...displayRecords];
+
+        const now = new Date();
+        const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const startOfYear = new Date(now.getFullYear(), 0, 1);
+
+        switch (filterType) {
+            case 'week':
+                filtered = filtered.filter(record => new Date(record.record_date) >= startOfWeek);
+                break;
+            case 'month':
+                filtered = filtered.filter(record => new Date(record.record_date) >= startOfMonth);
+                break;
+            case 'year':
+                filtered = filtered.filter(record => new Date(record.record_date) >= startOfYear);
+                break;
+            default:
+                break;
+        }
+
+        return filtered;
+    };
+
+    const getChartData = () => {
+        const filteredRecords = getFilteredRecords();
+        const groupedByDate = filteredRecords.reduce((acc, record) => {
+            const date = new Date(record.record_date).toISOString().split('T')[0];
+            if (!acc[date]) {
+                acc[date] = [];
+            }
+            acc[date].push(record);
+            return acc;
+        }, {});
+
+        const dates = Object.keys(groupedByDate).sort();
+        const amounts = dates.map(date => groupedByDate[date].reduce((sum, record) => sum + parseFloat(record.amount), 0));
+        const tooltipLabels = dates.map(date => groupedByDate[date]);
+
+        return {
+            labels: dates,
+            datasets: [
+                {
+                    label: 'Spending Over Time',
+                    data: amounts,
+                    fill: false,
+                    backgroundColor: 'rgba(75,192,192,0.4)',
+                    borderColor: 'rgba(75,192,192,1)',
+                    tooltipLabels: tooltipLabels // Attach the tooltip labels
+                },
+            ],
+        };
+    };
+
     return (
         <div className="modal">
             <div className="modal-content">
@@ -105,12 +223,16 @@ function FinancialRecordsModal({ user, onClose }) {
                 </div>
                 <button style={{ marginBottom: '10px' }} onClick={() => setShowAddSpending(true)}>Add Spending</button>
                 <button style={{ marginBottom: '10px' }} onClick={() => setShowMonthlyExpenses(true)}>Monthly Expenses</button>
+                <button style={{ marginBottom: '10px' }} onClick={handleChartModalOpen}>
+                    Show Chart
+                </button>
                 <table className="financial-records-table">
                     <thead>
                         <tr>
                             <th>Title</th>
                             <th>Amount</th>
                             <th>Date</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -119,6 +241,9 @@ function FinancialRecordsModal({ user, onClose }) {
                                 <td>{record.title}</td>
                                 <td>{record.amount}</td>
                                 <td>{record.record_date}</td>
+                                <td>
+                                    <button style={{width: "80%"}} onClick={() => handleDeleteClick(record)}>Delete</button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
@@ -132,6 +257,22 @@ function FinancialRecordsModal({ user, onClose }) {
             </div>
             {showAddSpending && <AddNewSpendings user={user} onClose={handleAddSpendingClose} />}
             {showMonthlyExpenses && <MonthlyExpensesModal user={user} onClose={handleMonthlySpenidngClose} />}
+            {showDeleteModal && (
+                <ConfirmDeleteModal
+                    onClose={handleDeleteCancel}
+                    onConfirm={handleDeleteConfirm}
+                    record={recordToDelete}
+                />
+            )}
+            {showChartModal && (
+                <ChartModal
+                    onClose={handleChartModalClose}
+                    chartData={getChartData()}
+                    filterType={filterType}
+                    setFilterType={setFilterType}
+                    records={financialRecords} // Pass the financial records to ChartModal
+                />
+            )}
         </div>
     );
 }
