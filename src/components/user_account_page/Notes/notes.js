@@ -171,17 +171,27 @@ function NotesModal({ user, onClose }) {
     const cancelEdit = () => {
         setEditNote(null);
     };
+    const style = {
+        padding: "20px",
+        background: '#f8f9fa',
+        borderRadius: "10px",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        width: "900px",
+        margin: "auto",
+        overflow: "hidden",
+        animation: "formAnimation 0.3s ease-out",
+        position: "relative"
+    }
 
     return (
         <div className="modal">
-            <div className="modal-content">
+            <div className="modal-content" style={style}>
                 <span className="close" onClick={onClose}>&times;</span>
                 <h2>Tasks List </h2>
                 <div className="filters">
                     <input type="text" name="title" placeholder="Filter by title" value={filters.title} onChange={handleChange} />
                     <input type="date" name="dateFrom" value={filters.dateFrom} onChange={handleChange} />
                     <input type="date" name="dateTo" value={filters.dateTo} onChange={handleChange} />
-                    <button style={{ marginBottom: '10px' }} onClick={() => setShowAddNoteModal(true)}>Add Task</button>
                     <div className="filter-row" style={{ display: "-webkit-box" }}>
                         <div style={{ width: '100%', display: 'ruby' }} className="select-container">
                             <select name="priority" value={filters.priority} onChange={handleChange}>
@@ -197,6 +207,7 @@ function NotesModal({ user, onClose }) {
                                 <input style={{ width: '30px', padding: '10px', marginLeft: '-30px', marginTop: '20px' }} type="checkbox" checked={showHiddenNotes} onChange={handleChange} name="showHiddenNotes" />
                             </label>
                         </div>
+                        <button style={{ marginBottom: '10px' }} onClick={() => setShowAddNoteModal(true)}>Add Task</button>
                         <button style={{ marginTop: '10px', width: '150px' }} className="clear-filters" onClick={clearFilters}>Clear Filters</button>
                     </div>
                 </div>

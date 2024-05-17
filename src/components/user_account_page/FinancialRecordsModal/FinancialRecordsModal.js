@@ -209,9 +209,21 @@ function FinancialRecordsModal({ user, onClose }) {
         };
     };
 
+    const style = {
+        padding: "20px",
+        background: '#f8f9fa',
+        borderRadius: "10px",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        width: "800px",
+        margin: "auto",
+        overflow: "hidden",
+        animation: "formAnimation 0.3s ease-out",
+        position: "relative"
+    }
+
     return (
         <div className="modal">
-            <div className="modal-content">
+            <div className="modal-content" style={style}>
                 <span className="close" onClick={onClose}>&times;</span>
                 <h2>Spending Records List</h2>
                 <div className="filters">

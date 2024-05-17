@@ -4,6 +4,7 @@ import FinancialRecordsModal from '../user_account_page/FinancialRecordsModal/Fi
 import InvestingRecordsModal from '../user_account_page/InvestingModal/InvestingModal';
 import NotesModal from '../user_account_page/Notes/notes';
 import PhotoUploadModal from '../user_account_page/uploadPhoto/uploadphoto';
+import IncomeRecordsModal from '../user_account_page/IncomeModal/incomeModal'; // Import the new component
 import '../user_account_page/user_account_page.css';
 
 function UserAccountPage() {
@@ -15,6 +16,7 @@ function UserAccountPage() {
     const [showInvestList, setShowInvestList] = useState(false);
     const [showNotesModal, setShowNotesModal] = useState(false);
     const [showPhotoInput, setShowPhotoInput] = useState(false);
+    const [showIncomeModal, setShowIncomeModal] = useState(false); // State for showing income modal
 
     const [showMonthlySpending, setShowMonthlySpending] = useState(false);
     const [showYearlySpending, setShowYearlySpending] = useState(false);
@@ -88,8 +90,13 @@ function UserAccountPage() {
             return;
         }    
     };
+
     const handleInvestRecordsListClick = () => {
         setShowInvestList(true);
+    };
+
+    const handleIncomeRecordsListClick = () => {
+        setShowIncomeModal(true);
     };
 
     const handleRefreshDataClick = async () => {
@@ -228,6 +235,7 @@ function UserAccountPage() {
                         <button type="button" onClick={() => setShowNotesModal(true)}>Tasks</button>
                         <button type="button" onClick={handleFinancialRecordsListClick}>Spendings</button>
                         <button id="refresh" type="button" onClick={handleInvestRecordsListClick}>Investings</button>                        
+                        <button id="income" type="button" onClick={handleIncomeRecordsListClick}>Income</button> {/* New button for income records */}
                     </div>
                     <div className="data-rows">
                         <h1 style={{marginLeft: '-40%'}}>User Data</h1>
@@ -299,6 +307,9 @@ function UserAccountPage() {
                     onClose={() => setShowPhotoInput(false)}
                     onUpload={handlePhotoUpload}
                 />
+            )}
+            {showIncomeModal && (
+                <IncomeRecordsModal user={user} onClose={() => setShowIncomeModal(false)} />
             )}
         </div>
     );

@@ -1,0 +1,76 @@
+/* AddRecordModal.css */
+.modal {
+    display: block;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    padding: 20px; /* Adjusted padding for visual appeal */
+    background: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 400px; /* Width as needed */
+    margin: 15% auto;
+    overflow: hidden; /* Ensures content does not bleed outside the modal */
+    animation: formAnimation 0.3s ease-out; /* Adds entry animation */
+}
+
+.close {
+    position: absolute;
+    right: 10px;
+    top: 0;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+}
+
+form input {
+    display: block;
+    width: calc(100% - 20px); /* Adjust input width */
+    padding: 10px;
+    margin: 10px auto;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+}
+
+form button[type="button"] {
+    background-color: #6c757d;
+}
+
+form button:hover {
+    opacity: 0.9;
+}
+
+/* Animation for modal entry for better UX */
+@keyframes formAnimation {
+    from {
+        transform: translateY(-20px) scale(0.9);
+    }
+    to {
+        transform: translateY(0) scale(1);
+    }
+}

@@ -1,0 +1,104 @@
+/* IncomeRecordsModal.css */
+.modal {
+    display: block;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.filters {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.filters input {
+    margin-bottom: 10px;
+    padding: 8px;
+    font-size: 14px;
+}
+
+.filters button {
+    padding: 8px;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.income-records-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.income-records-table th, .income-records-table td {
+    
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.income-records-table th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #0056b3;
+    color: white;
+}
+
+tfoot td {
+    font-weight: bold;
+}
+
+.delete-modal {
+    display: block;
+    position: fixed;
+    z-index: 2;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}
+
+.delete-modal-content {
+    background-color: #fefefe;
+    margin: 20% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 40%;
+    text-align: center;
+}
+
+.delete-modal-content button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+}
