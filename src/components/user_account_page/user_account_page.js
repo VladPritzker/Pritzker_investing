@@ -195,7 +195,17 @@ function UserAccountPage() {
         },
         updateButtonHover: {
             backgroundColor: '#004494'
+        },
+        textStyle: {
+            fontSize: '1.8em', // Similar to h2 font size
+            marginLeft: '10px'
+        },
+        timeStyle: {
+            fontSize: '1.5em', // Similar to h2 font size
+            marginLeft: '-45%',
+            borderBottom: 'none'
         }
+
     };
 
     const stylesUp = {
@@ -216,6 +226,7 @@ function UserAccountPage() {
             backgroundColor: '#004494'
         }
     };
+
     return (
         <div className="login-container">
             <form className="login-form">
@@ -227,7 +238,7 @@ function UserAccountPage() {
                         </div>
                         {user?.photo && (
                             <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                                <h2>Profile Photo</h2>
+                                <h2 style={{ ...styles.textStyle, marginBottom: '10px' }}>Profile Photo</h2>
                                 <img src={`http://127.0.0.1:8000/media/${user.photo}`} alt="User Photo" width="100" />
                             </div>
                         )}
@@ -241,55 +252,59 @@ function UserAccountPage() {
                         <h1 style={{marginLeft: '-40%'}}>User Data</h1>
                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                             <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('username')}>Update</button>
-                            <h2 style={{ marginLeft: '10px' }}><strong>Username:</strong> {user?.username}</h2>
+                            <p style={styles.textStyle}><strong>Username:</strong> {user?.username}</p>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                             <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('email')}>Update</button>
-                            <h2 style={{ marginLeft: '10px' }}><strong>Email:</strong> {user?.email}</h2>
+                            <p style={styles.textStyle}><strong>Email:</strong> {user?.email}</p>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                             <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('balance_goal')}>Update</button>
-                            <h2 style={{ marginLeft: '10px' }}>
+                            <p style={styles.textStyle}>
                                 <strong>Balance Goal:</strong> ${numberFormat(user?.balance_goal)}
                                 <span style={{ color: "red", marginLeft: '20px' }}>
                                     {goalDifference !== null && `(${goalDifference > 0 ? '-' : '+'}$${numberFormat(Math.abs(goalDifference))})`}
                                 </span>
-                            </h2>
+                            </p>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                             <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('money_invested')}>Update</button>
-                            <h2 style={{ marginLeft: '10px' }}><strong>Money Invested:</strong> ${numberFormat(user?.money_invested)}</h2>
+                            <p style={styles.textStyle}><strong>Money Invested:</strong> ${numberFormat(user?.money_invested)}</p>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                            <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('income_amount')}>Update</button>
+                            <p style={styles.textStyle}><strong>Income:</strong> ${numberFormat(user?.income_amount)}</p>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                             <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('balance')}>Update</button>
-                            <h2 style={{ marginLeft: '10px' }}><strong>Balance:</strong> ${numberFormat(user?.balance)}</h2>
+                            <p style={styles.textStyle}><strong>Balance:</strong> ${numberFormat(user?.balance)}</p>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                             <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('spent_by_week')}>Update</button>
-                            <h2 onClick={showMonthlyYearlySpending} style={{ marginLeft: '10px' }}>
+                            <p style={styles.textStyle} onClick={showMonthlyYearlySpending}>
                                 <strong>Spent this Week:</strong>
                                 <span style={{ color: "red", marginLeft: '10px' }}>${numberFormat(user?.spent_by_week)}</span>
-                            </h2>
+                            </p>
                         </div>
                         {showMonthlySpending && (
                             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                                 <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('spent_by_month')}>Update</button>
-                                <h2 style={{ marginLeft: '10px' }}>
+                                <p style={styles.textStyle}>
                                     <strong>Spent this Month:</strong>
                                     <span style={{ color: "red", marginLeft: '10px' }}>${numberFormat(user?.spent_by_month)}</span>
-                                </h2>
+                                </p>
                             </div>
                         )}
                         {showYearlySpending && (
                             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                                 <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('spent_by_year')}>Update</button>
-                                <h2 style={{ marginLeft: '10px' }}>
+                                <p style={styles.textStyle}>
                                     <strong>Spent this Year:</strong>
                                     <span style={{ color: "red", marginLeft: '10px' }}>${numberFormat(user?.spent_by_year)}</span>
-                                </h2>
+                                </p>
                             </div>
                         )}
-                        <p style={{marginLeft: '-50%'}}><strong>Time:</strong> {localTime}</p>
+                        <p style={styles.timeStyle}><strong>Time:</strong> {localTime}</p>
                     </div>
                 </div>
             </form>

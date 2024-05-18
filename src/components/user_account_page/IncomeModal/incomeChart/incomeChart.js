@@ -91,7 +91,7 @@ function IncomeChartModal({ user, incomeRecords, onClose }) {
                 label: 'Income',
                 data: filteredRecords.map(record => record.amount),
                 fill: false,
-                borderColor: 'blue'
+                borderColor: 'green'
             }
         ]
     };
