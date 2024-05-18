@@ -31,6 +31,17 @@ function SamplePrevArrow(props) {
   );
 }
 
+const inputStyle = {
+        width: '50%',
+        marginLeft: '10px',
+        padding: '12px',
+        marginTop: '8px',
+        marginBottom: '16px',
+        border: 'none',
+        borderBottom: '2px solid #0056b3',
+        boxSizing: 'border-box',
+        display: 'inline-block'
+    };
 
 
 function LoginPage() {
@@ -131,6 +142,17 @@ function LoginPage() {
     window.open(url, '_blank');
   };
 
+  const inputStyle = {
+    width: '50%',
+    marginLeft: '10px',
+    padding: '12px',
+    marginTop: '8px',
+    marginBottom: '16px',
+    border: 'none',
+    borderBottom: '2px solid #0056b3',
+    boxSizing: 'border-box',
+    display: 'inline-block'
+};
 
   return (
     
@@ -140,12 +162,12 @@ function LoginPage() {
       <form onSubmit={handleSubmit} className="login-form login">
         <h2>{isLogin ? 'Login' : 'Register'}</h2>
         {!isLogin && (
-          <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+          <input style={{inputStyle}} type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
         )}
-        <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        <input style={{inputStyle}} type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <input style={{inputStyle}} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         {!isLogin && (
-          <input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+          <input style={{inputStyle}} type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
         )}
         <button type="submit">{isLogin ? 'Login' : 'Register'}</button>
         <button style={{marginBottom: '10%'}} type="button" onClick={() => setIsLogin(!isLogin)} className="toggle">

@@ -218,7 +218,8 @@ function FinancialRecordsModal({ user, onClose }) {
         margin: "auto",
         overflow: "hidden",
         animation: "formAnimation 0.3s ease-out",
-        position: "relative"
+        position: "relative",
+        marginTop: '5%'
     }
 
     return (

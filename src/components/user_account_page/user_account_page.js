@@ -289,7 +289,7 @@ function UserAccountPage() {
                                 </h2>
                             </div>
                         )}
-                        <p style={{marginLeft: '8%'}}><strong>Time:</strong> {localTime}</p>
+                        <p style={{marginLeft: '-50%'}}><strong>Time:</strong> {localTime}</p>
                     </div>
                 </div>
             </form>
@@ -299,6 +299,7 @@ function UserAccountPage() {
             {showRecordList && (
                 <FinancialRecordsModal user={user} onClose={() => setShowRecordList(false)} />
             )}
+            
             {showNotesModal && (
                 <NotesModal user={user} onClose={() => setShowNotesModal(false)} />
             )}
