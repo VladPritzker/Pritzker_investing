@@ -66,7 +66,8 @@ function AddInvestingRecord({ user, onClose, token, fetchInvestingRecords }) {
             tenor: recordTenor,  // Ensure this is a number if required by backend
             type_invest: recordTypeInvest,  // Ensure this matches one of the expected types
             amount_at_maturity: calculatedAmount,  // New field
-            rate: parseFloat(manualRate)  // New field
+            rate: parseFloat(manualRate),  // New field
+            maturity_date: calculateMaturityDate(recordTenor)  // Calculate maturity date
         };
     
         console.log("Sending data to server:", recordData);
@@ -77,6 +78,12 @@ function AddInvestingRecord({ user, onClose, token, fetchInvestingRecords }) {
         const annualRate = parseFloat(rate) / 100;
         const futureValue = amount * Math.pow((1 + annualRate), years);
         return futureValue.toFixed(2);
+    };
+
+    const calculateMaturityDate = (tenor) => {
+        const currentDate = new Date();
+        const maturityDate = new Date(currentDate.setFullYear(currentDate.getFullYear() + parseInt(tenor)));
+        return maturityDate.toISOString().slice(0, 10);
     };
 
     useEffect(() => {

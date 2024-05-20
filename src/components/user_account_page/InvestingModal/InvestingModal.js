@@ -147,7 +147,7 @@ function InvestingRecordsModal({ user, onClose }) {
         background: '#f8f9fa',
         borderRadius: "10px",
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-        width: "900px",
+        width: "1200px",
         margin: "auto",
         overflow: "hidden",
         animation: "formAnimation 0.3s ease-out",
@@ -186,6 +186,7 @@ function InvestingRecordsModal({ user, onClose }) {
                             <th>Tenor</th>
                             <th>Type</th>
                             <th>Amount at Maturity</th>
+                            <th>Maturity date</th>
                             <th>Rate</th>
                             <th>Actions</th>
                         </tr>
@@ -199,9 +200,10 @@ function InvestingRecordsModal({ user, onClose }) {
                                 <td>{record.tenor ? formatNumber(record.tenor) : ''}</td>
                                 <td>{record.type_invest}</td>
                                 <td>{record.amount_at_maturity ? formatNumber(record.amount_at_maturity) : ''}</td>
+                                <td>{record.maturity_date}</td>
                                 <td>{record.rate ? formatNumber(record.rate) : ''}</td>
                                 <td>
-                                    <button onClick={() => handleDeleteClick(record)}>Delete</button>
+                                    <button style={{width: '60%', marginLeft: '25%'}} onClick={() => handleDeleteClick(record)}>Delete</button>
                                 </td>
                             </tr>
                         ))}
