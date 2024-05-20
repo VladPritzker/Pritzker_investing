@@ -4,7 +4,8 @@ import FinancialRecordsModal from '../user_account_page/FinancialRecordsModal/Fi
 import InvestingRecordsModal from '../user_account_page/InvestingModal/InvestingModal';
 import NotesModal from '../user_account_page/Notes/notes';
 import PhotoUploadModal from '../user_account_page/uploadPhoto/uploadphoto';
-import IncomeRecordsModal from '../user_account_page/IncomeModal/incomeModal'; // Import the new component
+import IncomeRecordsModal from '../user_account_page/IncomeModal/incomeModal';
+import ContactsModal from '../user_account_page/Contacts/contacts'; // Import the new component
 import '../user_account_page/user_account_page.css';
 
 function UserAccountPage() {
@@ -17,6 +18,7 @@ function UserAccountPage() {
     const [showNotesModal, setShowNotesModal] = useState(false);
     const [showPhotoInput, setShowPhotoInput] = useState(false);
     const [showIncomeModal, setShowIncomeModal] = useState(false); // State for showing income modal
+    const [showContactsModal, setShowContactsModal] = useState(false); // State for showing contacts modal
 
     const [showMonthlySpending, setShowMonthlySpending] = useState(false);
     const [showYearlySpending, setShowYearlySpending] = useState(false);
@@ -97,6 +99,10 @@ function UserAccountPage() {
 
     const handleIncomeRecordsListClick = () => {
         setShowIncomeModal(true);
+    };
+
+    const handleContactsListClick = () => {
+        setShowContactsModal(true);
     };
 
     const handleRefreshDataClick = async () => {
@@ -227,7 +233,6 @@ function UserAccountPage() {
         }
     };
 
-    
     return (
         <div className="login-container">
             <form className="login-form">
@@ -248,6 +253,7 @@ function UserAccountPage() {
                         <button type="button" onClick={handleFinancialRecordsListClick}>Spendings</button>
                         <button id="refresh" type="button" onClick={handleInvestRecordsListClick}>Investings</button>                        
                         <button id="income" type="button" onClick={handleIncomeRecordsListClick}>Income</button> {/* New button for income records */}
+                        <button id="contacts" type="button" onClick={handleContactsListClick}>Contacts</button> {/* New button for contacts */}
                     </div>
                     <div className="data-rows">
                         <h1 style={{marginLeft: '-40%'}}>User Data</h1>
@@ -315,7 +321,6 @@ function UserAccountPage() {
             {showRecordList && (
                 <FinancialRecordsModal user={user} onClose={() => setShowRecordList(false)} />
             )}
-            
             {showNotesModal && (
                 <NotesModal user={user} onClose={() => setShowNotesModal(false)} />
             )}
@@ -327,6 +332,9 @@ function UserAccountPage() {
             )}
             {showIncomeModal && (
                 <IncomeRecordsModal user={user} onClose={() => setShowIncomeModal(false)} />
+            )}
+            {showContactsModal && (
+                <ContactsModal user={user} onClose={() => setShowContactsModal(false)} />
             )}
         </div>
     );
