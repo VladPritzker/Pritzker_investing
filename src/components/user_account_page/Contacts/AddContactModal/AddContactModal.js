@@ -43,7 +43,7 @@ function AddContactModal({ user, onClose, onSave }) {
 
     return (
         <div className="modal">
-            <div className="modal-content">
+            <div className="modal-content" style={{marginTop: '10%'}}>
                 <span className="close" onClick={onClose}>&times;</span>
                 <h2>Add New Contact</h2>
                 <input

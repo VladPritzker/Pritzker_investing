@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../Contacts/Contacts.module.css'
+import '../Contacts/Contacts.module.css';
 
 import AddContactModal from './AddContactModal/AddContactModal';
 import ConfirmDeleteModal from '../Contacts/ConfirmDeleteModal/ConfirmDeleteModal';
@@ -32,6 +32,20 @@ function ContactsModal({ user, onClose }) {
 
         fetchContacts();
     }, [user.id]);
+
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') {
+                onClose();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [onClose]);
 
     const handleEditClick = (contact) => {
         setEditContact(contact);
@@ -104,7 +118,7 @@ function ContactsModal({ user, onClose }) {
 
     return (
         <div className="modal">
-            <div className="modal-content">
+            <div className="modal-content" style={{marginTop: '10%'}}>
                 <span className="close" onClick={onClose}>&times;</span>
                 <h2>Contacts</h2>
                 <button onClick={handleAddContactClick}>Add New Contact</button>

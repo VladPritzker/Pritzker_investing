@@ -5,20 +5,22 @@ import InvestingRecordsModal from '../user_account_page/InvestingModal/Investing
 import NotesModal from '../user_account_page/Notes/notes';
 import PhotoUploadModal from '../user_account_page/uploadPhoto/uploadphoto';
 import IncomeRecordsModal from '../user_account_page/IncomeModal/incomeModal';
-import ContactsModal from '../user_account_page/Contacts/contacts'; // Import the new component
+import ContactsModal from '../user_account_page/Contacts/contacts';
+import MeetingsModal from './Meetings/MeetingsModal'; // Import the new component
 import '../user_account_page/user_account_page.css';
 
 function UserAccountPage() {
     const location = useLocation();
     const navigate = useNavigate();
-    const [user, setUser] = useState(null); // Initialize as null
+    const [user, setUser] = useState(null);
     const [localTime, setLocalTime] = useState(new Date().toLocaleTimeString());
     const [showRecordList, setShowRecordList] = useState(false);
     const [showInvestList, setShowInvestList] = useState(false);
     const [showNotesModal, setShowNotesModal] = useState(false);
     const [showPhotoInput, setShowPhotoInput] = useState(false);
-    const [showIncomeModal, setShowIncomeModal] = useState(false); // State for showing income modal
-    const [showContactsModal, setShowContactsModal] = useState(false); // State for showing contacts modal
+    const [showIncomeModal, setShowIncomeModal] = useState(false);
+    const [showContactsModal, setShowContactsModal] = useState(false);
+    const [showMeetingsModal, setShowMeetingsModal] = useState(false); // State for showing meetings modal
 
     const [showMonthlySpending, setShowMonthlySpending] = useState(false);
     const [showYearlySpending, setShowYearlySpending] = useState(false);
@@ -103,6 +105,10 @@ function UserAccountPage() {
 
     const handleContactsListClick = () => {
         setShowContactsModal(true);
+    };
+
+    const handleMeetingsListClick = () => {
+        setShowMeetingsModal(true);
     };
 
     const handleRefreshDataClick = async () => {
@@ -254,6 +260,7 @@ function UserAccountPage() {
                         <button id="refresh" type="button" onClick={handleInvestRecordsListClick}>Investings</button>                        
                         <button id="income" type="button" onClick={handleIncomeRecordsListClick}>Income</button> {/* New button for income records */}
                         <button id="contacts" type="button" onClick={handleContactsListClick}>Contacts</button> {/* New button for contacts */}
+                        <button id="meetings" type="button" onClick={handleMeetingsListClick}>Meetings</button> {/* New button for meetings */}
                     </div>
                     <div className="data-rows">
                         <h1 style={{marginLeft: '-40%'}}>User Data</h1>
@@ -335,6 +342,9 @@ function UserAccountPage() {
             )}
             {showContactsModal && (
                 <ContactsModal user={user} onClose={() => setShowContactsModal(false)} />
+            )}
+            {showMeetingsModal && (
+                <MeetingsModal user={user} onClose={() => setShowMeetingsModal(false)} />
             )}
         </div>
     );
