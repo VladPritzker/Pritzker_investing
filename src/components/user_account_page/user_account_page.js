@@ -6,7 +6,7 @@ import NotesModal from '../user_account_page/Notes/notes';
 import PhotoUploadModal from '../user_account_page/uploadPhoto/uploadphoto';
 import IncomeRecordsModal from '../user_account_page/IncomeModal/incomeModal';
 import ContactsModal from '../user_account_page/Contacts/contacts';
-import MeetingsModal from './Meetings/MeetingsModal'; // Import the new component
+import MeetingsModal from './Meetings/MeetingsModal'; 
 import '../user_account_page/user_account_page.css';
 
 function UserAccountPage() {
@@ -243,18 +243,19 @@ function UserAccountPage() {
         <div className="login-container">
             <form className="login-form">
                 <div className="content-container">
-                    <div className="buttons" style={{marginTop: '5%'}}>
-                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', marginLeft: '35%' }}>
-                            <button type="button" className="upload-button" style={stylesUp.updateButton} onClick={handlePhotoUploadClick}>Upload</button>
-                            <button type="button" onClick={handleRefreshDataClick} style={styles.updateButton}>Refresh</button>
-                        </div>
+                    <div className="buttons" style={{marginTop: '5%'}}>                        
+                        <button className='logout' style={{marginBottom: "20%"}} onClick={handleLogout}>Logout</button>
                         {user?.photo && (
                             <div style={{ textAlign: 'center', marginBottom: '10px' }}>
                                 <h2 style={{ ...styles.textStyle, marginBottom: '10px' }}>Profile Photo</h2>
                                 <img src={`http://127.0.0.1:8000/media/${user.photo}`} alt="User Photo" width="100" />
                             </div>
                         )}
-                        <button className='logout' style={{marginBottom: "20%"}} onClick={handleLogout}>Logout</button>
+                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', marginLeft: '35%' }}>
+                            <button type="button" className="upload-button" style={stylesUp.updateButton} onClick={handlePhotoUploadClick}>Upload</button>
+                            <button type="button" onClick={handleRefreshDataClick} style={styles.updateButton}>Refresh</button>
+                        </div>
+                        
                         <button type="button" onClick={() => setShowNotesModal(true)}>Tasks</button>
                         <button type="button" onClick={handleFinancialRecordsListClick}>Spendings</button>
                         <button id="refresh" type="button" onClick={handleInvestRecordsListClick}>Investings</button>                        
