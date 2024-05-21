@@ -83,7 +83,7 @@ function MonthlyExpensesModal({ user, onClose }) {
 
     return (
         <div className="modal">
-            <div className="modal-content">
+            <div className="modal-content" style={{marginTop: '10%'}}>
                 <span className="close" onClick={onClose}>&times;</span>
                 <h2>Monthly Expenses</h2>
                 <button style={{marginTop: '10px', marginBottom: '10px'}} onClick={() => setShowAddExpenseModal(true)}>Add New Expense</button>

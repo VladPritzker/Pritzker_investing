@@ -61,7 +61,7 @@ function RecordModal({ user, onClose }) {
 
     return (
         <div className="modal">
-            <div className="modal-content">
+            <div className="modal-content" style={{marginTop: '10%'}}>
                 <span className="close" onClick={onClose}>&times;</span>
                 <h2>Add New Record</h2>
                 <input
