@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 import '../Contacts/Contacts.module.css';
 
 import AddContactModal from './AddContactModal/AddContactModal';
@@ -14,6 +15,7 @@ function ContactsModal({ user, onClose }) {
         note: ''
     });
     const [showAddContactModal, setShowAddContactModal] = useState(false); // State for showing add contact modal
+    const [searchTerm, setSearchTerm] = useState(''); // State for search term
 
     useEffect(() => {
         const fetchContacts = async () => {
@@ -116,15 +118,30 @@ function ContactsModal({ user, onClose }) {
         setContacts([...contacts, newContact]);
     };
 
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
+    const filteredContacts = contacts.filter(contact =>
+        contact.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <div className="modal">
             <div className="modal-content" style={{marginTop: '10%'}}>
                 <span className="close" onClick={onClose}>&times;</span>
                 <h2>Contacts</h2>
                 <button onClick={handleAddContactClick}>Add New Contact</button>
-                {contacts.length > 0 ? (
+                <input
+                    type="text"
+                    placeholder="Search by name"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    style={{ marginBottom: '20px', padding: '10px', width: '100%' }}
+                />
+                {filteredContacts.length > 0 ? (
                     <ul>
-                        {contacts.map(contact => (
+                        {filteredContacts.map(contact => (
                             <li key={contact.id}>
                                 <p><strong>Name:</strong> {contact.name}</p>
                                 <p><strong>Phone Number:</strong> {contact.phone_number}</p>
