@@ -41,11 +41,12 @@ function MeetingsModal({ user, onClose }) {
     };
 
     const handleSaveNewMeeting = (newMeeting) => {
-        setMeetings([...meetings, newMeeting]);
+        setMeetings(prevMeetings => [...prevMeetings, newMeeting]);
     };
 
     const handleUpdateMeeting = async (updatedMeeting) => {
-        await fetchMeetings();
+        setMeetings(prevMeetings => prevMeetings.map(meeting => 
+            meeting.id === updatedMeeting.id ? updatedMeeting : meeting));
         setShowUpdateMeetingModal(false);
     };
 
@@ -60,7 +61,7 @@ function MeetingsModal({ user, onClose }) {
                 method: 'DELETE'
             });
             if (response.ok) {
-                setMeetings(meetings.filter(meeting => meeting.id !== meetingToDelete));
+                setMeetings(prevMeetings => prevMeetings.filter(meeting => meeting.id !== meetingToDelete));
                 setShowConfirmDeleteMeetingModal(false);
             } else {
                 console.error('Failed to delete meeting');
@@ -90,7 +91,7 @@ function MeetingsModal({ user, onClose }) {
                 body: JSON.stringify({ done: updatedMeeting.done })
             });
             if (response.ok) {
-                setMeetings(meetings.map(m => (m.id === meeting.id ? updatedMeeting : m)));
+                setMeetings(prevMeetings => prevMeetings.map(m => (m.id === meeting.id ? updatedMeeting : m)));
             } else {
                 console.error('Failed to update meeting');
             }
@@ -120,9 +121,14 @@ function MeetingsModal({ user, onClose }) {
         };
     }, []);
 
+    const formatDateTime = (datetime) => {
+        // Remove the '+00:00' part and the ':00' seconds part of the datetime string
+        return datetime.replace('T', ' ').replace(/\+00:00$/, '').replace(/:\d{2}$/, '');
+    };
+
     return (
         <div className="modal">
-            <div  style={{marginTop: '10%'}} className="modal-content">
+            <div style={{ marginTop: '10%' }} className="modal-content">
                 <span className="close" onClick={onClose}>&times;</span>
                 <h2>Meetings</h2>
                 <div className="filter-container">
@@ -151,23 +157,22 @@ function MeetingsModal({ user, onClose }) {
                 {filteredMeetings.length > 0 ? (
                     <ul>
                         {filteredMeetings.map(meeting => (
-                            <li key={meeting.id} style={{marginLeft: '20%'}} className="meeting-item">
-                                <tr className="meeting-details" >
-                                    <td><strong style={{marginLeft: '1%'}}>Title:</strong> {meeting.title}</td>
-                                    <td><strong style={{marginLeft: '1%'}}>Date & Time:</strong> {new Date(meeting.datetime).toLocaleString()}</td>
+                            <li key={meeting.id} style={{ marginLeft: '20%' }} className="meeting-item">
+                                <tr className="meeting-details">
+                                    <td><strong style={{ marginLeft: '1%' }}>Title:</strong> {meeting.title}</td>
+                                    <td><strong style={{ marginLeft: '1%' }}>Date & Time:</strong> {formatDateTime(meeting.datetime)}</td>
                                     <td>
-                                        <strong style={{marginLeft: '1%'}}>Done:</strong>                                       
-                                    </td>                                    
-                                    <td style={{marginLeft: '10%'}}>
-                                        <input style={{display: 'inline'}}
+                                        <strong style={{ marginLeft: '1%' }}>Done:</strong>
+                                    </td>
+                                    <td style={{ marginLeft: '10%' }}>
+                                        <input style={{ display: 'inline' }}
                                             type="checkbox"
                                             checked={meeting.done}
                                             onChange={() => handleDoneToggle(meeting)}
                                         />
                                     </td>
-                                        
                                 </tr>
-                                <div style={{marginTop: '5%', marginBottom: '5%'}} className="meeting-actions">
+                                <div style={{ marginTop: '5%', marginBottom: '5%' }} className="meeting-actions">
                                     <button onClick={() => handleEditClick(meeting)}>Edit</button>
                                     <button onClick={() => handleDeleteClick(meeting.id)}>Delete</button>
                                 </div>
