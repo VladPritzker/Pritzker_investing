@@ -34,6 +34,7 @@ function ContactsModal({ user, onClose }) {
 
         fetchContacts();
     }, [user.id]);
+    
 
     useEffect(() => {
         const handleKeyDown = (event) => {
