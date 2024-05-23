@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import '../InvestingModal/InvestingModal.css';
 import investmentTypes from '../AddInvestingRecord/investmentTypes.json';
 import AddInvestingRecord from '../AddInvestingRecord/AddInvestingRecord';
-import ConfirmDeleteModal from '../InvestingModal/ConfirmDelete/confirmDelete'; // Import the new component
+import ConfirmDeleteModal from '../InvestingModal/ConfirmDelete/confirmDelete';
+
 
 function InvestingRecordsModal({ user, onClose }) {
     const [investingRecords, setInvestingRecords] = useState([]);
@@ -17,8 +18,8 @@ function InvestingRecordsModal({ user, onClose }) {
     const [filterType, setFilterType] = useState('');
     const [roundedTotal, setRoundedTotal] = useState(0);
     const [showAddInvesting, setShowAddInvesting] = useState(false);
-    const [showConfirmDelete, setShowConfirmDelete] = useState(false); // State for showing the confirmation dialog
-    const [recordToDelete, setRecordToDelete] = useState(null); // State for the record to delete
+    const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+    const [recordToDelete, setRecordToDelete] = useState(null);
 
     const formatNumber = (number) => {
         return number.toLocaleString();
@@ -154,6 +155,7 @@ function InvestingRecordsModal({ user, onClose }) {
         position: "relative",
         marginTop: '5%'
     }
+
     return (
         <div className="modal">
             <div className="modal-content" style={style}>

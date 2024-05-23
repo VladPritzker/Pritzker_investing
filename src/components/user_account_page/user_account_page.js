@@ -20,13 +20,15 @@ function UserAccountPage() {
     const [showPhotoInput, setShowPhotoInput] = useState(false);
     const [showIncomeModal, setShowIncomeModal] = useState(false);
     const [showContactsModal, setShowContactsModal] = useState(false);
-    const [showMeetingsModal, setShowMeetingsModal] = useState(false); // State for showing meetings modal
+    const [showMeetingsModal, setShowMeetingsModal] = useState(false);
 
     const [showMonthlySpending, setShowMonthlySpending] = useState(false);
     const [showYearlySpending, setShowYearlySpending] = useState(false);
+    const [showMonthlyIncome, setShowMonthlyIncome] = useState(false);
+    const [showYearlyIncome, setShowYearlyIncome] = useState(false);
 
     const numberFormat = (number) =>
-        new Intl.NumberFormat('en-US', { style: 'decimal', maximumFractionDigits: 2 }).format(number);
+        new Intl.NumberFormat('en-US', { style: 'decimal', maximumFractionDigits: 2 }).format(number || 0);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -54,7 +56,7 @@ function UserAccountPage() {
 
     useEffect(() => {
         const fetchUserData = async () => {
-            const storedUser = location.state?.user; // Get the user from location state
+            const storedUser = location.state?.user;
             if (storedUser?.id) {
                 try {
                     const response = await fetch(`http://127.0.0.1:8000/users/${storedUser.id}/`);
@@ -83,16 +85,13 @@ function UserAccountPage() {
     };
 
     const showMonthlyYearlySpending = () => {
-        if (!showMonthlySpending && !showYearlySpending) {
-            setShowMonthlySpending(true);
-            setShowYearlySpending(true);
-            return;
-        } 
-        else if (showMonthlySpending && showYearlySpending) {
-            setShowMonthlySpending(false);
-            setShowYearlySpending(false);
-            return;
-        }    
+        setShowMonthlySpending(prevState => !prevState);
+        setShowYearlySpending(prevState => !prevState);
+    };
+
+    const showMonthlyYearlyIncome = () => {
+        setShowMonthlyIncome(prevState => !prevState);
+        setShowYearlyIncome(prevState => !prevState);
     };
 
     const handleInvestRecordsListClick = () => {
@@ -209,15 +208,14 @@ function UserAccountPage() {
             backgroundColor: '#004494'
         },
         textStyle: {
-            fontSize: '1.8em', // Similar to h2 font size
+            fontSize: '1.8em',
             marginLeft: '10px'
         },
         timeStyle: {
-            fontSize: '1.5em', // Similar to h2 font size
+            fontSize: '1.5em',
             marginLeft: '-45%',
             borderBottom: 'none'
         }
-
     };
 
     const stylesUp = {
@@ -259,9 +257,9 @@ function UserAccountPage() {
                         <button type="button" onClick={() => setShowNotesModal(true)}>Tasks</button>
                         <button type="button" onClick={handleFinancialRecordsListClick}>Spendings</button>
                         <button id="refresh" type="button" onClick={handleInvestRecordsListClick}>Investings</button>                        
-                        <button id="income" type="button" onClick={handleIncomeRecordsListClick}>Income</button> {/* New button for income records */}
-                        <button id="contacts" type="button" onClick={handleContactsListClick}>Contacts</button> {/* New button for contacts */}
-                        <button id="meetings" type="button" onClick={handleMeetingsListClick}>Meetings</button> {/* New button for meetings */}
+                        <button id="income" type="button" onClick={handleIncomeRecordsListClick}>Income</button>
+                        <button id="contacts" type="button" onClick={handleContactsListClick}>Contacts</button>
+                        <button id="meetings" type="button" onClick={handleMeetingsListClick}>Meetings</button>
                     </div>
                     <div className="data-rows">
                         <h1 style={{marginLeft: '-40%'}}>User Data</h1>
@@ -288,8 +286,29 @@ function UserAccountPage() {
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                             <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('income_amount')}>Update</button>
-                            <p style={styles.textStyle}><strong>Income:</strong> ${numberFormat(user?.income_amount)}</p>
+                            <p style={styles.textStyle} onClick={showMonthlyYearlyIncome}>
+                                <strong>Income:</strong>
+                                <span style={{ color: "green", marginLeft: '10px' }}>${numberFormat(user?.income_amount)}</span>
+                            </p>
                         </div>
+                        {showMonthlyIncome && (
+                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                                <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('income_by_month')}>Update</button>
+                                <p style={styles.textStyle}>
+                                    <strong>Income this Month:</strong>
+                                    <span style={{ color: "green", marginLeft: '10px' }}>${numberFormat(user?.income_by_month)}</span>
+                                </p>
+                            </div>
+                        )}
+                        {showYearlyIncome && (
+                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                                <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('income_by_year')}>Update</button>
+                                <p style={styles.textStyle}>
+                                    <strong>Income this Year:</strong>
+                                    <span style={{ color: "green", marginLeft: '10px' }}>${numberFormat(user?.income_by_year)}</span>
+                                </p>
+                            </div>
+                        )}
                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                             <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('balance')}>Update</button>
                             <p style={styles.textStyle}><strong>Balance:</strong> ${numberFormat(user?.balance)}</p>

@@ -91,7 +91,7 @@ function IncomeRecordsModal({ user, onClose }) {
 
     const handleDeleteConfirm = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/income_records/${recordToDelete.id}/`, {
+            const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/income_records/${recordToDelete.id}/delete/`, {
                 method: 'DELETE',
             });
             if (response.ok) {
@@ -117,8 +117,12 @@ function IncomeRecordsModal({ user, onClose }) {
     };
 
     const handleRecordAdded = (newRecord) => {
-        setIncomeRecords([...incomeRecords, newRecord]);
-        setFilteredRecords([...filteredRecords, newRecord]);
+        const formattedRecord = {
+            ...newRecord,
+            record_date: new Date(newRecord.record_date).toISOString().split('T')[0]
+        };
+        setIncomeRecords([...incomeRecords, formattedRecord]);
+        setFilteredRecords([...filteredRecords, formattedRecord]);
     };
 
     const handleShowChartClick = () => {
@@ -129,7 +133,7 @@ function IncomeRecordsModal({ user, onClose }) {
 
     return (
         <div className="modal">
-            <div style={{ width: '50%', marginTop: '5%'}} className="modal-content">
+            <div style={{ width: '50%', marginTop: '5%' }} className="modal-content">
                 <span className="close" onClick={onClose}>&times;</span>
                 <h2>Income Records</h2>
                 <div className="filters">
@@ -157,7 +161,7 @@ function IncomeRecordsModal({ user, onClose }) {
                             <tr key={record.id}>
                                 <td>{record.title}</td>
                                 <td>{record.amount}</td>
-                                <td>{record.record_date}</td>
+                                <td>{new Date(record.record_date).toISOString().split('T')[0]}</td>
                                 <td>
                                     <button onClick={() => handleDeleteClick(record)}>Delete</button>
                                 </td>
