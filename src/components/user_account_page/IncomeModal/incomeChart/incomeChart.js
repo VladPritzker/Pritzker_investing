@@ -1,6 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+} from 'chart.js';
 import '../incomeChart/incomeChart.css';
+
+// Register Chart.js components
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+);
 
 function IncomeChartModal({ user, incomeRecords, onClose }) {
     const [filteredRecords, setFilteredRecords] = useState([]);
@@ -9,6 +30,10 @@ function IncomeChartModal({ user, incomeRecords, onClose }) {
     const [endDate, setEndDate] = useState('');
 
     useEffect(() => {
+        filterRecords();
+    }, [filter, startDate, endDate, incomeRecords]);
+
+    const filterRecords = () => {
         const now = new Date();
         let filtered;
 
@@ -16,72 +41,39 @@ function IncomeChartModal({ user, incomeRecords, onClose }) {
             case 'day':
                 const lastWeek = new Date();
                 lastWeek.setDate(now.getDate() - 7);
-                filtered = getDatesInRange(lastWeek, now).map(date => {
-                    const record = incomeRecords.find(record => new Date(record.record_date).toDateString() === date.toDateString());
-                    return {
-                        record_date: date,
-                        amount: record ? record.amount : 0
-                    };
-                });
+                filtered = filterByDateRange(lastWeek, now);
                 break;
             case 'week':
                 const startOfWeek = new Date(now);
                 startOfWeek.setDate(now.getDate() - now.getDay());
-                filtered = getDatesInRange(startOfWeek, now).map(date => {
-                    const record = incomeRecords.find(record => new Date(record.record_date).toDateString() === date.toDateString());
-                    return {
-                        record_date: date,
-                        amount: record ? record.amount : 0
-                    };
-                });
+                filtered = filterByDateRange(startOfWeek, now);
                 break;
             case 'month':
                 const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-                filtered = getDatesInRange(startOfMonth, now).map(date => {
-                    const record = incomeRecords.find(record => new Date(record.record_date).toDateString() === date.toDateString());
-                    return {
-                        record_date: date,
-                        amount: record ? record.amount : 0
-                    };
-                });
+                filtered = filterByDateRange(startOfMonth, now);
                 break;
             case 'year':
                 const startOfYear = new Date(now.getFullYear(), 0, 1);
-                filtered = getDatesInRange(startOfYear, now).map(date => {
-                    const record = incomeRecords.find(record => new Date(record.record_date).toDateString() === date.toDateString());
-                    return {
-                        record_date: date,
-                        amount: record ? record.amount : 0
-                    };
-                });
+                filtered = filterByDateRange(startOfYear, now);
                 break;
             default:
                 if (startDate && endDate) {
                     const start = new Date(startDate);
                     const end = new Date(endDate);
-                    filtered = getDatesInRange(start, end).map(date => {
-                        const record = incomeRecords.find(record => new Date(record.record_date).toDateString() === date.toDateString());
-                        return {
-                            record_date: date,
-                            amount: record ? record.amount : 0
-                        };
-                    });
+                    filtered = filterByDateRange(start, end);
                 } else {
                     filtered = incomeRecords;
                 }
         }
 
         setFilteredRecords(filtered);
-    }, [filter, startDate, endDate, incomeRecords]);
+    };
 
-    const getDatesInRange = (start, end) => {
-        const dates = [];
-        let currentDate = new Date(start);
-        while (currentDate <= end) {
-            dates.push(new Date(currentDate));
-            currentDate.setDate(currentDate.getDate() + 1);
-        }
-        return dates;
+    const filterByDateRange = (start, end) => {
+        return incomeRecords.filter(record => {
+            const recordDate = new Date(record.record_date);
+            return recordDate >= start && recordDate <= end;
+        }).sort((a, b) => new Date(a.record_date) - new Date(b.record_date));
     };
 
     const data = {
@@ -89,7 +81,7 @@ function IncomeChartModal({ user, incomeRecords, onClose }) {
         datasets: [
             {
                 label: 'Income',
-                data: filteredRecords.map(record => record.amount),
+                data: filteredRecords.map(record => parseFloat(record.amount)),
                 fill: false,
                 borderColor: 'green'
             }
