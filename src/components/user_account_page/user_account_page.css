@@ -1,3 +1,12 @@
+/* Add this to your CSS file */
+.data-rows {
+    flex: 1;
+    margin-left: 10%;
+    max-height: 80vh; /* Adjust this value as needed */
+    overflow-y: auto;
+    padding-right: 15px;
+}
+
 .login-container {
     display: flex;
     justify-content: center;

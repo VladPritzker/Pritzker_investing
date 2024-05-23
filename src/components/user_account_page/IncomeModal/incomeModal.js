@@ -142,8 +142,8 @@ function IncomeRecordsModal({ user, onClose }) {
                     <input type="number" placeholder="Max amount" value={maxAmountFilter} onChange={e => setMaxAmountFilter(e.target.value)} />
                     <input type="date" value={startDateFilter} onChange={e => setStartDateFilter(e.target.value)} />
                     <input type="date" value={endDateFilter} onChange={e => setEndDateFilter(e.target.value)} />
-                    <button onClick={handleClearFilters}>Clear Filters</button>
                     <button onClick={handleAddRecordClick}>Add New Record</button>
+                    <button onClick={handleClearFilters}>Clear Filters</button>
                     <button onClick={handleShowChartClick}>Show Chart</button>
                 </div>
 

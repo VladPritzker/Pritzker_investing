@@ -161,8 +161,7 @@ function InvestingRecordsModal({ user, onClose }) {
             <div className="modal-content" style={style}>
                 <span className="close" onClick={onClose}>&times;</span>
                 <h2>Investing Records List</h2>
-                <div className="filters">
-                    <button style={{ marginBottom: '10px' }} onClick={() => setShowAddInvesting(true)}>Add Investings</button>
+                <div className="filters">                    
                     <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
                     <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
                     <input type="text" placeholder="Filter by title" value={filterTitle} onChange={e => setFilterTitle(e.target.value)} />
@@ -178,6 +177,7 @@ function InvestingRecordsModal({ user, onClose }) {
                             ))}
                         </select>
                     </div>
+                    <button style={{ marginBottom: '10px' }} onClick={() => setShowAddInvesting(true)}>Add Investings</button>
                 </div>
                 <table className="financial-records-table">
                     <thead>

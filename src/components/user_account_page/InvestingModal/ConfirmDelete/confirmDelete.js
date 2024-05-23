@@ -4,7 +4,7 @@ import '../ConfirmDelete/confirmDelete.css';
 
 function ConfirmDeleteModal({ onClose, onConfirm }) {
     return (
-        <div className="modal">
+        <div className="modal" style={{marginTop: '10%'}}>
             <div className="modal-content">
                 <h2>Confirm Delete</h2>
                 <p>Are you sure you want to delete this record?</p>
