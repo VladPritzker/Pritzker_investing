@@ -1,3 +1,26 @@
+
+.income-records-table-container {
+    max-height: 400px; /* Adjust the height as needed */
+    overflow-y: auto;
+    position: relative;
+}
+
+.income-records-table thead,
+.income-records-table tfoot {
+    position: sticky;
+    z-index: 1;
+}
+
+.income-records-table thead {
+    top: 0;
+    background-color: white; /* Optional: adjust to match your design */
+}
+
+.income-records-table tfoot {
+    bottom: 0;
+    background-color: white; /* Optional: adjust to match your design */
+}
+
 /* IncomeChartModal.css */
 .modal {
     display: block;

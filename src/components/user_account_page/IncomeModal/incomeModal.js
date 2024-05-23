@@ -147,34 +147,36 @@ function IncomeRecordsModal({ user, onClose }) {
                     <button onClick={handleShowChartClick}>Show Chart</button>
                 </div>
 
-                <table className="income-records-table">
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Amount</th>
-                            <th>Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredRecords.map(record => (
-                            <tr key={record.id}>
-                                <td>{record.title}</td>
-                                <td>{record.amount}</td>
-                                <td>{new Date(record.record_date).toISOString().split('T')[0]}</td>
-                                <td>
-                                    <button onClick={() => handleDeleteClick(record)}>Delete</button>
-                                </td>
+                <div className="income-records-table-container">
+                    <table className="income-records-table">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Actions</th>
                             </tr>
-                        ))}
-                    </tbody>
-                    <tfoot>
-                        <tr style={{ backgroundColor: '#0056b3', color: 'white' }}>
-                            <td colSpan="3"><strong>Total Income:</strong></td>
-                            <td>{totalIncome}</td>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </thead>
+                        <tbody>
+                            {filteredRecords.map(record => (
+                                <tr key={record.id}>
+                                    <td>{record.title}</td>
+                                    <td>{record.amount}</td>
+                                    <td>{new Date(record.record_date).toISOString().split('T')[0]}</td>
+                                    <td>
+                                        <button style={{width: '40%'}} onClick={() => handleDeleteClick(record)}>Delete</button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                        <tfoot>
+                            <tr style={{ backgroundColor: '#0056b3', color: 'white' }}>
+                                <td colSpan="3"><strong>Total Income:</strong></td>
+                                <td>{totalIncome}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
             {showAddRecordModal && (
                 <AddRecordModal
