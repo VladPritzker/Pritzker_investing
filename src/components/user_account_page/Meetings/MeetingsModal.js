@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../Meetings/MeetingsModal.css';
+import './MeetingsModal.css';
 import AddMeetingModal from './AddMeeting/AddMeeting';
 import UpdateMeetingModal from './UpdateMeeting/UpdateMeeting';
 import ConfirmDeleteMeetingModal from './ComfirmDeleteMeeting/ComfirmDeleteMeeting';
@@ -12,7 +12,9 @@ function MeetingsModal({ user, onClose }) {
     const [showConfirmDeleteMeetingModal, setShowConfirmDeleteMeetingModal] = useState(false);
     const [meetingToDelete, setMeetingToDelete] = useState(null);
     const [filters, setFilters] = useState({ title: '', done: '', date: '' });
+    const [selectedMeeting, setSelectedMeeting] = useState(null);
 
+    
     const fetchMeetings = async () => {
         try {
             const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/meetings/`);
@@ -45,7 +47,7 @@ function MeetingsModal({ user, onClose }) {
     };
 
     const handleUpdateMeeting = async (updatedMeeting) => {
-        setMeetings(prevMeetings => prevMeetings.map(meeting => 
+        setMeetings(prevMeetings => prevMeetings.map(meeting =>
             meeting.id === updatedMeeting.id ? updatedMeeting : meeting));
         setShowUpdateMeetingModal(false);
     };
@@ -122,16 +124,58 @@ function MeetingsModal({ user, onClose }) {
     }, []);
 
     const formatDateTime = (datetime) => {
-        // Remove the '+00:00' part and the ':00' seconds part of the datetime string
         return datetime.replace('T', ' ').replace(/\+00:00$/, '').replace(/:\d{2}$/, '');
     };
 
+    const handleTitleClick = (meeting) => {
+        setSelectedMeeting(meeting);
+    };
+
+    const handleClosePopup = () => {
+        setSelectedMeeting(null);
+    };
+
+    useEffect(() => {
+        if (selectedMeeting) {
+            const popup = document.querySelector('.meetings-popup-content');
+            let isResizing = false;
+
+            const onMouseDown = (e) => {
+                isResizing = true;
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            };
+
+            const onMouseMove = (e) => {
+                if (isResizing) {
+                    const width = e.clientX - popup.getBoundingClientRect().left;
+                    const height = e.clientY - popup.getBoundingClientRect().top;
+                    popup.style.width = `${width}px`;
+                    popup.style.height = `${height}px`;
+                }
+            };
+
+            const onMouseUp = () => {
+                isResizing = false;
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            };
+
+            const resizeHandle = popup.querySelector('.custom-handle-meetings');
+            resizeHandle.addEventListener('mousedown', onMouseDown);
+
+            return () => {
+                resizeHandle.removeEventListener('mousedown', onMouseDown);
+            };
+        }
+    }, [selectedMeeting]);
+
     return (
-        <div className="modal">
-            <div style={{ marginTop: '10%' }} className="modal-content">
-                <span className="close" onClick={onClose}>&times;</span>
+        <div className="meetings-modal">
+            <div className="meetings-modal-content">
+                <span className="meetings-close" onClick={onClose}>&times;</span>
                 <h2>Meetings</h2>
-                <div className="filter-container">
+                <div className="meetings-filters">
                     <input
                         type="text"
                         name="title"
@@ -157,22 +201,25 @@ function MeetingsModal({ user, onClose }) {
                 {filteredMeetings.length > 0 ? (
                     <ul>
                         {filteredMeetings.map(meeting => (
-                            <li key={meeting.id} style={{ marginLeft: '20%' }} className="meeting-item">
-                                <tr className="meeting-details">
-                                    <td><strong style={{ marginLeft: '1%' }}>Title:</strong> {meeting.title}</td>
-                                    <td><strong style={{ marginLeft: '1%' }}>Date & Time:</strong> {formatDateTime(meeting.datetime)}</td>
-                                    <td>
-                                        <strong style={{ marginLeft: '1%' }}>Done:</strong>
-                                    </td>
-                                    <td style={{ marginLeft: '10%' }}>
-                                        <input style={{ display: 'inline' }}
+                            <li key={meeting.id} className="meetings-meeting-item">
+                                <div className="meetings-meeting-details">
+                                    <div>
+                                        <strong>Title:</strong>
+                                        <span onClick={() => handleTitleClick(meeting)}>
+                                            {meeting.title.length > 20 ? `${meeting.title.substring(0, 20)}...` : meeting.title}
+                                        </span>
+                                    </div>
+                                    <div><strong>Date & Time:</strong> {formatDateTime(meeting.datetime)}</div>
+                                    <div>
+                                        <strong>Done:</strong>
+                                        <input
                                             type="checkbox"
                                             checked={meeting.done}
                                             onChange={() => handleDoneToggle(meeting)}
                                         />
-                                    </td>
-                                </tr>
-                                <div style={{ marginTop: '5%', marginBottom: '5%' }} className="meeting-actions">
+                                    </div>
+                                </div>
+                                <div className="meetings-meeting-actions">
                                     <button onClick={() => handleEditClick(meeting)}>Edit</button>
                                     <button onClick={() => handleDeleteClick(meeting.id)}>Delete</button>
                                 </div>
@@ -202,6 +249,17 @@ function MeetingsModal({ user, onClose }) {
                         onConfirm={handleConfirmDelete}
                         onCancel={() => setShowConfirmDeleteMeetingModal(false)}
                     />
+                )}
+                {selectedMeeting && (
+                    <div className="meetings-popup">
+                        <div className="meetings-popup-content">
+                            <span className="meetings-close" onClick={handleClosePopup}>&times;</span>
+                            <h2>{selectedMeeting.title}</h2>
+                            <p><strong>Date & Time:</strong> {formatDateTime(selectedMeeting.datetime)}</p>
+                            <p><strong>Done:</strong> {selectedMeeting.done ? 'Yes' : 'No'}</p>
+                            <span className="custom-handle-meetings" />
+                        </div>
+                    </div>
                 )}
             </div>
         </div>

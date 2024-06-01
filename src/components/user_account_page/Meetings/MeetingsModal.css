@@ -1,0 +1,188 @@
+/* MeetingsModal.css */
+.meetings-modal {
+    display: block;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.meetings-modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    position: relative;
+}
+
+.meetings-close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.meetings-close:hover,
+.meetings-close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.meetings-filters {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.meetings-filters input {
+    margin-bottom: 10px;
+    padding: 8px;
+    font-size: 14px;
+}
+
+.meetings-filters button {
+    padding: 8px;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+/* Popup */
+.meetings-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.meetings-popup-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    overflow-y: auto;
+    text-align: center;
+    position: relative; /* Needed for the close button positioning */
+    resize: both; /* Make the element resizable */
+    width: 50%;
+}
+
+.meetings-popup-content .meetings-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.custom-handle-meetings {
+    width: 10px;
+    height: 10px;
+    background-color: #ddd;
+    border-radius: 50%;
+    cursor: se-resize;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.financial-records-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.financial-records-table thead,
+.financial-records-table tfoot {
+    display: table;
+    width: calc(100% - 17px);
+    table-layout: fixed;
+    background: #007bff;
+}
+
+.financial-records-table tbody {
+    display: block;
+    overflow-y: auto;
+    max-height: 300px;
+    width: 100%;
+}
+
+.financial-records-table th,
+.financial-records-table td {
+    width: 25%;
+    text-align: center;
+    padding: 8px;
+}
+
+.financial-records-table th {
+    color: white;
+}
+
+.select-container {
+    position: relative;
+    display: inline-block;
+    width: 30%;
+    margin-bottom: 20px;
+}
+
+.select-container select {
+    width: 200px;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.select-container select:hover {
+    border-color: #0056b3;
+}
+
+.select-container::after {
+    content: '\25BC';
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    color: #007bff;
+    pointer-events: none;
+    font-size: 12px;
+}
+
+.filter-row {
+    display: inline-block;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.custom-checkbox {
+    display: inline-block;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.custom-checkbox input[type="checkbox"] {
+    margin-left: 10px;
+}
+
+.clear-filters {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 150px;
+}
+
+.clear-filters:hover {
+    background-color: #0056b3;
+}
