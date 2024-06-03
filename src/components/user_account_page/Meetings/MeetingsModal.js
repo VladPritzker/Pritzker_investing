@@ -14,7 +14,7 @@ function MeetingsModal({ user, onClose }) {
     const [filters, setFilters] = useState({ title: '', done: '', date: '' });
     const [selectedMeeting, setSelectedMeeting] = useState(null);
 
-    
+
     const fetchMeetings = async () => {
         try {
             const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/meetings/`);
@@ -28,6 +28,8 @@ function MeetingsModal({ user, onClose }) {
             console.error('Error fetching meetings:', error);
         }
     };
+
+    
 
     useEffect(() => {
         fetchMeetings();
