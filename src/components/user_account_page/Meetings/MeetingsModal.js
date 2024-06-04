@@ -14,6 +14,7 @@ function MeetingsModal({ user, onClose }) {
     const [filters, setFilters] = useState({ title: '', done: '', date: '' });
     const [selectedMeeting, setSelectedMeeting] = useState(null);
 
+    
 
     const fetchMeetings = async () => {
         try {
@@ -29,7 +30,7 @@ function MeetingsModal({ user, onClose }) {
         }
     };
 
-    
+
 
     useEffect(() => {
         fetchMeetings();
