@@ -127,6 +127,7 @@ function UserAccountPage() {
             alert('Failed to refresh data. Please try again later.');
         }
     };
+    
 
     const handleUpdateClick = async (field) => {
         const newValue = prompt(`Enter new value for ${field}:`, user[field]);
@@ -289,10 +290,10 @@ function UserAccountPage() {
                             <p style={styles.textStyle}><strong>Money Invested:</strong> ${numberFormat(user?.money_invested)}</p>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                            <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('income_amount')}>Update</button>
+                            <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('income_by_week')}>Update</button>
                             <p style={styles.textStyle} onClick={showMonthlyYearlyIncome}>
-                                <strong>Income:</strong>
-                                <span style={{ color: "green", marginLeft: '10px' }}>${numberFormat(user?.income_amount)}</span>
+                                <strong>Income this week</strong>
+                                <span style={{ color: "green", marginLeft: '10px' }}>${numberFormat(user?.income_by_week)}</span>
                             </p>
                         </div>
                         {showMonthlyIncome && (
