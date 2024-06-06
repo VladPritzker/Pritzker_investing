@@ -30,6 +30,7 @@ function MeetingsModal({ user, onClose }) {
         }
     };
 
+    
     useEffect(() => {
         fetchMeetings();
     }, [user.id]);
