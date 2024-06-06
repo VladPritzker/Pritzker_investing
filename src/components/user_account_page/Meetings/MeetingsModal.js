@@ -29,8 +29,8 @@ function MeetingsModal({ user, onClose }) {
             console.error('Error fetching meetings:', error);
         }
     };
+ 
 
-    
     useEffect(() => {
         fetchMeetings();
     }, [user.id]);
