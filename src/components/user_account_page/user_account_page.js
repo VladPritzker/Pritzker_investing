@@ -54,6 +54,7 @@ function UserAccountPage() {
         fetchTimezone();
     }, []);
 
+    
     useEffect(() => {
         const fetchUserData = async () => {
             const storedUser = location.state?.user;
