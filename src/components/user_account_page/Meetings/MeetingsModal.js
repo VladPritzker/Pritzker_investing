@@ -14,8 +14,6 @@ function MeetingsModal({ user, onClose }) {
     const [filters, setFilters] = useState({ title: '', done: '', date: '' });
     const [selectedMeeting, setSelectedMeeting] = useState(null);
 
-
-
     const fetchMeetings = async () => {
         try {
             const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/meetings/`);
@@ -29,7 +27,6 @@ function MeetingsModal({ user, onClose }) {
             console.error('Error fetching meetings:', error);
         }
     };
- 
 
     useEffect(() => {
         fetchMeetings();
@@ -126,7 +123,12 @@ function MeetingsModal({ user, onClose }) {
     }, []);
 
     const formatDateTime = (datetime) => {
-        return datetime.replace('T', ' ').replace(/\+00:00$/, '').replace(/:\d{2}$/, '');
+        const localDatetime = new Date(datetime).toLocaleString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+        });
+        return localDatetime.replace(/:\d{2}\s/, ' ');
     };
 
     const handleTitleClick = (meeting) => {
@@ -197,9 +199,9 @@ function MeetingsModal({ user, onClose }) {
                         onChange={handleFilterChange}
                         placeholder="Filter by date"
                     />
-                    <button onClick={clearFilters}>Clear Filters</button>
+                    <button className="clear-filters" onClick={clearFilters}>Clear Filters</button>
                 </div>
-                <button onClick={handleAddMeetingClick}>Add New Meeting</button>
+                <button className="add-meeting" onClick={handleAddMeetingClick}>Add New Meeting</button>
                 {filteredMeetings.length > 0 ? (
                     <ul>
                         {filteredMeetings.map(meeting => (
@@ -222,8 +224,8 @@ function MeetingsModal({ user, onClose }) {
                                     </div>
                                 </div>
                                 <div className="meetings-meeting-actions">
-                                    <button onClick={() => handleEditClick(meeting)}>Edit</button>
-                                    <button onClick={() => handleDeleteClick(meeting.id)}>Delete</button>
+                                    <button className="edit-meeting" onClick={() => handleEditClick(meeting)}>Edit</button>
+                                    <button className="delete-meeting" onClick={() => handleDeleteClick(meeting.id)}>Delete</button>
                                 </div>
                             </li>
                         ))}
