@@ -30,40 +30,53 @@ function IncomeChartModal({ user, incomeRecords, onClose }) {
     const [endDate, setEndDate] = useState('');
 
     useEffect(() => {
+        setFilterDates();
+    }, [filter]);
+
+    useEffect(() => {
         filterRecords();
     }, [filter, startDate, endDate, incomeRecords]);
 
-    const filterRecords = () => {
+    const setFilterDates = () => {
         const now = new Date();
-        let filtered;
+        let start, end;
 
         switch (filter) {
             case 'day':
-                const lastWeek = new Date();
-                lastWeek.setDate(now.getDate() - 7);
-                filtered = filterByDateRange(lastWeek, now);
+                start = now;
+                end = now;
                 break;
             case 'week':
-                const startOfWeek = new Date(now);
-                startOfWeek.setDate(now.getDate() - now.getDay());
-                filtered = filterByDateRange(startOfWeek, now);
+                start = new Date(now);
+                start.setDate(now.getDate() - now.getDay()); // Sunday of the current week
+                end = new Date(start);
+                end.setDate(start.getDate() + 6); // Saturday of the current week
                 break;
             case 'month':
-                const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-                filtered = filterByDateRange(startOfMonth, now);
+                start = new Date(now.getFullYear(), now.getMonth(), 1); // First day of the current month
+                end = new Date(now.getFullYear(), now.getMonth() + 1, 0); // Last day of the current month
                 break;
             case 'year':
-                const startOfYear = new Date(now.getFullYear(), 0, 1);
-                filtered = filterByDateRange(startOfYear, now);
+                start = new Date(now.getFullYear(), 0, 1); // First day of the current year
+                end = new Date(now.getFullYear(), 11, 31); // Last day of the current year
                 break;
             default:
-                if (startDate && endDate) {
-                    const start = new Date(startDate);
-                    const end = new Date(endDate);
-                    filtered = filterByDateRange(start, end);
-                } else {
-                    filtered = incomeRecords;
-                }
+                return;
+        }
+
+        setStartDate(start.toISOString().split('T')[0]);
+        setEndDate(end.toISOString().split('T')[0]);
+    };
+
+    const filterRecords = () => {
+        let filtered;
+
+        if (startDate && endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            filtered = filterByDateRange(start, end);
+        } else {
+            filtered = incomeRecords;
         }
 
         setFilteredRecords(filtered);
@@ -76,16 +89,89 @@ function IncomeChartModal({ user, incomeRecords, onClose }) {
         }).sort((a, b) => new Date(a.record_date) - new Date(b.record_date));
     };
 
+    const getLabelsForDateRange = (start, end) => {
+        const labels = [];
+        let current = new Date(start);
+
+        while (current <= end) {
+            labels.push(current.toLocaleDateString('en-US'));
+            current.setDate(current.getDate() + 1);
+        }
+
+        return labels;
+    };
+
+    const getDataForDateRange = (start, end, records) => {
+        const data = [];
+        let current = new Date(start);
+
+        while (current <= end) {
+            const record = records.find(record => new Date(record.record_date).toDateString() === current.toDateString());
+            const value = record ? parseFloat(record.amount) : 0;
+            data.push(value);
+            current.setDate(current.getDate() + 1);
+        }
+
+        return data;
+    };
+
+    const trimDataPoints = (labels, data) => {
+        let start = 0;
+        let end = data.length - 1;
+
+        while (start < data.length && data[start] === 0) {
+            start++;
+        }
+        while (end >= 0 && data[end] === 0) {
+            end--;
+        }
+
+        return {
+            labels: labels.slice(start, end + 1),
+            data: data.slice(start, end + 1)
+        };
+    };
+
+    const labels = getLabelsForDateRange(new Date(startDate), new Date(endDate));
+    const dataPoints = getDataForDateRange(new Date(startDate), new Date(endDate), filteredRecords);
+    const trimmedData = trimDataPoints(labels, dataPoints);
+
     const data = {
-        labels: filteredRecords.map(record => new Date(record.record_date).toLocaleDateString()),
+        labels: trimmedData.labels,
         datasets: [
             {
                 label: 'Income',
-                data: filteredRecords.map(record => parseFloat(record.amount)),
+                data: trimmedData.data,
                 fill: false,
-                borderColor: 'green'
+                borderColor: '#0F52BA', // Sapphire color
+                spanGaps: true, // Do not span gaps where data is null
             }
         ]
+    };
+
+    const options = {
+        scales: {
+            x: {
+                reverse: false // Ensure the x-axis is not reversed
+            }
+        },
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+                        let label = context.dataset.label || '';
+                        if (label) {
+                            label += ': ';
+                        }
+                        label += context.raw;
+                        return label;
+                    },
+                    title: function (context) {
+                        return context[0].label; // Use the formatted date for tooltip title
+                    }
+                }
+            }
+        }
     };
 
     const filtersStyle = {
@@ -143,23 +229,12 @@ function IncomeChartModal({ user, incomeRecords, onClose }) {
                             onChange={() => setFilter('year')}
                         /> Year
                     </label>
-                    <label>
-                        <input
-                            type="radio"
-                            name="filter"
-                            value="custom"
-                            checked={filter === 'custom'}
-                            onChange={() => setFilter('custom')}
-                        /> Custom
-                    </label>
                 </div>
-                {filter === 'custom' && (
-                    <div className="date-range-filters" style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-                        <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
-                        <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
-                    </div>
-                )}
-                <Line data={data} />
+                <div className="date-range-filters" style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                    <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
+                    <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
+                </div>
+                <Line data={data} options={options} />
             </div>
         </div>
     );

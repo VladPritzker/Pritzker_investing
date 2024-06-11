@@ -82,3 +82,4 @@ function ChartModal({ onClose, chartData, filterType, setFilterType, records }) 
 }
 
 export default ChartModal;
+

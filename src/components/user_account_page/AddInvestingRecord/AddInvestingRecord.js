@@ -15,6 +15,7 @@ function AddInvestingRecord({ user, onClose, token, fetchInvestingRecords }) {
         return cookieValue ? cookieValue.pop() : '';
     }
 
+    
     const handleSaveInvestRecord = async (recordData) => {
         try {
             const response = await fetch('http://127.0.0.1:8000/investing_records/', {
