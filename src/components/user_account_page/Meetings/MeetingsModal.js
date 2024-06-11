@@ -11,7 +11,7 @@ function MeetingsModal({ user, onClose }) {
     const [showUpdateMeetingModal, setShowUpdateMeetingModal] = useState(false);
     const [showConfirmDeleteMeetingModal, setShowConfirmDeleteMeetingModal] = useState(false);
     const [meetingToDelete, setMeetingToDelete] = useState(null);
-    const [filters, setFilters] = useState({ title: '', done: '', date: '' });
+    const [filters, setFilters] = useState({ title: '', done: 'false', date: '' });
     const [selectedMeeting, setSelectedMeeting] = useState(null);
 
     const fetchMeetings = async () => {
@@ -78,7 +78,7 @@ function MeetingsModal({ user, onClose }) {
     };
 
     const clearFilters = () => {
-        setFilters({ title: '', done: '', date: '' });
+        setFilters({ title: '', done: 'false', date: '' });
     };
 
     const handleDoneToggle = async (meeting) => {
@@ -128,7 +128,7 @@ function MeetingsModal({ user, onClose }) {
             minute: '2-digit',
             hour12: false,
         });
-        return localDatetime.replace(/:\d{2}\s/, ' ');
+        return localDatetime.replace(/:\d{2}\s/, ':');
     };
 
     const handleTitleClick = (meeting) => {
