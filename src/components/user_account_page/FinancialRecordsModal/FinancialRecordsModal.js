@@ -16,7 +16,6 @@ import MonthlyExpensesModal from './Monthly_Expenses/Monthly_Expenses';
 import ConfirmDeleteModal from '../FinancialRecordsModal/deletConf/deleteConf.js';
 import ChartModal from './spendingsChart/spendingsChart.js'
 
-
 // Register Chart.js components
 ChartJS.register(
     CategoryScale,
@@ -209,6 +208,14 @@ function FinancialRecordsModal({ user, onClose }) {
         };
     };
 
+    const clearAllFilters = () => {
+        setStartDate('');
+        setEndDate('');
+        setMinAmount('');
+        setMaxAmount('');
+        setFilterTitle('');
+    };
+
     const style = {
         padding: "20px",
         background: '#f8f9fa',
@@ -239,6 +246,7 @@ function FinancialRecordsModal({ user, onClose }) {
                 <button style={{ marginBottom: '10px' }} onClick={handleChartModalOpen}>
                     Show Chart
                 </button>
+                <button style={{ marginBottom: '10px' }} onClick={clearAllFilters}>Clear All Filters</button>
                 <table className="financial-records-table">
                     <thead>
                         <tr>
