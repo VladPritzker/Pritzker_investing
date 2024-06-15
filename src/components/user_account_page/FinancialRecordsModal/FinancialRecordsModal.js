@@ -285,6 +285,7 @@ function FinancialRecordsModal({ user, onClose }) {
                     record={recordToDelete}
                 />
             )}
+            
             {showChartModal && (
                 <ChartModal
                     onClose={handleChartModalClose}
