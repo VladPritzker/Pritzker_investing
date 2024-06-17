@@ -268,6 +268,7 @@ function FinancialRecordsModal({ user, onClose }) {
                             </tr>
                         ))}
                     </tbody>
+                    
                     <tfoot>
                         <tr>
                             <th>Total Amount - </th>
