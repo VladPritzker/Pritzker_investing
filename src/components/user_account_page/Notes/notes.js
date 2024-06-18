@@ -72,7 +72,7 @@ function NotesModal({ user, onClose }) {
 
     const toggleNoteVisibility = async (noteId, hideStatus) => {
         try {
-            await axios.patch(`http://127.0.0.1:8000/notes/${user.id}/${noteId}/`, { hide: !hideStatus });
+            await axios.patch(`http://127.0.0.1:8000/notes/user/${user.id}/${noteId}/`, { hide: !hideStatus });
             fetchNotes(); // Refresh list to reflect changes
         } catch (error) {
             console.error('Error updating note visibility:', error);
@@ -81,7 +81,7 @@ function NotesModal({ user, onClose }) {
 
     const toggleNoteDone = async (noteId, doneStatus) => {
         try {
-            await axios.patch(`http://127.0.0.1:8000/notes/${user.id}/${noteId}/`, { done: !doneStatus });
+            await axios.patch(`http://127.0.0.1:8000/notes/user/${user.id}/${noteId}/`, { done: !doneStatus });
             fetchNotes(); // Refresh list to reflect changes
         } catch (error) {
             console.error('Error updating note done status:', error);
@@ -143,7 +143,7 @@ function NotesModal({ user, onClose }) {
         setNotes(updatedNotes);
 
         try {
-            await axios.patch(`http://127.0.0.1:8000/notes/${user.id}/reorder/`, updatedNotes);
+            await axios.patch(`http://127.0.0.1:8000/notes/reorder/${user.id}/reorder/`, updatedNotes);
         } catch (error) {
             console.error('Error updating note order:', error);
         }
@@ -159,7 +159,7 @@ function NotesModal({ user, onClose }) {
 
     const saveNoteDetails = async () => {
         try {
-            const response = await axios.patch(`http://127.0.0.1:8000/notes/${user.id}/${editNote.id}/`, editNote);
+            const response = await axios.patch(`http://127.0.0.1:8000/notes/user/${user.id}/${editNote.id}/`, editNote);
             setEditNote(null);
             fetchNotes();
         } catch (error) {
