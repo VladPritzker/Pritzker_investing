@@ -20,7 +20,7 @@ function ContactsModal({ user, onClose }) {
     useEffect(() => {
         const fetchContacts = async () => {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/contacts/`);
+                const response = await fetch(`http://127.0.0.1:8000/contacts/${user.id}/`);
                 if (response.ok) {
                     const data = await response.json();
                     setContacts(data);
@@ -65,7 +65,7 @@ function ContactsModal({ user, onClose }) {
 
     const confirmDelete = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/contacts/${deleteContactId}/`, {
+            const response = await fetch(`http://127.0.0.1:8000/contacts/${user.id}/${deleteContactId}/`, {
                 method: 'DELETE'
             });
             if (response.ok) {

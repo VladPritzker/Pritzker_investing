@@ -43,7 +43,7 @@ function NotesModal({ user, onClose }) {
 
     const fetchNotes = async () => {
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/notes/${user.id}/`);
+            const response = await axios.get(`http://127.0.0.1:8000/notes/user/${user.id}/`);
             if (response.status === 200) {
                 let filteredNotes = response.data;
                 if (filters.title) {

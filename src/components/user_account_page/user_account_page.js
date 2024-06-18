@@ -158,23 +158,42 @@ function UserAccountPage() {
         }
     };
 
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+
     const handlePhotoUpload = async (event) => {
         const files = event.target.files;
         if (!files || files.length === 0) {
             console.error('No files selected');
             return;
         }
-
+    
         const file = files[0];
         const formData = new FormData();
         formData.append('photo', file);
-
+    
         try {
             const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/upload_photo/`, {
                 method: 'POST',
                 body: formData,
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')  // Include CSRF token in the headers
+                }
             });
-
+    
             if (response.ok) {
                 const data = await response.json();
                 console.log('Photo uploaded successfully:', data.file_url);
@@ -188,6 +207,7 @@ function UserAccountPage() {
             console.error('Error uploading photo:', error);
         }
     };
+    
 
     const handlePhotoUploadClick = () => {
         setShowPhotoInput(true);
@@ -249,7 +269,7 @@ function UserAccountPage() {
                         {user?.photo && (
                             <div style={{ textAlign: 'center', marginBottom: '10px' }}>
                                 <h2 style={{ ...styles.textStyle, marginBottom: '10px' }}>Profile Photo</h2>
-                                <img src={`http://127.0.0.1:8000/media/${user.photo}`} alt="User Photo" width="100" />
+                                <img src={`http://127.0.0.1:8000${user.photo}`} alt="User Photo" width="100" /> {/* Use the correct photo URL */}
                             </div>
                         )}
                          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', marginLeft: '35%' }}>

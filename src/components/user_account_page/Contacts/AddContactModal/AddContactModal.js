@@ -16,7 +16,7 @@ function AddContactModal({ user, onClose, onSave }) {
     const handleSaveClick = async () => {
         const token = localStorage.getItem('authToken'); // Retrieve the token from localStorage
         try {
-            const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/contacts/`, {
+            const response = await fetch(`http://127.0.0.1:8000/contacts/${user.id}/`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Token ${token}`,

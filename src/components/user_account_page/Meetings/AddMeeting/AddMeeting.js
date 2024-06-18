@@ -19,7 +19,7 @@ function AddMeetingModal({ user, onClose, onSave }) {
         };
     
         try {
-            const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/meetings/`, {
+            const response = await fetch(`http://127.0.0.1:8000/meetings/${user.id}/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

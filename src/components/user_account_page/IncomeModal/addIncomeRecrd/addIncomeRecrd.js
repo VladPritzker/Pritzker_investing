@@ -12,7 +12,7 @@ function AddRecordModal({ user, onClose, onRecordAdded }) {
     const handleAddRecordSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/income_records/add/`, {
+            const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/add_income/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

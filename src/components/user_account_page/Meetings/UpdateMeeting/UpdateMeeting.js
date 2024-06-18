@@ -9,7 +9,7 @@ function UpdateMeetingModal({ user, meeting, onClose, onUpdate }) {
         const updatedMeeting = { ...meeting, title, datetime, done };
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/meetings/${meeting.id}/`, {
+            const response = await fetch(`http://127.0.0.1:8000/meetings/${user.id}/${meeting.id}/`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'

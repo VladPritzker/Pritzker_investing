@@ -16,7 +16,7 @@ function MeetingsModal({ user, onClose }) {
 
     const fetchMeetings = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/meetings/`);
+            const response = await fetch(`http://127.0.0.1:8000/meetings/${user.id}/`);
             if (response.ok) {
                 const data = await response.json();
                 setMeetings(data);
@@ -58,7 +58,7 @@ function MeetingsModal({ user, onClose }) {
 
     const handleConfirmDelete = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/meetings/${meetingToDelete}/`, {
+            const response = await fetch(`http://127.0.0.1:8000/meetings/${user.id}/${meetingToDelete}/`, {
                 method: 'DELETE'
             });
             if (response.ok) {
