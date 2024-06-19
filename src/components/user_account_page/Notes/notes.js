@@ -214,6 +214,7 @@ function NotesModal({ user, onClose }) {
                 </div>
                 <table className="financial-records-table">
                 <p>
+                    
                 (Tasks displayed {notes.length} )
                 </p>
                     <thead>
