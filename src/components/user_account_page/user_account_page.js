@@ -78,7 +78,7 @@ function UserAccountPage() {
 
     const handleLogout = () => {
         localStorage.removeItem('userToken');
-        navigate('/login');
+        navigate('/');
     };
 
     const handleFinancialRecordsListClick = () => {

@@ -13,7 +13,7 @@ function App() {
     <BrowserRouter>
     <div className="App">
       <Routes>
-        <Route path="/login" element={<Registration_page />} />
+        <Route path="/" element={<Registration_page />} />
         <Route path="/account/:userId" element={<UserAccountPage />} />
       </Routes>
     </div>
