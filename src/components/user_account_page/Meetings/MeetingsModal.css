@@ -184,3 +184,18 @@
 .clear-filters:hover {
     background-color: #0056b3; /* Darker shade on hover */
 }
+
+
+.view-chart {
+    margin-top: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.view-chart:hover {
+    background-color: #45a049;
+}
