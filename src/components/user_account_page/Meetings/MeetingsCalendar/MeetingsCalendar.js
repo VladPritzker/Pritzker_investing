@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './MeetingsCalendar.css';
+import MeetingDetailsModal from '../MeetingDetailsModal/MeetingDetailsModal';
 
 const MeetingsCalendar = ({ meetings }) => {
     const [hoveredMeeting, setHoveredMeeting] = useState(null);
+    const [selectedMeeting, setSelectedMeeting] = useState(null);
+    const [calendarSize, setCalendarSize] = useState({ width: '100%', height: '100%' });
 
     const getTileContent = ({ date, view }) => {
         if (view === 'month') {
@@ -15,24 +18,26 @@ const MeetingsCalendar = ({ meetings }) => {
                 <div
                     key={meeting.id}
                     className="meeting-dot"
-                    onMouseEnter={() => setHoveredMeeting(meeting)}
-                    onMouseLeave={() => setHoveredMeeting(null)}
+                    onClick={() => setSelectedMeeting(meeting)}
                 />
             ));
         }
     };
 
+    
+
     return (
         <div className="meetings-calendar-container">
+    
             <Calendar
                 tileContent={getTileContent}
+                style={{ width: calendarSize.width, height: calendarSize.height }}
             />
-            {hoveredMeeting && (
-                <div className="meeting-details-popup">
-                    <h3>{hoveredMeeting.title}</h3>
-                    <p><strong>Date & Time:</strong> {new Date(hoveredMeeting.datetime).toLocaleString()}</p>
-                    <p><strong>Done:</strong> {hoveredMeeting.done ? 'Yes' : 'No'}</p>
-                </div>
+            {selectedMeeting && (
+                <MeetingDetailsModal
+                    meeting={selectedMeeting}
+                    onClose={() => setSelectedMeeting(null)}
+                />
             )}
         </div>
     );
