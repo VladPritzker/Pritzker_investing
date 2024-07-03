@@ -83,23 +83,27 @@ function MeetingsModal({ user, onClose }) {
 
     const handleDoneToggle = async (meeting) => {
         const updatedMeeting = { ...meeting, done: !meeting.done };
+        console.log("Sending updated meeting data:", updatedMeeting);
         try {
-            const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/meetings/${meeting.id}/`, {
+            const response = await fetch(`http://127.0.0.1:8000/meetings/${user.id}/${meeting.id}/`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ done: updatedMeeting.done })
             });
+            const responseData = await response.json();
+            console.log("Response data:", responseData);
             if (response.ok) {
                 setMeetings(prevMeetings => prevMeetings.map(m => (m.id === meeting.id ? updatedMeeting : m)));
             } else {
-                console.error('Failed to update meeting');
+                console.error('Failed to update meeting:', responseData);
             }
         } catch (error) {
             console.error('Error updating meeting:', error);
         }
     };
+    
 
     const filteredMeetings = meetings.filter(meeting => {
         const matchesTitle = meeting.title.toLowerCase().includes(filters.title.toLowerCase());

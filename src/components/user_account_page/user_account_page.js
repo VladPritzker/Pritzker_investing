@@ -54,7 +54,6 @@ function UserAccountPage() {
         fetchTimezone();
     }, []);
 
-    
     useEffect(() => {
         const fetchUserData = async () => {
             const storedUser = location.state?.user;
@@ -128,9 +127,7 @@ function UserAccountPage() {
             alert('Failed to refresh data. Please try again later.');
         }
     };
-    
-  
-    
+
     const handleUpdateClick = async (field) => {
         const newValue = prompt(`Enter new value for ${field}:`, user[field]);
         if (newValue !== null && newValue !== user[field]) {
@@ -172,7 +169,6 @@ function UserAccountPage() {
         }
         return cookieValue;
     }
-    
 
     const handlePhotoUpload = async (event) => {
         const files = event.target.files;
@@ -180,11 +176,11 @@ function UserAccountPage() {
             console.error('No files selected');
             return;
         }
-    
+
         const file = files[0];
         const formData = new FormData();
         formData.append('photo', file);
-    
+
         try {
             const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/upload_photo/`, {
                 method: 'POST',
@@ -193,12 +189,13 @@ function UserAccountPage() {
                     'X-CSRFToken': getCookie('csrftoken')  // Include CSRF token in the headers
                 }
             });
-    
+
             if (response.ok) {
                 const data = await response.json();
                 console.log('Photo uploaded successfully:', data.file_url);
                 setUser(prevUser => ({ ...prevUser, photo: data.file_url }));
                 setShowPhotoInput(false);
+                handleRefreshDataClick(); // Refresh data after upload
             } else {
                 const errorData = await response.json();
                 console.error('Failed to upload photo:', errorData);
@@ -207,7 +204,6 @@ function UserAccountPage() {
             console.error('Error uploading photo:', error);
         }
     };
-    
 
     const handlePhotoUploadClick = () => {
         setShowPhotoInput(true);

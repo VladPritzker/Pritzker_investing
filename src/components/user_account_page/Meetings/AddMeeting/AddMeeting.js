@@ -10,14 +10,14 @@ function AddMeetingModal({ user, onClose, onSave }) {
             alert('Please ensure all fields are filled out correctly.');
             return;
         }
-    
+
         const meetingData = {
             user_id: user.id,
             title,
-            datetime: new Date(datetime).toISOString(),  // Ensure datetime is in ISO format
+            datetime, // Do not convert to ISO here
             done
         };
-    
+
         try {
             const response = await fetch(`http://127.0.0.1:8000/meetings/${user.id}/`, {
                 method: 'POST',
@@ -26,7 +26,7 @@ function AddMeetingModal({ user, onClose, onSave }) {
                 },
                 body: JSON.stringify(meetingData)
             });
-    
+
             if (response.ok) {
                 const newMeeting = await response.json();
                 onSave(newMeeting);
@@ -39,8 +39,7 @@ function AddMeetingModal({ user, onClose, onSave }) {
             alert(`Network error: ${error.message}`);
         }
     };
-    
-    
+
     return (
         <div className="modal">
             <div className="modal-content" style={{ marginTop: '10%' }}>
