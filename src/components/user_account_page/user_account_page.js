@@ -4,7 +4,7 @@ import FinancialRecordsModal from '../user_account_page/FinancialRecordsModal/Fi
 import InvestingRecordsModal from '../user_account_page/InvestingModal/InvestingModal';
 import NotesModal from '../user_account_page/Notes/notes';
 import PhotoUploadModal from '../user_account_page/uploadPhoto/uploadphoto';
-import IncomeRecordsModal from '../user_account_page/IncomeModal/incomeModal';
+import IncomeRecordsModal from './IncomeModal/IncomeRecordsModal';
 import ContactsModal from '../user_account_page/Contacts/contacts';
 import MeetingsModal from './Meetings/MeetingsModal'; 
 import '../user_account_page/user_account_page.css';

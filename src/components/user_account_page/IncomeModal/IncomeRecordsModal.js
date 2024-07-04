@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../IncomeModal/incomeModal.css';
+import './IncomeRecordsModal.css';
 import AddRecordModal from '../IncomeModal/addIncomeRecrd/addIncomeRecrd';
 import IncomeChartModal from '../IncomeModal/incomeChart/incomeChart';
 
@@ -132,11 +132,11 @@ function IncomeRecordsModal({ user, onClose }) {
     const totalIncome = filteredRecords.reduce((total, record) => total + parseFloat(record.amount), 0).toFixed(2);
 
     return (
-        <div className="modal">
-            <div style={{ width: '50%', marginTop: '5%' }} className="modal-content">
-                <span className="close" onClick={onClose}>&times;</span>
+        <div className="income-modal">
+            <div className="income-modal-content">
+                <span className="income-close" onClick={onClose}>&times;</span>
                 <h2>Income Records</h2>
-                <div className="filters">
+                <div className="income-filters">
                     <input type="text" placeholder="Filter by title" value={titleFilter} onChange={e => setTitleFilter(e.target.value)} />
                     <input type="number" placeholder="Min amount" value={minAmountFilter} onChange={e => setMinAmountFilter(e.target.value)} />
                     <input type="number" placeholder="Max amount" value={maxAmountFilter} onChange={e => setMaxAmountFilter(e.target.value)} />
@@ -158,13 +158,13 @@ function IncomeRecordsModal({ user, onClose }) {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredRecords.map(record => (
+                            {filteredRecords.slice(0, 5).map(record => (
                                 <tr key={record.id}>
                                     <td>{record.title}</td>
                                     <td>{record.amount}</td>
                                     <td>{new Date(record.record_date).toISOString().split('T')[0]}</td>
                                     <td>
-                                        <button style={{width: '40%'}} onClick={() => handleDeleteClick(record)}>Delete</button>
+                                        <button style={{width: '40%', paddingRight: '35px', backgroundColor: '#0056b3', color: 'white', border: 'none' }} onClick={() => handleDeleteClick(record)}>Delete</button>
                                     </td>
                                 </tr>
                             ))}
@@ -193,8 +193,8 @@ function IncomeRecordsModal({ user, onClose }) {
                 />
             )}
             {showDeleteModal && (
-                <div className="delete-modal">
-                    <div className="delete-modal-content">
+                <div className="income-delete-modal">
+                    <div className="income-delete-modal-content">
                         <h2>Confirm Delete</h2>
                         <p>Are you sure you want to delete this record?</p>
                         <button onClick={handleDeleteConfirm}>Yes</button>

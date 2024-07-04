@@ -82,6 +82,7 @@
     color: #007bff;
     pointer-events: none;
     font-size: 12px;
+    padding-right: 25px;
 }
 
 .filter-row {
