@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import FinancialRecordsModal from '../user_account_page/FinancialRecordsModal/FinancialRecordsModal';
 import InvestingRecordsModal from '../user_account_page/InvestingModal/InvestingModal';
@@ -21,6 +21,9 @@ function UserAccountPage() {
     const [showIncomeModal, setShowIncomeModal] = useState(false);
     const [showContactsModal, setShowContactsModal] = useState(false);
     const [showMeetingsModal, setShowMeetingsModal] = useState(false);
+    const [hasTodayMeetings, setHasTodayMeetings] = useState(false);
+    const [meetings, setMeetings] = useState([]);
+
 
     const [showMonthlySpending, setShowMonthlySpending] = useState(false);
     const [showYearlySpending, setShowYearlySpending] = useState(false);
@@ -54,6 +57,24 @@ function UserAccountPage() {
         fetchTimezone();
     }, []);
 
+    const fetchMeetings = useCallback(async () => {
+        if (user && user.id) {
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/meetings/${user.id}/`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setMeetings(data);
+                    checkForTodayMeetings(data); // Check for today's meetings after fetching
+                } else {
+                    console.error('Failed to fetch meetings');
+                }
+            } catch (error) {
+                console.error('Error fetching meetings:', error);
+            }
+        }
+    }, [user]);
+    
+
     useEffect(() => {
         const fetchUserData = async () => {
             const storedUser = location.state?.user;
@@ -62,6 +83,7 @@ function UserAccountPage() {
                     const response = await fetch(`http://127.0.0.1:8000/users/${storedUser.id}/`);
                     if (response.ok) {
                         const updatedUser = await response.json();
+                        console.log('Fetched user data:', updatedUser);  // Log the entire user data
                         setUser(updatedUser);
                     } else {
                         console.error('Failed to fetch user data');
@@ -71,9 +93,25 @@ function UserAccountPage() {
                 }
             }
         };
-
+        
         fetchUserData();
     }, [location.state?.user]);
+    
+
+    useEffect(() => {
+        fetchMeetings();
+    }, [fetchMeetings]);
+
+    const checkForTodayMeetings = (meetings) => {
+        console.log('Checking for today\'s meetings:', new Date().toDateString());
+        console.log('Meetings:', meetings);  // Log meetings data
+        const today = new Date().toDateString();
+        const todayMeetings = meetings.filter(
+            meeting => new Date(meeting.datetime).toDateString() === today
+        );
+        console.log('Today\'s meetings:', todayMeetings);  // Log today's meetings
+        setHasTodayMeetings(todayMeetings.length > 0);
+    };
 
     const handleLogout = () => {
         localStorage.removeItem('userToken');
@@ -117,6 +155,7 @@ function UserAccountPage() {
                 const updatedUser = await response.json();
                 console.log('Data refreshed successfully:', updatedUser);
                 setUser(updatedUser);
+                fetchMeetings();  // Fetch meetings separately
             } else {
                 const errorData = await response.json();
                 console.error('Failed to refresh data:', errorData);
@@ -127,6 +166,7 @@ function UserAccountPage() {
             alert('Failed to refresh data. Please try again later.');
         }
     };
+    
 
     const handleUpdateClick = async (field) => {
         const newValue = prompt(`Enter new value for ${field}:`, user[field]);
@@ -143,6 +183,8 @@ function UserAccountPage() {
                     const updatedUser = await response.json();
                     console.log('Data updated successfully:', updatedUser);
                     setUser(prevUser => ({ ...prevUser, [field]: newValue }));
+                    setMeetings(updatedUser.meetings || []); // Ensure meetings data is updated
+                    checkForTodayMeetings(updatedUser.meetings); // Check for today's meetings
                 } else {
                     const errorData = await response.json();
                     console.error('Failed to update data:', errorData);
@@ -154,7 +196,7 @@ function UserAccountPage() {
             }
         }
     };
-
+    
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -232,9 +274,28 @@ function UserAccountPage() {
         },
         timeStyle: {
             fontSize: '1.5em',
-            marginLeft: '-45%',
+            marginLeft: '0',
             borderBottom: 'none'
+        },
+        notificationIcon: {
+            position: 'absolute',
+            top: '0',
+            right: '0',
+            backgroundColor: '#007aff',  // Bright Blue
+            borderRadius: '50%',
+            width: '12px',
+            height: '12px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            color: 'white',
+            fontSize: '10px',
+            fontWeight: 'bold',
+            boxShadow: '0 0 5px rgba(0, 0, 0, 0.2)',
+            border: '2px solid #f0f0f0'  // Slightly Off-White
         }
+        
+    
     };
 
     const stylesUp = {
@@ -278,7 +339,10 @@ function UserAccountPage() {
                         <button id="refresh" type="button" onClick={handleInvestRecordsListClick}>Investings</button>                        
                         <button id="income" type="button" onClick={handleIncomeRecordsListClick}>Income</button>
                         <button id="contacts" type="button" onClick={handleContactsListClick}>Contacts</button>
-                        <button id="meetings" type="button" onClick={handleMeetingsListClick}>Meetings</button>
+                        <button id="meetings" type="button" onClick={handleMeetingsListClick} style={{ position: 'relative' }}>
+                            Meetings
+                            {hasTodayMeetings && <span style={styles.notificationIcon}></span>}
+                        </button>
                     </div>
                     <div className="data-rows">
                         <h1 style={{marginLeft: '-40%'}}>User Data</h1>
@@ -357,9 +421,9 @@ function UserAccountPage() {
                                 </p>
                             </div>
                         )}
-                        <p style={styles.timeStyle}><strong>Time:</strong> {localTime}</p>
                     </div>
                 </div>
+                        <p style={styles.timeStyle}><strong>Time:</strong> {localTime}</p>
             </form>
             {showInvestList && (
                 <InvestingRecordsModal user={user} onClose={() => setShowInvestList(false)} />
