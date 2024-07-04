@@ -202,37 +202,39 @@ function MeetingsModal({ user, onClose }) {
                     <button className="clear-filters" onClick={clearFilters}>Clear Filters</button>
                 </div>
                 <button className="add-meeting" onClick={handleAddMeetingClick}>Add New Meeting</button>
-                {filteredMeetings.length > 0 ? (
-                    <ul>
-                        {filteredMeetings.map(meeting => (
-                            <li key={meeting.id} className="meetings-meeting-item">
-                                <div className="meetings-meeting-details">
-                                    <div>
-                                        <strong>Title:</strong>
-                                        <span onClick={() => handleTitleClick(meeting)}>
-                                            {meeting.title.length > 20 ? `${meeting.title.substring(0, 20)}...` : meeting.title}
-                                        </span>
+                <div className="meetings-list-container">
+                    {filteredMeetings.length > 0 ? (
+                        <ul>
+                            {filteredMeetings.map(meeting => (
+                                <li key={meeting.id} className="meetings-meeting-item">
+                                    <div className="meetings-meeting-details">
+                                        <div>
+                                            <strong>Title:</strong>
+                                            <span onClick={() => handleTitleClick(meeting)}>
+                                                {meeting.title.length > 20 ? `${meeting.title.substring(0, 20)}...` : meeting.title}
+                                            </span>
+                                        </div>
+                                        <div><strong>Date & Time:</strong> {formatDateTime(meeting.datetime)}</div>
+                                        <div>
+                                            <strong>Done:</strong>
+                                            <input
+                                                type="checkbox"
+                                                checked={meeting.done}
+                                                onChange={() => handleDoneToggle(meeting)}
+                                            />
+                                        </div>
                                     </div>
-                                    <div><strong>Date & Time:</strong> {formatDateTime(meeting.datetime)}</div>
-                                    <div>
-                                        <strong>Done:</strong>
-                                        <input
-                                            type="checkbox"
-                                            checked={meeting.done}
-                                            onChange={() => handleDoneToggle(meeting)}
-                                        />
+                                    <div className="meetings-meeting-actions">
+                                        <button className="edit-meeting" onClick={() => handleEditClick(meeting)}>Edit</button>
+                                        <button className="delete-meeting" onClick={() => handleDeleteClick(meeting.id)}>Delete</button>
                                     </div>
-                                </div>
-                                <div className="meetings-meeting-actions">
-                                    <button className="edit-meeting" onClick={() => handleEditClick(meeting)}>Edit</button>
-                                    <button className="delete-meeting" onClick={() => handleDeleteClick(meeting.id)}>Delete</button>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No meetings found.</p>
-                )}
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No meetings found.</p>
+                    )}
+                </div>
                 {showAddMeetingModal && (
                     <AddMeetingModal
                         user={user}
