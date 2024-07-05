@@ -222,3 +222,8 @@
     overflow-y: auto;
     margin-bottom: 20px; /* Space between the list and add button */
 }
+
+.scrollable-container {
+    max-height: 400px; /* Adjust this height as needed */
+    overflow-y: auto;
+}

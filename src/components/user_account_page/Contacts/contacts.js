@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import moment from 'moment';
-import '../Contacts/Contacts.module.css';
+import styles from '../Contacts/Contacts.module.css'; // Updated to import as styles
 
 import AddContactModal from './AddContactModal/AddContactModal';
 import ConfirmDeleteModal from '../Contacts/ConfirmDeleteModal/ConfirmDeleteModal';
@@ -34,7 +33,6 @@ function ContactsModal({ user, onClose }) {
 
         fetchContacts();
     }, [user.id]);
-    
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -128,35 +126,37 @@ function ContactsModal({ user, onClose }) {
     );
 
     return (
-        <div className="modal">
-            <div className="modal-content" style={{marginTop: '10%'}}>
-                <span className="close" onClick={onClose}>&times;</span>
+        <div className={styles['contacts-modal']}>
+            <div className={styles['contacts-modal-content']} style={{marginTop: '10%'}}>
+                <span className={styles['contacts-close']} onClick={onClose}>&times;</span>
                 <h2>Contacts</h2>
-                <button onClick={handleAddContactClick}>Add New Contact</button>
+                <button className={styles['contacts-add-button']} onClick={handleAddContactClick}>Add New Contact</button>
                 <input
                     type="text"
                     placeholder="Search by name"
                     value={searchTerm}
                     onChange={handleSearchChange}
-                    style={{ marginBottom: '20px', padding: '10px', width: '100%' }}
+                    className={styles['contacts-search-input']}
                 />
-                {filteredContacts.length > 0 ? (
-                    <ul>
-                        {filteredContacts.map(contact => (
-                            <li key={contact.id}>
-                                <p><strong>Name:</strong> {contact.name}</p>
-                                <p><strong>Phone Number:</strong> {contact.phone_number}</p>
-                                <p><strong>Note:</strong> {contact.note}</p>
-                                <button onClick={() => handleEditClick(contact)}>Edit</button>
-                                <button onClick={() => handleDeleteClick(contact.id)}>Delete</button>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No contacts found.</p>
-                )}
+                <div className={styles['contacts-list-container']}>
+                    {filteredContacts.length > 0 ? (
+                        <ul className={styles['contacts-list']}>
+                            {filteredContacts.map(contact => (
+                                <li key={contact.id} className={styles['contacts-item']}>
+                                    <p><strong>Name:</strong> {contact.name}</p>
+                                    <p><strong>Phone Number:</strong> {contact.phone_number}</p>
+                                    <p><strong>Note:</strong> {contact.note}</p>
+                                    <button onClick={() => handleEditClick(contact)}>Edit</button>
+                                    <button onClick={() => handleDeleteClick(contact.id)}>Delete</button>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No contacts found.</p>
+                    )}
+                </div>
                 {editContact && (
-                    <div>
+                    <div className={styles['contacts-edit-form']}>
                         <h3>Edit Contact</h3>
                         <input
                             type="text"
@@ -180,7 +180,7 @@ function ContactsModal({ user, onClose }) {
                             placeholder="Note"
                         />
                         <button onClick={handleSaveClick}>Save</button>
-                        <button onClick={() => setEditContact(null)}>Cancel</button>
+                        <button className={styles['cancel-button']} onClick={() => setEditContact(null)}>Cancel</button>
                     </div>
                 )}
                 {showAddContactModal && (
