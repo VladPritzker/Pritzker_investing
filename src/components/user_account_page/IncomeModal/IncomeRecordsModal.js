@@ -164,7 +164,7 @@ function IncomeRecordsModal({ user, onClose }) {
                                     <td>{record.amount}</td>
                                     <td>{new Date(record.record_date).toISOString().split('T')[0]}</td>
                                     <td>
-                                        <button style={{width: '40%', paddingRight: '35px', backgroundColor: '#0056b3', color: 'white', border: 'none' }} onClick={() => handleDeleteClick(record)}>Delete</button>
+                                        <button style={{width: '40%', height: '20px', backgroundColor: '#0056b3', color: 'white', border: 'none' }} onClick={() => handleDeleteClick(record)}>Delete</button>
                                     </td>
                                 </tr>
                             ))}
