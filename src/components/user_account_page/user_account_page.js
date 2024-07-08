@@ -8,6 +8,8 @@ import IncomeRecordsModal from './IncomeModal/IncomeRecordsModal';
 import ContactsModal from '../user_account_page/Contacts/contacts';
 import MeetingsModal from './Meetings/MeetingsModal'; 
 import '../user_account_page/user_account_page.css';
+import SleepLogsModal from '../user_account_page/TimeManagementModal/TimeManagementModal';
+
 
 function UserAccountPage() {
     const location = useLocation();
@@ -29,6 +31,14 @@ function UserAccountPage() {
     const [showYearlySpending, setShowYearlySpending] = useState(false);
     const [showMonthlyIncome, setShowMonthlyIncome] = useState(false);
     const [showYearlyIncome, setShowYearlyIncome] = useState(false);
+
+    
+
+
+    const [showSleepLogsModal, setShowSleepLogsModal] = useState(false);
+    const [sleepLogs, setSleepLogs] = useState([]);
+
+    
 
     const numberFormat = (number) =>
         new Intl.NumberFormat('en-US', { style: 'decimal', maximumFractionDigits: 2 }).format(number || 0);
@@ -96,6 +106,23 @@ function UserAccountPage() {
         
         fetchUserData();
     }, [location.state?.user]);
+
+    const fetchSleepLogs = useCallback(async () => {
+        if (user && user.id) {
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/sleeplogs/${user.id}/`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setSleepLogs(data);
+                } else {
+                    console.error('Failed to fetch sleep logs');
+                }
+            } catch (error) {
+                console.error('Error fetching sleep logs:', error);
+            }
+        }
+    }, [user]);
+    
     
 
     useEffect(() => {
@@ -343,6 +370,13 @@ function UserAccountPage() {
                             Meetings
                             {hasTodayMeetings && <span style={styles.notificationIcon}></span>}
                         </button>
+                        <button id="time-management" type="button" onClick={() => {
+    fetchSleepLogs();
+    setShowSleepLogsModal(true);
+}}>
+    Time Management
+</button>
+
                     </div>
                     <div className="data-rows">
                         <h1 style={{marginLeft: '-40%'}}>User Data</h1>
@@ -449,6 +483,10 @@ function UserAccountPage() {
             {showMeetingsModal && (
                 <MeetingsModal user={user} onClose={() => setShowMeetingsModal(false)} />
             )}
+            {showSleepLogsModal && (
+            <SleepLogsModal sleepLogs={sleepLogs} onClose={() => setShowSleepLogsModal(false)} />
+        )}
+            
         </div>
     );
 }
