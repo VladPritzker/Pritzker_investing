@@ -118,15 +118,21 @@ function UserAccountPage() {
     }, [fetchMeetings]);
 
     const checkForTodayMeetings = (meetings) => {
+        if (!meetings) {
+            console.error('Meetings data is not available.');
+            return;
+        }
+    
         console.log('Checking for today\'s meetings:', new Date().toDateString());
-        console.log('Meetings:', meetings);  // Log meetings data
+        console.log('Meetings:', meetings); // Log meetings data
         const today = new Date().toDateString();
         const todayMeetings = meetings.filter(
             meeting => new Date(meeting.datetime).toDateString() === today
         );
-        console.log('Today\'s meetings:', todayMeetings);  // Log today's meetings
+        console.log('Today\'s meetings:', todayMeetings); // Log today's meetings
         setHasTodayMeetings(todayMeetings.length > 0);
     };
+    
 
     const handleLogout = () => {
         localStorage.removeItem('userToken');
@@ -193,16 +199,29 @@ function UserAccountPage() {
                     },
                     body: JSON.stringify({ [field]: newValue }),
                 });
-                if (response.ok) {
-                    const updatedUser = await response.json();
-                    console.log('Data updated successfully:', updatedUser);
-                    setUser(prevUser => ({ ...prevUser, [field]: newValue }));
-                    setMeetings(updatedUser.meetings || []); // Ensure meetings data is updated
-                    checkForTodayMeetings(updatedUser.meetings); // Check for today's meetings
-                } else {
-                    const errorData = await response.json();
-                    console.error('Failed to update data:', errorData);
+    
+                console.log('Response status:', response.status);
+                console.log('Response ok:', response.ok);
+    
+                const responseData = await response.json();
+                console.log('Response data:', responseData);
+    
+                if (!response.ok) {
+                    console.error('Failed to update data:', responseData);
                     alert('Failed to update data.');
+                    return;
+                }
+    
+                console.log('Data updated successfully:', responseData);
+                setUser(prevUser => ({ ...prevUser, [field]: newValue }));
+    
+                // Ensure meetings data is updated before checking today's meetings
+                if (responseData.meetings && Array.isArray(responseData.meetings)) {
+                    setMeetings(responseData.meetings);
+                    checkForTodayMeetings(responseData.meetings); // Check for today's meetings
+                } else {
+                    setMeetings([]);
+                    console.warn('No meetings data found in response.');
                 }
             } catch (error) {
                 console.error('Error updating data:', error);
@@ -210,6 +229,10 @@ function UserAccountPage() {
             }
         }
     };
+    
+    
+    
+    
 
     function getCookie(name) {
         let cookieValue = null;
