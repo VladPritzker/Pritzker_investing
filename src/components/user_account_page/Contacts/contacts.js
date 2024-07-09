@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styles from '../Contacts/Contacts.module.css'; // Updated to import as styles
-
+import styles from '../Contacts/Contacts.module.css';
 import AddContactModal from './AddContactModal/AddContactModal';
 import ConfirmDeleteModal from '../Contacts/ConfirmDeleteModal/ConfirmDeleteModal';
 
@@ -15,6 +14,7 @@ function ContactsModal({ user, onClose }) {
     });
     const [showAddContactModal, setShowAddContactModal] = useState(false); // State for showing add contact modal
     const [searchTerm, setSearchTerm] = useState(''); // State for search term
+    const [expandedContactId, setExpandedContactId] = useState(null); // State for expanded contact details
 
     useEffect(() => {
         const fetchContacts = async () => {
@@ -121,13 +121,21 @@ function ContactsModal({ user, onClose }) {
         setSearchTerm(e.target.value);
     };
 
+    const handleToggleDetails = (contactId) => {
+        if (expandedContactId === contactId) {
+            setExpandedContactId(null);
+        } else {
+            setExpandedContactId(contactId);
+        }
+    };
+
     const filteredContacts = contacts.filter(contact =>
         contact.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
         <div className={styles['contacts-modal']}>
-            <div className={styles['contacts-modal-content']} style={{marginTop: '10%'}}>
+            <div className={styles['contacts-modal-content']} style={{ marginTop: '10%' }}>
                 <span className={styles['contacts-close']} onClick={onClose}>&times;</span>
                 <h2>Contacts</h2>
                 <button className={styles['contacts-add-button']} onClick={handleAddContactClick}>Add New Contact</button>
@@ -143,11 +151,18 @@ function ContactsModal({ user, onClose }) {
                         <ul className={styles['contacts-list']}>
                             {filteredContacts.map(contact => (
                                 <li key={contact.id} className={styles['contacts-item']}>
-                                    <p><strong>Name:</strong> {contact.name}</p>
-                                    <p><strong>Phone Number:</strong> {contact.phone_number}</p>
-                                    <p><strong>Note:</strong> {contact.note}</p>
-                                    <button onClick={() => handleEditClick(contact)}>Edit</button>
-                                    <button onClick={() => handleDeleteClick(contact.id)}>Delete</button>
+                                    <div onClick={() => handleToggleDetails(contact.id)} className={styles['contact-summary']}>
+                                        <p><strong>Name:</strong> {contact.name}</p>
+                                        <span className={styles['expand-arrow']}>&#9660; Click for full info</span>
+                                    </div>
+                                    {expandedContactId === contact.id && (
+                                        <div className={styles['contact-details']}>
+                                            <p><strong>Phone Number:</strong> {contact.phone_number}</p>
+                                            <p><strong>Note:</strong> {contact.note}</p>
+                                            <button onClick={() => handleEditClick(contact)}>Edit</button>
+                                            <button onClick={() => handleDeleteClick(contact.id)}>Delete</button>
+                                        </div>
+                                    )}
                                 </li>
                             ))}
                         </ul>
