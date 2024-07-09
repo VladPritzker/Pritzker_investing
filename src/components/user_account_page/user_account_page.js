@@ -10,7 +10,6 @@ import MeetingsModal from './Meetings/MeetingsModal';
 import '../user_account_page/user_account_page.css';
 import SleepLogsModal from '../user_account_page/TimeManagementModal/TimeManagementModal';
 
-
 function UserAccountPage() {
     const location = useLocation();
     const navigate = useNavigate();
@@ -26,19 +25,13 @@ function UserAccountPage() {
     const [hasTodayMeetings, setHasTodayMeetings] = useState(false);
     const [meetings, setMeetings] = useState([]);
 
-
     const [showMonthlySpending, setShowMonthlySpending] = useState(false);
     const [showYearlySpending, setShowYearlySpending] = useState(false);
     const [showMonthlyIncome, setShowMonthlyIncome] = useState(false);
     const [showYearlyIncome, setShowYearlyIncome] = useState(false);
 
-    
-
-
-    const [showSleepLogsModal, setShowSleepLogsModal] = useState(false);
     const [sleepLogs, setSleepLogs] = useState([]);
-
-    
+    const [showSleepLogsModal, setShowSleepLogsModal] = useState(false);
 
     const numberFormat = (number) =>
         new Intl.NumberFormat('en-US', { style: 'decimal', maximumFractionDigits: 2 }).format(number || 0);
@@ -83,7 +76,6 @@ function UserAccountPage() {
             }
         }
     }, [user]);
-    
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -103,27 +95,23 @@ function UserAccountPage() {
                 }
             }
         };
-        
+
         fetchUserData();
     }, [location.state?.user]);
 
-    const fetchSleepLogs = useCallback(async () => {
-        if (user && user.id) {
-            try {
-                const response = await fetch(`http://127.0.0.1:8000/sleeplogs/${user.id}/`);
-                if (response.ok) {
-                    const data = await response.json();
-                    setSleepLogs(data);
-                } else {
-                    console.error('Failed to fetch sleep logs');
-                }
-            } catch (error) {
-                console.error('Error fetching sleep logs:', error);
-            }
-        }
-    }, [user]);
-    
-    
+    const handleSaveSleepLog = (wakeUpTime, sleepTime) => {
+        const newLog = {
+            id: sleepLogs.length + 1,
+            date: new Date().toLocaleDateString(),
+            sleep_time: new Date().setHours(sleepTime.split(':')[0], sleepTime.split(':')[1]),
+            wake_time: new Date().setHours(wakeUpTime.split(':')[0], wakeUpTime.split(':')[1])
+        };
+        setSleepLogs([...sleepLogs, newLog]);
+    };
+
+    const handleDeleteSleepLog = (id) => {
+        setSleepLogs(sleepLogs.filter(log => log.id !== id));
+    };
 
     useEffect(() => {
         fetchMeetings();
@@ -193,7 +181,6 @@ function UserAccountPage() {
             alert('Failed to refresh data. Please try again later.');
         }
     };
-    
 
     const handleUpdateClick = async (field) => {
         const newValue = prompt(`Enter new value for ${field}:`, user[field]);
@@ -223,7 +210,7 @@ function UserAccountPage() {
             }
         }
     };
-    
+
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -321,8 +308,6 @@ function UserAccountPage() {
             boxShadow: '0 0 5px rgba(0, 0, 0, 0.2)',
             border: '2px solid #f0f0f0'  // Slightly Off-White
         }
-        
-    
     };
 
     const stylesUp = {
@@ -337,7 +322,6 @@ function UserAccountPage() {
             borderRadius: '5px',
             cursor: 'pointer',
             marginLeft: '-20%'                        
-
         },
         updateButtonHover: {
             backgroundColor: '#004494'
@@ -370,13 +354,8 @@ function UserAccountPage() {
                             Meetings
                             {hasTodayMeetings && <span style={styles.notificationIcon}></span>}
                         </button>
-                        <button id="time-management" type="button" onClick={() => {
-    fetchSleepLogs();
-    setShowSleepLogsModal(true);
-}}>
-    Time Management
-</button>
 
+                        <button id="SleepLogs" type="button" onClick={() => setShowSleepLogsModal(true)}>Sleep Logs</button>
                     </div>
                     <div className="data-rows">
                         <h1 style={{marginLeft: '-40%'}}>User Data</h1>
@@ -484,9 +463,15 @@ function UserAccountPage() {
                 <MeetingsModal user={user} onClose={() => setShowMeetingsModal(false)} />
             )}
             {showSleepLogsModal && (
-            <SleepLogsModal sleepLogs={sleepLogs} onClose={() => setShowSleepLogsModal(false)} />
-        )}
-            
+                <SleepLogsModal
+                    userId={user?.id}  // Pass userId to the SleepLogsModal
+                    sleepLogs={sleepLogs}
+                    setSleepLogs={setSleepLogs}  // Pass setSleepLogs to the SleepLogsModal
+                    onClose={() => setShowSleepLogsModal(false)}
+                    onSave={handleSaveSleepLog}
+                    onDelete={handleDeleteSleepLog}
+                />
+            )}
         </div>
     );
 }
