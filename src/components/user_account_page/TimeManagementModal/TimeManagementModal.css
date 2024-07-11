@@ -61,7 +61,6 @@
     border-radius: 4px;
 }
 
-/* Ensuring buttons have the same size and color */
 .save-button, .cancel-button, .add-button, .chart-button {
     padding: 10px;
     background-color: #007bff;
@@ -71,7 +70,7 @@
     cursor: pointer;
     transition: background-color 0.2s;
     margin: 5px;
-    width: 140px; /* Set the same width for all buttons */
+    width: 100px; /* Set the same width for all buttons */
 }
 
 .save-button:hover, .cancel-button:hover, .add-button:hover, .chart-button:hover {
@@ -167,9 +166,8 @@
     margin-top: 10px;
 }
 
-.addLogButtons {
-    display: table-row;
-    flex-direction: column; /* Arrange children vertically */
-    gap:40px; /* Optional: Add some space between buttons */
-    align-items: center; /* Center align buttons horizontally */
+.sleep-log-icon {
+    color: #007bff;
+    font-size: 1.2em;
+    cursor: pointer;
 }

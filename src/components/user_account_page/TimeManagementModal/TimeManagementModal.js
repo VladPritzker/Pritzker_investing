@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import { Tooltip } from 'react-tooltip'; // Corrected import
 import '../TimeManagementModal/TimeManagementModal.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import DeleteConfirmationModal from './DeleteModalSleepLogs/DeleteModal'; 
@@ -16,6 +19,8 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
     });
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isChartModalOpen, setIsChartModalOpen] = useState(false); // State to control the chart modal
+    const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+    const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
     useEffect(() => {
         const fetchSleepLogs = async () => {
@@ -150,14 +155,44 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
         setIsChartModalOpen(false);
     };
 
+    const renderTileContent = ({ date, view }) => {
+        if (view === 'month') {
+            const log = sleepLogs.find(log => new Date(log.date).toDateString() === date.toDateString());
+            if (log) {
+                return (
+                    <>
+                        <i className="fas fa-bed sleep-log-icon" data-tip data-for={`log-${log.id}`} />
+                        <Tooltip id={`log-${log.id}`} place="top">
+                            <span>
+                                Sleep Time: {new Date(log.sleep_time).toLocaleTimeString()}<br />
+                                Wake Time: {new Date(log.wake_time).toLocaleTimeString()}
+                            </span>
+                        </Tooltip>
+                    </>
+                );
+            }
+        }
+        return null;
+    };
+
     return (
         <div className="modal-overlay">
             <div className="sleep-logs-modal">
                 <i className="fas fa-times modal-close" onClick={onClose}></i>
                 <h2>Time Management</h2>
-                <button onClick={handleOpenAddModal} className="add-button">Add New Log</button>
-                <button onClick={handleOpenChartModal} className="chart-button">Chart</button> {/* Add the Chart button */}
-                <div className="sleep-logs-container">
+                <div className="button-container"> {/* Added button-container for buttons */}
+                    <button onClick={handleOpenAddModal} className="add-button">Add New Log</button>
+                    <button onClick={handleOpenChartModal} className="chart-button">Chart</button>
+                </div>
+                    <Calendar
+                        value={new Date(currentYear, currentMonth)}
+                        tileContent={renderTileContent}
+                        onActiveStartDateChange={({ activeStartDate }) => {
+                            setCurrentMonth(activeStartDate.getMonth());
+                            setCurrentYear(activeStartDate.getFullYear());
+                        }}
+                    />
+                <div className="sleep-logs-container"> {/* Ensure sleep-logs-container is displayed */}
                     <div className="sleep-logs">
                         {sleepLogs.map(log => (
                             <div key={log.id} className="sleep-log-entry">
@@ -184,16 +219,20 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
                                             value={editSleepLogDetails.wake_time}
                                             onChange={handleEditInputChange}
                                         />
-                                        <button onClick={handleSave} className="save-button">Save</button>
-                                        <button onClick={handleCancelEdit} className="cancel-button">Cancel</button>
+                                        <div className='addLogButtons'> {/* Ensure buttons are vertically aligned */}
+                                            <button onClick={handleSave} className="save-button">Save</button>
+                                            <button onClick={handleCancelEdit} className="cancel-button">Cancel</button>
+                                        </div>
                                     </div>
                                 ) : (
                                     <>
                                         <p><strong>Date:</strong> {log.date}</p>
                                         <p><strong>Sleep Time:</strong> {new Date(log.sleep_time).toLocaleTimeString()}</p>
                                         <p><strong>Wake Time:</strong> {new Date(log.wake_time).toLocaleTimeString()}</p>
-                                        <button onClick={() => handleEdit(log)} className="edit-button">Edit</button>
-                                        <button onClick={() => handleDelete(log.id)} className="delete-button">Delete</button>
+                                        <div className='addLogButtons'> {/* Ensure buttons are vertically aligned */}
+                                            <button onClick={() => handleEdit(log)} className="edit-button">Edit</button>
+                                            <button onClick={() => handleDelete(log.id)} className="delete-button">Delete</button>
+                                        </div>
                                     </>
                                 )}
                             </div>
