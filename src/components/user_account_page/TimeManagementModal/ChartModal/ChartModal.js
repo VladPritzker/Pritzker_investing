@@ -60,6 +60,18 @@ const ChartModal = ({ sleepLogs, onClose }) => {
                 }
             },
         },
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+                        const value = context.raw;
+                        const hours = Math.floor(value);
+                        const minutes = Math.round((value - hours) * 60);
+                        return `${context.dataset.label}: ${hours}:${minutes === 0 ? '00' : minutes < 10 ? '0' + minutes : minutes}`;
+                    }
+                }
+            }
+        }
     };
 
     return (
