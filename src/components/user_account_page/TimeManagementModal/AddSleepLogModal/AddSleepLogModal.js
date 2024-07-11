@@ -75,8 +75,10 @@ const AddSleepLogModal = ({ userId, onClose, onSave }) => {
                         value={wakeUpTime}
                         onChange={(e) => setWakeUpTime(e.target.value)}
                     />
-                    <button onClick={handleSave} className="save-button">Save</button>
-                    <button onClick={onClose} className="cancel-button">Cancel</button>
+                    <div className='addLogButtons'>
+                        <button onClick={handleSave} className="save-button">Save</button>
+                        <button onClick={onClose} className="cancel-button">Cancel</button>                        
+                    </div>                    
                 </div>
             </div>
         </div>
