@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import '../TimeManagementModal/TimeManagementModal.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import DeleteConfirmationModal from './DeleteModalSleepLogs/DeleteModal'; // Import the delete confirmation modal
+import AddSleepLogModal from '../TimeManagementModal/AddSleepLogModal/AddSleepLogModal'; // Import the add sleep log modal
 
-const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onSave, onDelete }) => {
-    const [wakeUpTime, setWakeUpTime] = useState('');
-    const [sleepTime, setSleepTime] = useState('');
-    const [date, setDate] = useState('');
+const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [deleteLogId, setDeleteLogId] = useState(null);
     const [editLogId, setEditLogId] = useState(null);
@@ -15,21 +13,20 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onSave, onDe
         sleep_time: '',
         wake_time: ''
     });
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchSleepLogs = async () => {
-            if (userId) {
-                try {
-                    const response = await fetch(`http://127.0.0.1:8000/sleeplogs/${userId}/`);
-                    if (response.ok) {
-                        const data = await response.json();
-                        setSleepLogs(data);
-                    } else {
-                        console.error('Failed to fetch sleep logs');
-                    }
-                } catch (error) {
-                    console.error('Error fetching sleep logs:', error);
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/sleeplogs/${userId}/`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setSleepLogs(data);
+                } else {
+                    console.error('Failed to fetch sleep logs');
                 }
+            } catch (error) {
+                console.error('Error fetching sleep logs:', error);
             }
         };
 
@@ -49,36 +46,30 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onSave, onDe
         };
     }, [onClose]);
 
-    const handleSave = () => {
-        if (editLogId) {
-            handleUpdateSleepLog(editLogId, editSleepLogDetails);
-        } else {
-            onSave(date, sleepTime, wakeUpTime);
-        }
-        setDate('');
-        setWakeUpTime('');
-        setSleepTime('');
-        setEditLogId(null);
-    };
-
-    const handleUpdateSleepLog = async (logId, details) => {
+    const handleSave = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/sleeplogs/${userId}/${logId}/`, {
-                method: 'PUT',
+            const response = await fetch(`http://127.0.0.1:8000/sleeplogs/${userId}/${editLogId}/`, {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    date: details.date,
-                    sleep_time: `${details.date} ${details.sleep_time}:00`,
-                    wake_time: `${details.date} ${details.wake_time}:00`,
+                    date: editSleepLogDetails.date,
+                    sleep_time: `${editSleepLogDetails.date}T${editSleepLogDetails.sleep_time}:00`,
+                    wake_time: `${editSleepLogDetails.date}T${editSleepLogDetails.wake_time}:00`,
                 }),
             });
             if (response.ok) {
                 const updatedLog = await response.json();
                 setSleepLogs(prevLogs =>
-                    prevLogs.map(log => (log.id === logId ? updatedLog : log))
+                    prevLogs.map(log => (log.id === editLogId ? updatedLog : log))
                 );
+                setEditLogId(null);
+                setEditSleepLogDetails({
+                    date: '',
+                    sleep_time: '',
+                    wake_time: ''
+                });
             } else {
                 console.error('Failed to update sleep log');
             }
@@ -92,10 +83,21 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onSave, onDe
         setIsDeleteModalOpen(true);
     };
 
-    const confirmDelete = () => {
-        onDelete(deleteLogId);
-        setIsDeleteModalOpen(false);
-        setDeleteLogId(null);
+    const confirmDelete = async () => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/sleeplogs/${userId}/${deleteLogId}/`, {
+                method: 'DELETE',
+            });
+            if (response.ok) {
+                setSleepLogs(prevLogs => prevLogs.filter(log => log.id !== deleteLogId));
+                setIsDeleteModalOpen(false);
+                setDeleteLogId(null);
+            } else {
+                console.error('Failed to delete sleep log');
+            }
+        } catch (error) {
+            console.error('Error deleting sleep log:', error);
+        }
     };
 
     const cancelDelete = () => {
@@ -106,8 +108,8 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onSave, onDe
     const handleEdit = (log) => {
         setEditSleepLogDetails({
             date: log.date,
-            sleep_time: new Date(log.sleep_time).toISOString().substring(11, 16),
-            wake_time: new Date(log.wake_time).toISOString().substring(11, 16)
+            sleep_time: log.sleep_time.substring(11, 16),
+            wake_time: log.wake_time.substring(11, 16)
         });
         setEditLogId(log.id);
     };
@@ -126,37 +128,24 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onSave, onDe
         setEditSleepLogDetails({ ...editSleepLogDetails, [name]: value });
     };
 
+    const handleOpenAddModal = () => {
+        setIsAddModalOpen(true);
+    };
+
+    const handleCloseAddModal = () => {
+        setIsAddModalOpen(false);
+    };
+
+    const handleSaveNewLog = (newLog) => {
+        setSleepLogs(prevLogs => [...prevLogs, newLog]);
+    };
+
     return (
         <div className="modal-overlay">
             <div className="sleep-logs-modal">
                 <i className="fas fa-times modal-close" onClick={onClose}></i>
                 <h2>Time Management</h2>
-                <div className="time-input">
-                    <label>Date:</label>
-                    <input
-                        type="date"
-                        value={date}
-                        onChange={(e) => setDate(e.target.value)}
-                    />
-                    <label>Sleep Time:</label>
-                    <input
-                        type="time"
-                        value={sleepTime}
-                        onChange={(e) => setSleepTime(e.target.value)}
-                    />
-                    <label>Wake Up Time:</label>
-                    <input
-                        type="time"
-                        value={wakeUpTime}
-                        onChange={(e) => setWakeUpTime(e.target.value)}
-                    />
-                    <button onClick={handleSave} className="save-button">
-                        {editLogId ? 'Update' : 'Save'}
-                    </button>
-                    {editLogId && (
-                        <button onClick={handleCancelEdit} className="cancel-button">Cancel</button>
-                    )}
-                </div>
+                <button onClick={handleOpenAddModal} className="add-button">Add New Log</button>
                 <div className="sleep-logs-container">
                     <div className="sleep-logs">
                         {sleepLogs.map(log => (
@@ -205,6 +194,13 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onSave, onDe
                 <DeleteConfirmationModal
                     onConfirm={confirmDelete}
                     onCancel={cancelDelete}
+                />
+            )}
+            {isAddModalOpen && (
+                <AddSleepLogModal
+                    userId={userId}
+                    onClose={handleCloseAddModal}
+                    onSave={handleSaveNewLog}
                 />
             )}
         </div>
