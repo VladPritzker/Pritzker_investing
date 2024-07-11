@@ -61,7 +61,8 @@
     border-radius: 4px;
 }
 
-.save-button, .cancel-button, .add-button {
+/* Ensuring buttons have the same size and color */
+.save-button, .cancel-button, .add-button, .chart-button {
     padding: 10px;
     background-color: #007bff;
     color: white;
@@ -70,10 +71,10 @@
     cursor: pointer;
     transition: background-color 0.2s;
     margin: 5px;
-    width: 100px; /* Set the same width for all buttons */
+    width: 140px; /* Set the same width for all buttons */
 }
 
-.save-button:hover, .cancel-button:hover, .add-button:hover {
+.save-button:hover, .cancel-button:hover, .add-button:hover, .chart-button:hover {
     background-color: #0056b3;
 }
 
