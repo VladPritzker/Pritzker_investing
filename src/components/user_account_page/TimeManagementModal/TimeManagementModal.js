@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import '../TimeManagementModal/TimeManagementModal.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import DeleteConfirmationModal from './DeleteModalSleepLogs/DeleteModal'; // Import the delete confirmation modal
-import AddSleepLogModal from '../TimeManagementModal/AddSleepLogModal/AddSleepLogModal'; // Import the add sleep log modal
+import DeleteConfirmationModal from './DeleteModalSleepLogs/DeleteModal'; 
+import AddSleepLogModal from '../TimeManagementModal/AddSleepLogModal/AddSleepLogModal';
+import ChartModal from './ChartModal/ChartModal'; // Import the ChartModal
 
 const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -14,6 +15,7 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
         wake_time: ''
     });
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isChartModalOpen, setIsChartModalOpen] = useState(false); // State to control the chart modal
 
     useEffect(() => {
         const fetchSleepLogs = async () => {
@@ -140,12 +142,21 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
         setSleepLogs(prevLogs => [...prevLogs, newLog]);
     };
 
+    const handleOpenChartModal = () => {
+        setIsChartModalOpen(true);
+    };
+
+    const handleCloseChartModal = () => {
+        setIsChartModalOpen(false);
+    };
+
     return (
         <div className="modal-overlay">
             <div className="sleep-logs-modal">
                 <i className="fas fa-times modal-close" onClick={onClose}></i>
                 <h2>Time Management</h2>
                 <button onClick={handleOpenAddModal} className="add-button">Add New Log</button>
+                <button onClick={handleOpenChartModal} className="chart-button">Chart</button> {/* Add the Chart button */}
                 <div className="sleep-logs-container">
                     <div className="sleep-logs">
                         {sleepLogs.map(log => (
@@ -201,6 +212,12 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
                     userId={userId}
                     onClose={handleCloseAddModal}
                     onSave={handleSaveNewLog}
+                />
+            )}
+            {isChartModalOpen && (
+                <ChartModal
+                    sleepLogs={sleepLogs}
+                    onClose={handleCloseChartModal}
                 />
             )}
         </div>
