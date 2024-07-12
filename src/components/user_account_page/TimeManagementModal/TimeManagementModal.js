@@ -199,7 +199,13 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
                     <button onClick={handleOpenAddModal} className="add-button">Add New Log</button>
                     <button onClick={handleOpenChartModal} className="chart-button">Chart</button>
                 </div>
-                <Calendar
+                <div className="info-text">
+                    <p>
+                        If the sleep time is after 22:00 and the wake-up time is after 06:00, the icon on the calendar will be red.
+                        Otherwise, it will be green.
+                    </p>
+                </div>
+                <Calendar 
                     value={new Date(currentYear, currentMonth)}
                     tileContent={renderTileContent}
                     onActiveStartDateChange={({ activeStartDate }) => {

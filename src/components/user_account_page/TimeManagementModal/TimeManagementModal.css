@@ -80,10 +80,20 @@
 .sleep-logs-container {
     max-height: 300px; /* Adjust height to fit 4 rows */
     overflow-y: auto;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 10px;
+    border: 1px solid #ccc; /* Slightly lighter color for a modern look */
+    border-radius: 12px; /* Increased radius for smoother corners */
+    padding: 15px; /* Increased padding for more space inside */
+    margin-top: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    background: linear-gradient(145deg, #f0f0f0, #ffffff); /* Subtle gradient background */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for border and shadow */
 }
+
+.sleep-logs-container:hover {
+    border-color: #007bff; /* Highlight border color on hover */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); /* Deeper shadow on hover */
+}
+
 
 .sleep-log-entry {
     border-bottom: 1px solid #ddd;
@@ -171,4 +181,20 @@
 .sleep-log-icon {
     font-size: 1.2em;
     cursor: pointer;
+}
+
+.info-text {
+    text-align: center;
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f9f9f9; /* Light grey background */
+    border: 1px solid #ccc; /* Light grey border */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.info-text p {
+    margin: 0;
+    font-size: 1.1em; /* Slightly larger font size */
+    color: #333; /* Dark grey text color */
 }
