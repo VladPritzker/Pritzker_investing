@@ -1,12 +1,12 @@
-// src/components/user_account_page/TimeManagementModal/SleepLogPopup/SleepLogPopup.js
+// src/components/user_account_page/TimeManagementModal/SleepLogPopup.js
 import React from 'react';
 import './SleepLogPopup.css';
 
 const SleepLogPopup = ({ log, onClose }) => {
     return (
-        <div className="sleep-log-popup">
-            <div className="sleep-log-popup-content">
-                <span className="sleep-log-close" onClick={onClose}>&times;</span>
+        <div className="sleep-log-popup-overlay">
+            <div className="sleep-log-popup">
+                <i className="fas fa-times popup-close" onClick={onClose}></i>
                 <h2>Sleep Log Details</h2>
                 <p><strong>Date:</strong> {log.date}</p>
                 <p><strong>Sleep Time:</strong> {new Date(log.sleep_time).toLocaleTimeString()}</p>

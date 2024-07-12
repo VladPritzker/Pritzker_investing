@@ -166,8 +166,9 @@
     margin-top: 10px;
 }
 
+
+/* src/components/user_account_page/TimeManagementModal/TimeManagementModal.css */
 .sleep-log-icon {
-    color: #007bff;
     font-size: 1.2em;
     cursor: pointer;
 }

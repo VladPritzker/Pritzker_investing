@@ -7,7 +7,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import DeleteConfirmationModal from './DeleteModalSleepLogs/DeleteModal';
 import AddSleepLogModal from '../TimeManagementModal/AddSleepLogModal/AddSleepLogModal';
 import ChartModal from './ChartModal/ChartModal';
-import SleepLogPopup from './SleepLogPopup/SleepLogPopup'; // Import the SleepLogPopup
+import SleepLogPopup from './SleepLogPopup/SleepLogPopup';
 
 const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -22,7 +22,7 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
     const [isChartModalOpen, setIsChartModalOpen] = useState(false);
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
     const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-    const [selectedLog, setSelectedLog] = useState(null); // State for the selected log
+    const [selectedLog, setSelectedLog] = useState(null);
 
     useEffect(() => {
         const fetchSleepLogs = async () => {
@@ -161,9 +161,26 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
         if (view === 'month') {
             const log = sleepLogs.find(log => new Date(log.date).toDateString() === date.toDateString());
             if (log) {
+                const sleepTime = new Date(log.sleep_time);
+                const wakeTime = new Date(log.wake_time);
+    
+                const sleepHours = sleepTime.getHours();
+                const sleepMinutes = sleepTime.getMinutes();
+                const wakeHours = wakeTime.getHours();
+                const wakeMinutes = wakeTime.getMinutes();
+    
+                // Check if sleep time is after 22:00 or before 06:00
+                const isSleepTimeLate = (sleepHours > 22 || (sleepHours === 22 && sleepMinutes > 0)) || (sleepHours < 6);
+    
+                // Check if wake time is after 06:00
+                const isWakeTimeEarly = (wakeHours > 6 || (wakeHours === 6 && wakeMinutes > 0));
+    
+                const iconColor = isSleepTimeLate && isWakeTimeEarly ? 'red' : 'green';
+    
                 return (
                     <i
                         className="fas fa-bed sleep-log-icon"
+                        style={{ color: iconColor }} // Set icon color
                         onClick={() => setSelectedLog(log)} // Set the selected log on click
                     />
                 );
@@ -171,6 +188,7 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
         }
         return null;
     };
+    
 
     return (
         <div className="modal-overlay">
@@ -224,7 +242,7 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
                                 ) : (
                                     <>
                                         <p><strong>Date:</strong> {log.date}</p>
-                                        <p><strong>Sleep Time:</strong> {new Date(log.sleep_time).toLocaleTimeString()}</p>
+                                        <p><strong>Sleep Time:</strong> {new Date(log.sleep_time).toLocaleTimeString()}</p>                                    
                                         <p><strong>Wake Time:</strong> {new Date(log.wake_time).toLocaleTimeString()}</p>
                                         <div className='addLogButtons'>
                                             <button onClick={() => handleEdit(log)} className="edit-button">Edit</button>
