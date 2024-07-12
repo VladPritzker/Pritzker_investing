@@ -1,12 +1,13 @@
+// src/components/user_account_page/TimeManagementModal/SleepLogsModal.js
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { Tooltip } from 'react-tooltip'; // Corrected import
 import '../TimeManagementModal/TimeManagementModal.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import DeleteConfirmationModal from './DeleteModalSleepLogs/DeleteModal'; 
+import DeleteConfirmationModal from './DeleteModalSleepLogs/DeleteModal';
 import AddSleepLogModal from '../TimeManagementModal/AddSleepLogModal/AddSleepLogModal';
-import ChartModal from './ChartModal/ChartModal'; // Import the ChartModal
+import ChartModal from './ChartModal/ChartModal';
+import SleepLogPopup from './SleepLogPopup/SleepLogPopup'; // Import the SleepLogPopup
 
 const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -18,9 +19,10 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
         wake_time: ''
     });
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-    const [isChartModalOpen, setIsChartModalOpen] = useState(false); // State to control the chart modal
+    const [isChartModalOpen, setIsChartModalOpen] = useState(false);
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
     const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+    const [selectedLog, setSelectedLog] = useState(null); // State for the selected log
 
     useEffect(() => {
         const fetchSleepLogs = async () => {
@@ -160,15 +162,10 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
             const log = sleepLogs.find(log => new Date(log.date).toDateString() === date.toDateString());
             if (log) {
                 return (
-                    <>
-                        <i className="fas fa-bed sleep-log-icon" data-tip data-for={`log-${log.id}`} />
-                        <Tooltip id={`log-${log.id}`} place="top">
-                            <span>
-                                Sleep Time: {new Date(log.sleep_time).toLocaleTimeString()}<br />
-                                Wake Time: {new Date(log.wake_time).toLocaleTimeString()}
-                            </span>
-                        </Tooltip>
-                    </>
+                    <i
+                        className="fas fa-bed sleep-log-icon"
+                        onClick={() => setSelectedLog(log)} // Set the selected log on click
+                    />
                 );
             }
         }
@@ -180,19 +177,19 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
             <div className="sleep-logs-modal">
                 <i className="fas fa-times modal-close" onClick={onClose}></i>
                 <h2>Time Management</h2>
-                <div className="button-container"> {/* Added button-container for buttons */}
+                <div className="button-container">
                     <button onClick={handleOpenAddModal} className="add-button">Add New Log</button>
                     <button onClick={handleOpenChartModal} className="chart-button">Chart</button>
                 </div>
-                    <Calendar
-                        value={new Date(currentYear, currentMonth)}
-                        tileContent={renderTileContent}
-                        onActiveStartDateChange={({ activeStartDate }) => {
-                            setCurrentMonth(activeStartDate.getMonth());
-                            setCurrentYear(activeStartDate.getFullYear());
-                        }}
-                    />
-                <div className="sleep-logs-container"> {/* Ensure sleep-logs-container is displayed */}
+                <Calendar
+                    value={new Date(currentYear, currentMonth)}
+                    tileContent={renderTileContent}
+                    onActiveStartDateChange={({ activeStartDate }) => {
+                        setCurrentMonth(activeStartDate.getMonth());
+                        setCurrentYear(activeStartDate.getFullYear());
+                    }}
+                />
+                <div className="sleep-logs-container">
                     <div className="sleep-logs">
                         {sleepLogs.map(log => (
                             <div key={log.id} className="sleep-log-entry">
@@ -219,7 +216,7 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
                                             value={editSleepLogDetails.wake_time}
                                             onChange={handleEditInputChange}
                                         />
-                                        <div className='addLogButtons'> {/* Ensure buttons are vertically aligned */}
+                                        <div className='addLogButtons'>
                                             <button onClick={handleSave} className="save-button">Save</button>
                                             <button onClick={handleCancelEdit} className="cancel-button">Cancel</button>
                                         </div>
@@ -229,7 +226,7 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
                                         <p><strong>Date:</strong> {log.date}</p>
                                         <p><strong>Sleep Time:</strong> {new Date(log.sleep_time).toLocaleTimeString()}</p>
                                         <p><strong>Wake Time:</strong> {new Date(log.wake_time).toLocaleTimeString()}</p>
-                                        <div className='addLogButtons'> {/* Ensure buttons are vertically aligned */}
+                                        <div className='addLogButtons'>
                                             <button onClick={() => handleEdit(log)} className="edit-button">Edit</button>
                                             <button onClick={() => handleDelete(log.id)} className="delete-button">Delete</button>
                                         </div>
@@ -257,6 +254,12 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
                 <ChartModal
                     sleepLogs={sleepLogs}
                     onClose={handleCloseChartModal}
+                />
+            )}
+            {selectedLog && (
+                <SleepLogPopup
+                    log={selectedLog}
+                    onClose={() => setSelectedLog(null)}
                 />
             )}
         </div>
