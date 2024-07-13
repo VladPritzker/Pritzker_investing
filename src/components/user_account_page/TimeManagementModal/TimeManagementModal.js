@@ -1,4 +1,3 @@
-// src/components/user_account_page/TimeManagementModal/SleepLogsModal.js
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -54,6 +53,33 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
             document.removeEventListener('keydown', handleKeyDown);
         };
     }, [onClose]);
+
+    useEffect(() => {
+        sleepLogs.forEach(log => {
+            const sleepTime = new Date(log.sleep_time);
+            const wakeTime = new Date(log.wake_time);
+    
+            const sleepHours = sleepTime.getHours();
+            const sleepMinutes = sleepTime.getMinutes();
+            const wakeHours = wakeTime.getHours();
+            const wakeMinutes = wakeTime.getMinutes();
+    
+            // Check if sleep time is after 22:00 or before 06:00
+            const isSleepTimeLate = (sleepHours >= 22) || (sleepHours < 6);
+    
+            // Check if wake time is after 06:00
+            const isWakeTimeEarly = wakeHours < 6;
+    
+            const iconColor = isSleepTimeLate && isWakeTimeEarly ? 'red' : 'green';
+    
+            console.log(`Date: ${log.date}`);
+            console.log('Sleep Time:', sleepHours, sleepMinutes);
+            console.log('Wake Time:', wakeHours, wakeMinutes);
+            console.log('isSleepTimeLate:', isSleepTimeLate);
+            console.log('isWakeTimeEarly:', isWakeTimeEarly);
+            console.log('Icon Color:', iconColor);
+        });
+    }, [sleepLogs]);
 
     const handleSave = async () => {
         try {
@@ -170,12 +196,15 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
                 const wakeMinutes = wakeTime.getMinutes();
     
                 // Check if sleep time is after 22:00 or before 06:00
-                const isSleepTimeLate = (sleepHours > 22 || (sleepHours === 22 && sleepMinutes > 0)) || (sleepHours < 6);
+                const isSleepTimeLate = (sleepHours >= 22 || sleepHours < 6);
     
                 // Check if wake time is after 06:00
-                const isWakeTimeEarly = (wakeHours > 6 || (wakeHours === 6 && wakeMinutes > 0));
+                const isWakeTimeEarly = (wakeHours >= 6);
     
-                const iconColor = isSleepTimeLate && isWakeTimeEarly ? 'red' : 'green';
+                // Icon should be red if either condition is true
+                const iconColor = isSleepTimeLate || isWakeTimeEarly ? 'red' : 'green';
+    
+             
     
                 return (
                     <i
@@ -189,7 +218,7 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
         return null;
     };
     
-
+    
     return (
         <div className="modal-overlay">
             <div className="sleep-logs-modal">
