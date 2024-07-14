@@ -1,13 +1,26 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate hook for redirection
 import '../login_registration_page/registrationPage.css';  
-import investmentTypes from './investImg.json'; 
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 
+import img1 from '../login_registration_page/img/slider/istockphoto-1297492947-612x612.jpg';
+import img2 from '../login_registration_page/img/slider/istockphoto-1311598658-612x612.jpg';
+import img3 from '../login_registration_page/img/slider/istockphoto-1473508651-170667a.webp';
+import img4 from '../login_registration_page/img/slider/istockphoto-1490675795-170667a.webp';
 
-
+const inputStyle = {
+  width: '50%',
+  marginLeft: '10px',
+  padding: '12px',
+  marginTop: '8px',
+  marginBottom: '16px',
+  border: 'none',
+  borderBottom: '2px solid #0056b3',
+  boxSizing: 'border-box',
+  display: 'inline-block'
+};
 
 function SampleNextArrow(props) {
   const { className, style, onClick } = props;
@@ -20,8 +33,6 @@ function SampleNextArrow(props) {
   );
 }
 
-
-
 function SamplePrevArrow(props) {
   const { className, style, onClick } = props;
   return (
@@ -32,19 +43,6 @@ function SamplePrevArrow(props) {
     />
   );
 }
-
-const inputStyle = {
-        width: '50%',
-        marginLeft: '10px',
-        padding: '12px',
-        marginTop: '8px',
-        marginBottom: '16px',
-        border: 'none',
-        borderBottom: '2px solid #0056b3',
-        boxSizing: 'border-box',
-        display: 'inline-block'
-    };
-
 
 function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);  
@@ -65,6 +63,7 @@ function LoginPage() {
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow />
   };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (isLogin) {
@@ -134,60 +133,40 @@ function LoginPage() {
 
   // Function to obtain CSRF token from cookies
   function getCookie(name) {
-    const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+    const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*([^;]+)');
     return cookieValue ? cookieValue.pop() : '';
   }
 
-  
   const handleLinkClick = (url, e) => {
     e.preventDefault(); // Prevents default link action
     window.open(url, '_blank');
   };
 
-  const inputStyle = {
-    width: '50%',
-    marginLeft: '10px',
-    padding: '12px',
-    marginTop: '8px',
-    marginBottom: '16px',
-    border: 'none',
-    borderBottom: '2px solid #0056b3',
-    boxSizing: 'border-box',
-    display: 'inline-block'
-};
-
   return (
-    
-
-    
     <div className="login-container">    
       <form onSubmit={handleSubmit} className="login-form login">
         <h2>{isLogin ? 'Login' : 'Register'}</h2>
         {!isLogin && (
-          <input style={{inputStyle}} type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+          <input style={inputStyle} type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
         )}
-        <input style={{inputStyle}} type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <input style={{inputStyle}} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        <input style={inputStyle} type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <input style={inputStyle} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         {!isLogin && (
-          <input style={{inputStyle}} type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+          <input style={inputStyle} type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
         )}
         <button type="submit">{isLogin ? 'Login' : 'Register'}</button>
         <button style={{marginBottom: '10%'}} type="button" onClick={() => setIsLogin(!isLogin)} className="toggle">
           {isLogin ? 'Need an account? Register' : 'Have an account? Login'}
         </button>
         <Slider {...settings} >
-          {Object.entries(investmentTypes).map(([key, { src, href }]) => (
-            <div key={key}>
-              <a href={href} onClick={(e) => handleLinkClick(href, e)} style={{ cursor: 'pointer', textDecoration: 'inherit', color: 'inherit' }}>
-                <img src={src} alt={key} />
-                <div style={{marginTop: '10px'}} className="legend">{key}</div>
-              </a>
+          {[img1, img2, img3, img4].map((src, index) => (
+            <div key={index}>
+              <img src={src} alt={`slider-img-${index}`} />
             </div>
           ))}
         </Slider>        
       </form>    
-      
-          </div>
+    </div>
   );
 }
 
