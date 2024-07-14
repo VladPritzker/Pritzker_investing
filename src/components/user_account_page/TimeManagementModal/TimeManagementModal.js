@@ -8,7 +8,7 @@ import AddSleepLogModal from '../TimeManagementModal/AddSleepLogModal/AddSleepLo
 import ChartModal from './ChartModal/ChartModal';
 import SleepLogPopup from './SleepLogPopup/SleepLogPopup';
 
-const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) => {
+const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose }) => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [deleteLogId, setDeleteLogId] = useState(null);
     const [editLogId, setEditLogId] = useState(null);
@@ -54,32 +54,15 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
         };
     }, [onClose]);
 
-    useEffect(() => {
-        sleepLogs.forEach(log => {
-            const sleepTime = new Date(log.sleep_time);
-            const wakeTime = new Date(log.wake_time);
-    
-            const sleepHours = sleepTime.getHours();
-            const sleepMinutes = sleepTime.getMinutes();
-            const wakeHours = wakeTime.getHours();
-            const wakeMinutes = wakeTime.getMinutes();
-    
-            // Check if sleep time is after 22:00 or before 06:00
-            const isSleepTimeLate = (sleepHours >= 22) || (sleepHours < 6);
-    
-            // Check if wake time is after 06:00
-            const isWakeTimeEarly = wakeHours < 6;
-    
-            const iconColor = isSleepTimeLate && isWakeTimeEarly ? 'red' : 'green';
-    
-            console.log(`Date: ${log.date}`);
-            console.log('Sleep Time:', sleepHours, sleepMinutes);
-            console.log('Wake Time:', wakeHours, wakeMinutes);
-            console.log('isSleepTimeLate:', isSleepTimeLate);
-            console.log('isWakeTimeEarly:', isWakeTimeEarly);
-            console.log('Icon Color:', iconColor);
-        });
-    }, [sleepLogs]);
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+    };
+
+    const formatTime = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    };
 
     const handleSave = async () => {
         try {
@@ -142,7 +125,7 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
 
     const handleEdit = (log) => {
         setEditSleepLogDetails({
-            date: log.date,
+            date: formatDate(log.date),
             sleep_time: log.sleep_time.substring(11, 16),
             wake_time: log.wake_time.substring(11, 16)
         });
@@ -185,7 +168,7 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
 
     const renderTileContent = ({ date, view }) => {
         if (view === 'month') {
-            const log = sleepLogs.find(log => new Date(log.date).toDateString() === date.toDateString());
+            const log = sleepLogs.find(log => new Date(log.date).toISOString().split('T')[0] === date.toISOString().split('T')[0]);
             if (log) {
                 const sleepTime = new Date(log.sleep_time);
                 const wakeTime = new Date(log.wake_time);
@@ -204,8 +187,6 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
                 // Icon should be red if either condition is true
                 const iconColor = isSleepTimeLate || isWakeTimeEarly ? 'red' : 'green';
     
-             
-    
                 return (
                     <i
                         className="fas fa-bed sleep-log-icon"
@@ -217,8 +198,7 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
         }
         return null;
     };
-    
-    
+
     return (
         <div className="modal-overlay">
             <div className="sleep-logs-modal">
@@ -276,9 +256,9 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose, onDelete }) 
                                     </div>
                                 ) : (
                                     <>
-                                        <p><strong>Date:</strong> {log.date}</p>
-                                        <p><strong>Sleep Time:</strong> {new Date(log.sleep_time).toLocaleTimeString()}</p>                                    
-                                        <p><strong>Wake Time:</strong> {new Date(log.wake_time).toLocaleTimeString()}</p>
+                                        <p><strong>Date:</strong> {formatDate(log.date)}</p>
+                                        <p><strong>Sleep Time:</strong> {formatTime(log.sleep_time)}</p>                                    
+                                        <p><strong>Wake Time:</strong> {formatTime(log.wake_time)}</p>
                                         <div className='addLogButtons'>
                                             <button onClick={() => handleEdit(log)} className="edit-button">Edit</button>
                                             <button onClick={() => handleDelete(log.id)} className="delete-button">Delete</button>
