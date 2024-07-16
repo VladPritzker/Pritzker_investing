@@ -66,7 +66,7 @@ function UserAccountPage() {
     const fetchMeetings = useCallback(async () => {
         if (user && user.id) {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/meetings/${user.id}/`);
+                const response = await fetch(`${apiUrl}/meetings/${user.id}/`);
                 if (response.ok) {
                     const data = await response.json();
                     setMeetings(data);
@@ -85,7 +85,7 @@ function UserAccountPage() {
             const storedUser = location.state?.user;
             if (storedUser?.id) {
                 try {
-                    const response = await fetch(`http://127.0.0.1:8000/users/${storedUser.id}/`);
+                    const response = await fetch(`${apiUrl}/users/${storedUser.id}/`);
                     if (response.ok) {
                         const updatedUser = await response.json();
                         console.log('Fetched user data:', updatedUser);  // Log the entire user data
@@ -174,7 +174,7 @@ function UserAccountPage() {
 
     const handleRefreshDataClick = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/`);
+            const response = await fetch(`${apiUrl}/users/${user.id}/`);
             if (response.ok) {
                 const updatedUser = await response.json();
                 console.log('Data refreshed successfully:', updatedUser);
@@ -195,7 +195,7 @@ function UserAccountPage() {
         const newValue = prompt(`Enter new value for ${field}:`, user[field]);
         if (newValue !== null && newValue !== user[field]) {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/`, {
+                const response = await fetch(`${apiUrl}/users/${user.id}/`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
@@ -264,7 +264,7 @@ function UserAccountPage() {
         formData.append('photo', file);
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/upload_photo/`, {
+            const response = await fetch(`${apiUrl}/users/${user.id}/upload_photo/`, {
                 method: 'POST',
                 body: formData,
                 headers: {
@@ -363,7 +363,7 @@ function UserAccountPage() {
                         {user?.photo && (
                             <div style={{ textAlign: 'center', marginBottom: '10px' }}>
                                 <h2 style={{ ...styles.textStyle, marginBottom: '10px' }}>Profile Photo</h2>
-                                <img src={`http://127.0.0.1:8000${user.photo}`} alt="User Photo" width="100" /> {/* Use the correct photo URL */}
+                                <img src={`${apiUrl}${user.photo}`} alt="User Photo" width="100" /> {/* Use the correct photo URL */}
                             </div>
                         )}
                          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', marginLeft: '35%' }}>
