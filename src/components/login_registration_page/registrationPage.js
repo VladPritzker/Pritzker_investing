@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate hook for redirection
-import '../login_registration_page/registrationPage.css';  
+import { useNavigate } from 'react-router-dom';
+import '../login_registration_page/registrationPage.css';
 import Slider from 'react-slick';
-import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 import img1 from '../login_registration_page/img/slider/istockphoto-1297492947-612x612.jpg';
 import img2 from '../login_registration_page/img/slider/istockphoto-1311598658-612x612.jpg';
 import img3 from '../login_registration_page/img/slider/istockphoto-1473508651-170667a.webp';
 import img4 from '../login_registration_page/img/slider/istockphoto-1490675795-170667a.webp';
+
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const inputStyle = {
   width: '50%',
@@ -45,12 +47,12 @@ function SamplePrevArrow(props) {
 }
 
 function LoginPage() {
-  const [isLogin, setIsLogin] = useState(true);  
+  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const navigate = useNavigate(); // Create an instance of useNavigate for redirection
+  const navigate = useNavigate();
 
   const settings = {
     dots: true,
@@ -66,15 +68,15 @@ function LoginPage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    console.log(`API URL: ${apiUrl}`); // Add logging here
+
     if (isLogin) {
-      // Handle login
       const loginData = {
         action: 'login',
         email: email,
         password: password
       };
 
-      // Fetch login data
       try {
         const response = await postUserData(loginData);
         if (response.ok) {
@@ -89,7 +91,6 @@ function LoginPage() {
         alert(error.message);
       }
     } else {
-      // Handle registration
       if (password !== confirmPassword) {
         alert('Passwords do not match.');
         return;
@@ -102,12 +103,11 @@ function LoginPage() {
         password: password
       };
 
-      // Fetch registration data
       try {
         const response = await postUserData(userData);
         if (response.ok) {
           alert('Registration successful. Please login.');
-          window.location.reload(); // Reload the page to reset form or redirect as needed
+          window.location.reload();
         } else {
           throw new Error('Registration failed.');
         }
@@ -118,33 +118,41 @@ function LoginPage() {
     }
   };
 
-  // Function to post user data for login or registration
   const postUserData = async (data) => {
-    const csrftoken = getCookie('csrftoken'); // Obtain CSRF token from cookies
-    const apiUrl = process.env.REACT_APP_API_URL; // Get the API URL from environment variables
-    return await fetch(`${apiUrl}/users/`, {
+    const csrftoken = getCookie('csrftoken');
+    const response = await fetch(`${apiUrl}/users/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRFToken': csrftoken // Include CSRF token in the headers
+        'X-CSRFToken': csrftoken,
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     });
+    return response;
   };
 
-  // Function to obtain CSRF token from cookies
-  function getCookie(name) {
-    const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*([^;]+)');
-    return cookieValue ? cookieValue.pop() : '';
-  }
+  const getCookie = (name) => {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  };
 
   const handleLinkClick = (url, e) => {
-    e.preventDefault(); // Prevents default link action
+    e.preventDefault();
     window.open(url, '_blank');
   };
 
   return (
-    <div className="login-container">    
+    <div className="login-container">
       <form onSubmit={handleSubmit} className="login-form login">
         <h2>{isLogin ? 'Login' : 'Register'}</h2>
         {!isLogin && (
@@ -156,17 +164,17 @@ function LoginPage() {
           <input style={inputStyle} type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required autoComplete="new-password" />
         )}
         <button type="submit">{isLogin ? 'Login' : 'Register'}</button>
-        <button style={{marginBottom: '10%'}} type="button" onClick={() => setIsLogin(!isLogin)} className="toggle">
+        <button style={{ marginBottom: '10%' }} type="button" onClick={() => setIsLogin(!isLogin)} className="toggle">
           {isLogin ? 'Need an account? Register' : 'Have an account? Login'}
         </button>
-        <Slider {...settings} >
+        <Slider {...settings}>
           {[img1, img2, img3, img4].map((src, index) => (
             <div key={index}>
               <img src={src} alt={`slider-img-${index}`} />
             </div>
           ))}
-        </Slider>        
-      </form>    
+        </Slider>
+      </form>
     </div>
   );
 }
