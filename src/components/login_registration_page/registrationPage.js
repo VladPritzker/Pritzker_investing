@@ -27,7 +27,7 @@ function SampleNextArrow(props) {
   return (
     <div
       className={className}
-      style={{ ...style, display: "block", background: "none", color: "slategre"}}
+      style={{ ...style, display: "block", background: "none", color: "slategrey"}}
       onClick={onClick}
     />
   );
@@ -38,7 +38,7 @@ function SamplePrevArrow(props) {
   return (
     <div
       className={className}
-      style={{ ...style, display: "block", background: "none", color: "slategre" }}
+      style={{ ...style, display: "block", background: "none", color: "slategrey" }}
       onClick={onClick}
     />
   );
@@ -121,7 +121,8 @@ function LoginPage() {
   // Function to post user data for login or registration
   const postUserData = async (data) => {
     const csrftoken = getCookie('csrftoken'); // Obtain CSRF token from cookies
-    return await fetch('http://127.0.0.1:8000/users/', {
+    const apiUrl = process.env.REACT_APP_API_URL; // Get the API URL from environment variables
+    return await fetch(`${apiUrl}/users/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -147,12 +148,12 @@ function LoginPage() {
       <form onSubmit={handleSubmit} className="login-form login">
         <h2>{isLogin ? 'Login' : 'Register'}</h2>
         {!isLogin && (
-          <input style={inputStyle} type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+          <input style={inputStyle} type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required autoComplete="username" />
         )}
-        <input style={inputStyle} type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <input style={inputStyle} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        <input style={inputStyle} type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
+        <input style={inputStyle} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
         {!isLogin && (
-          <input style={inputStyle} type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+          <input style={inputStyle} type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required autoComplete="new-password" />
         )}
         <button type="submit">{isLogin ? 'Login' : 'Register'}</button>
         <button style={{marginBottom: '10%'}} type="button" onClick={() => setIsLogin(!isLogin)} className="toggle">
