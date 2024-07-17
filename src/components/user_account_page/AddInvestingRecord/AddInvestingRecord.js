@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../RecordModal/RecordModal.css';
 import investmentTypes from './investmentTypes.json'; // Adjust the path as necessary
-
+const apiUrl = process.env.REACT_APP_API_URL;
 function AddInvestingRecord({ user, onClose, token, fetchInvestingRecords }) {
     const [recordName, setRecordName] = useState('');
     const [recordAmount, setRecordAmount] = useState('');
@@ -18,7 +18,7 @@ function AddInvestingRecord({ user, onClose, token, fetchInvestingRecords }) {
     
     const handleSaveInvestRecord = async (recordData) => {
         try {
-            const response = await fetch('http://127.0.0.1:8000/investing_records/', {
+            const response = await fetch(`${apiUrl}/investing_records/`, {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',

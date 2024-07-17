@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../Monthly_Expenses/Monthly_Expenses.css';
+const apiUrl = process.env.REACT_APP_API_URL;
+
 
 function MonthlyExpensesModal({ user, onClose }) {
     const [expenses, setExpenses] = useState([]);
@@ -14,7 +16,7 @@ function MonthlyExpensesModal({ user, onClose }) {
     }, [user.id]); // Ensure dependency array is correct
 
     const fetchExpenses = async () => {
-        const url = `http://127.0.0.1:8000/monthly_expenses/${user.id}`;
+        const url = `${apiUrl}/monthly_expenses/${user.id}`;
         console.log('Fetching expenses from:', url);  // Debugging line to check the URL
         try {
             const response = await fetch(url);
@@ -32,7 +34,7 @@ function MonthlyExpensesModal({ user, onClose }) {
 
     const deleteExpense = async (expenseId) => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/monthly_expenses/${user.id}/${expenseId}/`, {
+            const response = await fetch(`${apiUrl}/monthly_expenses/${user.id}/${expenseId}/`, {
                 method: 'DELETE'
             });
             
@@ -61,7 +63,7 @@ function MonthlyExpensesModal({ user, onClose }) {
             amount: newExpenseAmount
         };
         try {
-            const response = await fetch(`http://127.0.0.1:8000/monthly_expenses/${user.id}/`, {
+            const response = await fetch(`${apiUrl}/monthly_expenses/${user.id}/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../Notes/notes.css';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 function AddNoteModal({ user, onClose }) {
     const [title, setTitle] = useState('');
@@ -22,7 +23,7 @@ function AddNoteModal({ user, onClose }) {
         }
         
         try {
-            const response = await axios.post('http://127.0.0.1:8000/notes/', {
+            const response = await axios.post(`${apiUrl}/notes/`, {
                 user_id: user.id,
                 title,
                 note,
