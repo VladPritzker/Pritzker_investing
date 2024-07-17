@@ -7,6 +7,7 @@ import DeleteConfirmationModal from './DeleteModalSleepLogs/DeleteModal';
 import AddSleepLogModal from '../TimeManagementModal/AddSleepLogModal/AddSleepLogModal';
 import ChartModal from './ChartModal/ChartModal';
 import SleepLogPopup from './SleepLogPopup/SleepLogPopup';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose }) => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -26,7 +27,7 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose }) => {
     useEffect(() => {
         const fetchSleepLogs = async () => {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/sleeplogs/${userId}/`);
+                const response = await fetch(`${apiUrl}/sleeplogs/${userId}/`);
                 if (response.ok) {
                     const data = await response.json();
                     setSleepLogs(data);
@@ -66,7 +67,7 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose }) => {
 
     const handleSave = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/sleeplogs/${userId}/${editLogId}/`, {
+            const response = await fetch(`${apiUrl}/sleeplogs/${userId}/${editLogId}/`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -103,7 +104,7 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose }) => {
 
     const confirmDelete = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/sleeplogs/${userId}/${deleteLogId}/`, {
+            const response = await fetch(`${apiUrl}/sleeplogs/${userId}/${deleteLogId}/`, {
                 method: 'DELETE',
             });
             if (response.ok) {

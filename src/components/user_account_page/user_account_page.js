@@ -11,8 +11,24 @@ import MeetingsModal from './Meetings/MeetingsModal';
 import '../user_account_page/user_account_page.css';
 import SleepLogsModal from '../user_account_page/TimeManagementModal/TimeManagementModal';
 const apiUrl = process.env.REACT_APP_API_URL;
+const csrfToken = getCookie('csrftoken'); // Function to get CSRF token from cookies
 
 
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 function UserAccountPage() {
     const location = useLocation();
     const navigate = useNavigate();
@@ -187,19 +203,24 @@ function UserAccountPage() {
             }
         } catch (error) {
             console.error('Error refreshing data:', error);
+         
             alert('Failed to refresh data. Please try again later.');
         }
     };
 
+    
     const handleUpdateClick = async (field) => {
         const newValue = prompt(`Enter new value for ${field}:`, user[field]);
         if (newValue !== null && newValue !== user[field]) {
             try {
+                const csrfToken = getCookie('csrftoken');
                 const response = await fetch(`${apiUrl}/users/${user.id}/`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken,  // Include CSRF token in headers
                     },
+                    credentials: 'include',  // Include credentials to ensure cookies are sent
                     body: JSON.stringify({ [field]: newValue }),
                 });
     
@@ -236,21 +257,6 @@ function UserAccountPage() {
     
     
     
-
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
 
     const handlePhotoUpload = async (event) => {
         const files = event.target.files;

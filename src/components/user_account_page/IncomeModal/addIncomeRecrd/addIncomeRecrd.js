@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../addIncomeRecrd/addIncomeRecrd.css';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 function AddRecordModal({ user, onClose, onRecordAdded }) {
     const [newRecord, setNewRecord] = useState({ title: '', amount: '', record_date: '' });
@@ -12,7 +13,7 @@ function AddRecordModal({ user, onClose, onRecordAdded }) {
     const handleAddRecordSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/add_income/`, {
+            const response = await fetch(`${apiUrl}/users/${user.id}/add_income/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

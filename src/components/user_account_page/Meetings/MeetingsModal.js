@@ -4,6 +4,7 @@ import AddMeetingModal from './AddMeeting/AddMeeting';
 import UpdateMeetingModal from './UpdateMeeting/UpdateMeeting';
 import ConfirmDeleteMeetingModal from './ComfirmDeleteMeeting/ComfirmDeleteMeeting';
 import MeetingsCalendar from './MeetingsCalendar/MeetingsCalendar';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 function MeetingsModal({ user, onClose }) {
     const [meetings, setMeetings] = useState([]);
@@ -17,7 +18,7 @@ function MeetingsModal({ user, onClose }) {
 
     const fetchMeetings = useCallback(async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/meetings/${user.id}/`);
+            const response = await fetch(`${apiUrl}/meetings/${user.id}/`);
             if (response.ok) {
                 const data = await response.json();
                 setMeetings(data);
@@ -59,7 +60,7 @@ function MeetingsModal({ user, onClose }) {
 
     const handleConfirmDelete = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/meetings/${user.id}/${meetingToDelete}/`, {
+            const response = await fetch(`${apiUrl}/meetings/${user.id}/${meetingToDelete}/`, {
                 method: 'DELETE'
             });
             if (response.ok) {
@@ -86,7 +87,7 @@ function MeetingsModal({ user, onClose }) {
         const updatedMeeting = { ...meeting, done: !meeting.done };
         console.log("Sending updated meeting data:", updatedMeeting);
         try {
-            const response = await fetch(`http://127.0.0.1:8000/meetings/${user.id}/${meeting.id}/`, {
+            const response = await fetch(`${apiUrl}/meetings/${user.id}/${meeting.id}/`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'

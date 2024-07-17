@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../InvestingModal/InvestingModal.css';
 import AddNote from '../AddNote/addNoteModal';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const priorityOptions = [
     { id: 1, type: "High Priority" },
@@ -43,7 +44,7 @@ function NotesModal({ user, onClose }) {
 
     const fetchNotes = async () => {
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/notes/user/${user.id}/`);
+            const response = await axios.get(`${apiUrl}/notes/user/${user.id}/`);
             if (response.status === 200) {
                 let filteredNotes = response.data;
                 if (filters.title) {
@@ -72,7 +73,7 @@ function NotesModal({ user, onClose }) {
 
     const toggleNoteVisibility = async (noteId, hideStatus) => {
         try {
-            await axios.patch(`http://127.0.0.1:8000/notes/user/${user.id}/${noteId}/`, { hide: !hideStatus });
+            await axios.patch(`${apiUrl}/notes/user/${user.id}/${noteId}/`, { hide: !hideStatus });
             fetchNotes(); // Refresh list to reflect changes
         } catch (error) {
             console.error('Error updating note visibility:', error);
@@ -81,7 +82,7 @@ function NotesModal({ user, onClose }) {
 
     const toggleNoteDone = async (noteId, doneStatus) => {
         try {
-            await axios.patch(`http://127.0.0.1:8000/notes/user/${user.id}/${noteId}/`, { done: !doneStatus });
+            await axios.patch(`${apiUrl}/notes/user/${user.id}/${noteId}/`, { done: !doneStatus });
             fetchNotes(); // Refresh list to reflect changes
         } catch (error) {
             console.error('Error updating note done status:', error);

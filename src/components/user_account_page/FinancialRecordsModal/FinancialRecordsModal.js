@@ -15,6 +15,7 @@ import AddNewSpendings from '../RecordModal/RecordModal';
 import MonthlyExpensesModal from './Monthly_Expenses/Monthly_Expenses';
 import ConfirmDeleteModal from '../FinancialRecordsModal/deletConf/deleteConf.js';
 import ChartModal from './spendingsChart/spendingsChart.js'
+const apiUrl = process.env.REACT_APP_API_URL;
 
 // Register Chart.js components
 ChartJS.register(
@@ -59,7 +60,7 @@ function FinancialRecordsModal({ user, onClose }) {
 
     const fetchFinancialRecords = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/financial_records/?user_id=${user.id}`);
+            const response = await fetch(`${apiUrl}/financial_records/?user_id=${user.id}`);
             if (response.ok) {
                 const data = await response.json();
                 console.log(data); // Log the data to check structure
@@ -126,7 +127,7 @@ function FinancialRecordsModal({ user, onClose }) {
 
     const handleDeleteConfirm = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/financial_records/${user.id}/${recordToDelete.id}/`, {
+            const response = await fetch(`${apiUrl}/financial_records/${user.id}/${recordToDelete.id}/`, {
                 method: 'DELETE',
             });
             if (response.ok) {

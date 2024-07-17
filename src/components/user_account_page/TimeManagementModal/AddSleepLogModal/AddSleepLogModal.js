@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../TimeManagementModal.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const AddSleepLogModal = ({ userId, onClose, onSave }) => {
     const [wakeUpTime, setWakeUpTime] = useState('');
@@ -28,7 +29,7 @@ const AddSleepLogModal = ({ userId, onClose, onSave }) => {
         };
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/sleeplogs/${userId}/`, {
+            const response = await fetch(`${apiUrl}/sleeplogs/${userId}/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

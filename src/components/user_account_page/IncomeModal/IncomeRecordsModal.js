@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './IncomeRecordsModal.css';
 import AddRecordModal from '../IncomeModal/addIncomeRecrd/addIncomeRecrd';
 import IncomeChartModal from '../IncomeModal/incomeChart/incomeChart';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 function IncomeRecordsModal({ user, onClose }) {
     const [incomeRecords, setIncomeRecords] = useState([]);
@@ -19,7 +20,7 @@ function IncomeRecordsModal({ user, onClose }) {
     useEffect(() => {
         const fetchIncomeRecords = async () => {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/income_records/`);
+                const response = await fetch(`${apiUrl}/users/${user.id}/income_records/`);
                 if (response.ok) {
                     const data = await response.json();
                     setIncomeRecords(data);
@@ -91,7 +92,7 @@ function IncomeRecordsModal({ user, onClose }) {
 
     const handleDeleteConfirm = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/users/${user.id}/delete_income/${recordToDelete.id}/`, {
+            const response = await fetch(`${apiUrl}/users/${user.id}/delete_income/${recordToDelete.id}/`, {
                 method: 'DELETE',
             });
             if (response.ok) {

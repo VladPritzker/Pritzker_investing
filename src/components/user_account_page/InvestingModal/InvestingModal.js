@@ -3,7 +3,7 @@ import '../InvestingModal/InvestingModal.css';
 import investmentTypes from '../AddInvestingRecord/investmentTypes.json';
 import AddInvestingRecord from '../AddInvestingRecord/AddInvestingRecord';
 import ConfirmDeleteModal from '../InvestingModal/ConfirmDelete/confirmDelete';
-
+const apiUrl = process.env.REACT_APP_API_URL;
 
 function InvestingRecordsModal({ user, onClose }) {
     const [investingRecords, setInvestingRecords] = useState([]);
@@ -27,7 +27,7 @@ function InvestingRecordsModal({ user, onClose }) {
 
     const fetchInvestingRecords = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/investing_records/?user_id=${user.id}`);
+            const response = await fetch(`${apiUrl}/investing_records/?user_id=${user.id}`);
             if (response.ok) {
                 const data = await response.json();
                 setInvestingRecords(data);
@@ -104,7 +104,7 @@ function InvestingRecordsModal({ user, onClose }) {
 
     const deleteRecord = async (id) => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/investing_records/`, {
+            const response = await fetch(`${apiUrl}/investing_records/`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',

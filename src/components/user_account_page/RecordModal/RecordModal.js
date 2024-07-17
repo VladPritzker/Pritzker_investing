@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../RecordModal/RecordModal.css';
+const apiUrl = process.env.REACT_APP_API_URL;
+
 function RecordModal({ user, onClose }) {
     const [recordName, setRecordName] = useState('');
     const [recordAmount, setRecordAmount] = useState('');
@@ -25,7 +27,7 @@ function RecordModal({ user, onClose }) {
 
         try {
             const csrftoken = getCookie('csrftoken');
-            const response = await fetch('http://127.0.0.1:8000/financial_records/', {
+            const response = await fetch(`${apiUrl}/financial_records/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
