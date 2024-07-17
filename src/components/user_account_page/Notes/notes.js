@@ -144,7 +144,7 @@ function NotesModal({ user, onClose }) {
         setNotes(updatedNotes);
 
         try {
-            await axios.patch(`http://127.0.0.1:8000/notes/reorder/${user.id}/reorder/`, updatedNotes);
+            await axios.patch(`${apiUrl}/notes/reorder/${user.id}/reorder/`, updatedNotes);
         } catch (error) {
             console.error('Error updating note order:', error);
         }
@@ -160,7 +160,7 @@ function NotesModal({ user, onClose }) {
 
     const saveNoteDetails = async () => {
         try {
-            const response = await axios.patch(`http://127.0.0.1:8000/notes/user/${user.id}/${editNote.id}/`, editNote);
+            const response = await axios.patch(`${apiUrl}/notes/user/${user.id}/${editNote.id}/`, editNote);
             setEditNote(null);
             fetchNotes();
         } catch (error) {
