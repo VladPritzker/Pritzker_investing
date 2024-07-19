@@ -68,7 +68,7 @@ function LoginPage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(`API URL: ${apiUrl}`); // Add logging here
+    console.log(`API URL: ${apiUrl}`);
 
     if (isLogin) {
       const loginData = {
@@ -115,6 +115,30 @@ function LoginPage() {
         console.error('Registration error:', error);
         alert(error.message);
       }
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      alert('Please enter your email to reset your password.');
+      return;
+    }
+
+    const resetData = {
+      action: 'reset_password',
+      email: email
+    };
+
+    try {
+      const response = await postUserData(resetData);
+      if (response.ok) {
+        alert('Password reset link sent to your email.');
+      } else {
+        throw new Error('Password reset failed.');
+      }
+    } catch (error) {
+      console.error('Password reset error:', error);
+      alert(error.message);
     }
   };
 
@@ -167,6 +191,11 @@ function LoginPage() {
         <button style={{ marginBottom: '10%' }} type="button" onClick={() => setIsLogin(!isLogin)} className="toggle">
           {isLogin ? 'Need an account? Register' : 'Have an account? Login'}
         </button>
+        {isLogin && (
+          <button style={{ marginBottom: '10%' }} type="button" onClick={handleForgotPassword} className="forgot-password">
+            Forgot Password?
+          </button>
+        )}
         <Slider {...settings}>
           {[img1, img2, img3, img4].map((src, index) => (
             <div key={index}>

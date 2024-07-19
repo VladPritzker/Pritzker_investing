@@ -144,7 +144,7 @@ function NotesModal({ user, onClose }) {
         setNotes(updatedNotes);
 
         try {
-            await axios.patch(`${apiUrl}/notes/reorder/${user.id}/reorder/`, updatedNotes);
+            await axios.patch(`${apiUrl}/notes/reorder/${user.id}/`, updatedNotes);
         } catch (error) {
             console.error('Error updating note order:', error);
         }
