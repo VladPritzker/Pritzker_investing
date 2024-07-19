@@ -1,3 +1,4 @@
+// src/pages/UserAccountPage.js
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -10,9 +11,9 @@ import ContactsModal from '../user_account_page/Contacts/contacts';
 import MeetingsModal from './Meetings/MeetingsModal'; 
 import '../user_account_page/user_account_page.css';
 import SleepLogsModal from '../user_account_page/TimeManagementModal/TimeManagementModal';
-const apiUrl = process.env.REACT_APP_API_URL;
-const csrfToken = getCookie('csrftoken'); // Function to get CSRF token from cookies
+import StockDataModal from '../user_account_page/StockDataModal/StockDataModal'
 
+const apiUrl = process.env.REACT_APP_API_URL;
 
 function getCookie(name) {
     let cookieValue = null;
@@ -20,7 +21,6 @@ function getCookie(name) {
         const cookies = document.cookie.split(';');
         for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
             if (cookie.substring(0, name.length + 1) === (name + '=')) {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;
@@ -29,6 +29,7 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
 function UserAccountPage() {
     const location = useLocation();
     const navigate = useNavigate();
@@ -43,14 +44,13 @@ function UserAccountPage() {
     const [showMeetingsModal, setShowMeetingsModal] = useState(false);
     const [hasTodayMeetings, setHasTodayMeetings] = useState(false);
     const [meetings, setMeetings] = useState([]);
-
     const [showMonthlySpending, setShowMonthlySpending] = useState(false);
     const [showYearlySpending, setShowYearlySpending] = useState(false);
     const [showMonthlyIncome, setShowMonthlyIncome] = useState(false);
     const [showYearlyIncome, setShowYearlyIncome] = useState(false);
-
     const [sleepLogs, setSleepLogs] = useState([]);
     const [showSleepLogsModal, setShowSleepLogsModal] = useState(false);
+    const [showStockDataModal, setShowStockDataModal] = useState(false);
 
     const numberFormat = (number) =>
         new Intl.NumberFormat('en-US', { style: 'decimal', maximumFractionDigits: 2 }).format(number || 0);
@@ -151,7 +151,6 @@ function UserAccountPage() {
         console.log('Today\'s meetings:', todayMeetings); // Log today's meetings
         setHasTodayMeetings(todayMeetings.length > 0);
     };
-    
 
     const handleLogout = () => {
         localStorage.removeItem('userToken');
@@ -253,10 +252,6 @@ function UserAccountPage() {
             }
         }
     };
-    
-    
-    
-    
 
     const handlePhotoUpload = async (event) => {
         const files = event.target.files;
@@ -388,6 +383,7 @@ function UserAccountPage() {
                         </button>
 
                         <button id="SleepLogs" type="button" onClick={() => setShowSleepLogsModal(true)}>Sleep Logs</button>
+                        <button id="StockDataModal" type="button" onClick={() => setShowStockDataModal(true)}>Stock News</button>
                     </div>
                     <div className="data-rows">
                         <h1 style={{marginLeft: '-40%'}}>User Data</h1>
@@ -493,6 +489,9 @@ function UserAccountPage() {
             )}
             {showMeetingsModal && (
                 <MeetingsModal user={user} onClose={() => setShowMeetingsModal(false)} />
+            )}
+             {showStockDataModal && (
+                <StockDataModal isOpen={showStockDataModal} onClose={() => setShowStockDataModal(false)} />
             )}
             {showSleepLogsModal && (
                 <SleepLogsModal
