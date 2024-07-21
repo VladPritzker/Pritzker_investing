@@ -11,7 +11,7 @@ import ContactsModal from '../user_account_page/Contacts/contacts';
 import MeetingsModal from './Meetings/MeetingsModal'; 
 import '../user_account_page/user_account_page.css';
 import SleepLogsModal from '../user_account_page/TimeManagementModal/TimeManagementModal';
-import StockDataModal from '../user_account_page/StockDataModal/StockDataModal'
+import InvestingComparison from './InvestingComparison/InvestingComparison'
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -50,7 +50,7 @@ function UserAccountPage() {
     const [showYearlyIncome, setShowYearlyIncome] = useState(false);
     const [sleepLogs, setSleepLogs] = useState([]);
     const [showSleepLogsModal, setShowSleepLogsModal] = useState(false);
-    const [showStockDataModal, setShowStockDataModal] = useState(false);
+    const [showInvestingComparison, setShowInvestingComparison] = useState(false);
 
     const numberFormat = (number) =>
         new Intl.NumberFormat('en-US', { style: 'decimal', maximumFractionDigits: 2 }).format(number || 0);
@@ -383,7 +383,7 @@ function UserAccountPage() {
                         </button>
 
                         <button id="SleepLogs" type="button" onClick={() => setShowSleepLogsModal(true)}>Sleep Logs</button>
-                        <button id="StockDataModal" type="button" onClick={() => setShowStockDataModal(true)}>Stock News</button>
+                        <button id="InvestingComparison" type="button" onClick={() => setShowInvestingComparison(true)}>Investing Comparison</button>
                     </div>
                     <div className="data-rows">
                         <h1 style={{marginLeft: '-40%'}}>User Data</h1>
@@ -490,8 +490,8 @@ function UserAccountPage() {
             {showMeetingsModal && (
                 <MeetingsModal user={user} onClose={() => setShowMeetingsModal(false)} />
             )}
-             {showStockDataModal && (
-                <StockDataModal isOpen={showStockDataModal} onClose={() => setShowStockDataModal(false)} />
+             {showInvestingComparison && (
+                <InvestingComparison user={user}  isOpen={showInvestingComparison} onClose={() => setShowInvestingComparison(false)} />
             )}
             {showSleepLogsModal && (
                 <SleepLogsModal
