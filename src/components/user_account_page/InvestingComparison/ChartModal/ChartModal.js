@@ -12,17 +12,21 @@ const ChartModal = ({ isOpen, onClose, data, filter, filterOptions }) => {
   const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
-    if (data) {
+    if (isOpen) {
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      setStartDate(oneWeekAgo);
+
       const filtered = data.filter(item => {
         const itemDate = new Date(item.date);
-        return itemDate >= startDate && itemDate <= endDate;
+        return itemDate >= oneWeekAgo && itemDate <= endDate;
       });
       setFilteredData(filtered);
 
       const companyNames = Array.from(new Set(data.map(item => item.name)));
       setSelectedCompanies(companyNames);
     }
-  }, [data, startDate, endDate]);
+  }, [isOpen, data, endDate]);
 
   const handleCompanyChange = (e) => {
     const { value, checked } = e.target;

@@ -11,7 +11,7 @@ import ContactsModal from '../user_account_page/Contacts/contacts';
 import MeetingsModal from './Meetings/MeetingsModal'; 
 import '../user_account_page/user_account_page.css';
 import SleepLogsModal from '../user_account_page/TimeManagementModal/TimeManagementModal';
-import InvestingComparison from './InvestingComparison/InvestingComparison'
+import InvestingComparison from './InvestingComparison/StockData'
 
 const apiUrl = process.env.REACT_APP_API_URL;
 

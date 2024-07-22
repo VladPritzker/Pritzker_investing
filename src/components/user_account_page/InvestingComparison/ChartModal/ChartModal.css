@@ -1,4 +1,4 @@
-.chart-modal {
+.stock-data-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -10,17 +10,17 @@
   align-items: center;
 }
 
-.chart-modal-content {
+.stock-data-modal-content {
   background-color: white;
   padding: 20px;
   border-radius: 8px;
-  width: 80%;
+  width: 600px;
   max-height: 80%;
-  overflow-y: auto;
+  overflow: hidden; /* Ensures the content doesn't overflow the modal */
   position: relative;
 }
 
-.chart-modal-close {
+.stock-data-modal-close {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -28,22 +28,52 @@
   cursor: pointer;
 }
 
-.chart-modal-header {
+.stock-data-modal-header {
   margin-top: 0;
 }
 
-.chart-modal-select {
+.stock-data-modal-button {
+  background-color: #0056b3;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin: 10px 0;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.stock-data-modal-button:hover {
+  background-color: #003d80;
+}
+
+.stock-data-modal-select {
   margin: 10px 0;
   padding: 5px;
   font-size: 16px;
 }
 
-
-.chart-modal-companies {
-  display: flex;
-  flex-wrap: wrap;
+.error-message {
+  color: red;
 }
 
-.chart-modal-company {
-  margin-right: 10px;
+.stock-data-list {
+  list-style-type: none;
+  padding: 0;
+  max-height: 300px; /* Set the max height for the scrollable area */
+  overflow-y: auto; /* Enable vertical scrolling */
+  margin-bottom: 20px;
+}
+
+.stock-data-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.stock-data-modal-content h4 {
+  margin-top: 0;
+}
+
+.stock-data-modal-content div {
+  margin-bottom: 20px;
 }

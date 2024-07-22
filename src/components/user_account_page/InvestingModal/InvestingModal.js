@@ -148,7 +148,7 @@ function InvestingRecordsModal({ user, onClose }) {
         background: '#f8f9fa',
         borderRadius: "10px",
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-        width: "800px",
+        width: "1200px",
         margin: "auto",
         overflow: "hidden",
         animation: "formAnimation 0.3s ease-out",
