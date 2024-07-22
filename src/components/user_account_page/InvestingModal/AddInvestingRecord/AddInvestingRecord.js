@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import '../RecordModal/RecordModal.css';
+import './AddInvestingRecord.css';
 import investmentTypes from './investmentTypes.json'; // Adjust the path as necessary
+import { npv, irr } from 'financial';
+
 const apiUrl = process.env.REACT_APP_API_URL;
+
 function AddInvestingRecord({ user, onClose, token, fetchInvestingRecords }) {
     const [recordName, setRecordName] = useState('');
     const [recordAmount, setRecordAmount] = useState('');
@@ -9,16 +12,18 @@ function AddInvestingRecord({ user, onClose, token, fetchInvestingRecords }) {
     const [recordTypeInvest, setRecordTypeInvest] = useState('');
     const [calculatedAmount, setCalculatedAmount] = useState('');
     const [manualRate, setManualRate] = useState('');
+    const [cashFlows, setCashFlows] = useState(['']);
+    const [npvValue, setNpvValue] = useState(null);
+    const [irrValue, setIrrValue] = useState(null);
 
     function getCookie(name) {
-        const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+        const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*([^;]+)');
         return cookieValue ? cookieValue.pop() : '';
     }
 
-    
     const handleSaveInvestRecord = async (recordData) => {
         try {
-            const response = await fetch(`${apiUrl}/investing_records/`, {
+            const response = await fetch(`${apiUrl}/investing_records/${user.id}/`, {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -32,15 +37,12 @@ function AddInvestingRecord({ user, onClose, token, fetchInvestingRecords }) {
                 alert('Record added successfully!');
                 fetchInvestingRecords();  // Fetch the updated records list
                 onClose();  // Close the modal after adding the record
-                console.log(recordData)
             } else {
                 const errorData = await response.json();
                 alert(`Failed to add record: ${errorData.error || "Unknown error"}`);
-                console.log(recordData);
             }
         } catch (error) {
             alert(`Network error: ${error.message}`);
-            console.log(recordData);
         }
     };
 
@@ -67,11 +69,12 @@ function AddInvestingRecord({ user, onClose, token, fetchInvestingRecords }) {
             tenor: recordTenor,  // Ensure this is a number if required by backend
             type_invest: recordTypeInvest,  // Ensure this matches one of the expected types
             amount_at_maturity: calculatedAmount,  // New field
-            rate: parseFloat(manualRate),  // New field
-            maturity_date: calculateMaturityDate(recordTenor)  // Calculate maturity date
+            cash_flows: cashFlows.map(parseFloat),  // Parse each cash flow to float
+            discount_rate: parseFloat(manualRate),  // Discount rate instead of rate
+            NPV: npvValue,
+            IRR: irrValue
         };
-    
-        console.log("Sending data to server:", recordData);
+
         handleSaveInvestRecord(recordData);
     };
 
@@ -96,8 +99,35 @@ function AddInvestingRecord({ user, onClose, token, fetchInvestingRecords }) {
         }
     }, [recordAmount, recordTenor, manualRate]);
 
+    useEffect(() => {
+        if (cashFlows.length > 0 && manualRate) {
+            const parsedCashFlows = cashFlows.map(parseFloat);
+            const discountRate = parseFloat(manualRate) / 100;
+            const npvCalc = npv(discountRate, parsedCashFlows);
+            const irrCalc = irr(parsedCashFlows);
+
+            setNpvValue(npvCalc.toFixed(2));
+            setIrrValue((irrCalc * 100).toFixed(2));
+        }
+    }, [cashFlows, manualRate]);
+
     const handleInvestmentTypeChange = (type) => {
         setRecordTypeInvest(type);
+    };
+
+    const addCashFlowField = () => {
+        setCashFlows([...cashFlows, '']);
+    };
+
+    const removeCashFlowField = (index) => {
+        const newCashFlows = cashFlows.filter((_, i) => i !== index);
+        setCashFlows(newCashFlows);
+    };
+
+    const handleCashFlowChange = (index, value) => {
+        const newCashFlows = [...cashFlows];
+        newCashFlows[index] = value;
+        setCashFlows(newCashFlows);
     };
 
     useEffect(() => {
@@ -155,7 +185,7 @@ function AddInvestingRecord({ user, onClose, token, fetchInvestingRecords }) {
                         <option value="">Select Investment Type</option>
                         {Object.entries(investmentTypes).map(([type, details]) => (
                             <option key={type} value={type}>
-                                {type}  <span style={{ color: 'green' }}>(Rate : {details.rate})</span>
+                                {type} <span style={{ color: 'green' }}>(Rate: {details.rate})</span>
                             </option>
                         ))}
                     </select>
@@ -168,8 +198,28 @@ function AddInvestingRecord({ user, onClose, token, fetchInvestingRecords }) {
                         onChange={(e) => setManualRate(e.target.value)}
                     />
                 </div>
+                {cashFlows.map((cf, index) => (
+                    <div key={index}>
+                        <input
+                            type="number"
+                            placeholder={`Cash Flow ${index === 0 ? '(Initial Investment)' : index}`}
+                            value={cf}
+                            onChange={(e) => handleCashFlowChange(index, e.target.value)}
+                        />
+                        {index !== 0 && (
+                            <button type="button" onClick={() => removeCashFlowField(index)}>Remove</button>
+                        )}
+                    </div>
+                ))}
+                <button type="button" onClick={addCashFlowField}>Add Cash Flow</button>
                 {calculatedAmount && (
                     <p>Estimated Amount at Maturity: ${calculatedAmount}</p>
+                )}
+                {npvValue && (
+                    <p>NPV: ${npvValue}</p>
+                )}
+                {irrValue && (
+                    <p>IRR: {irrValue}%</p>
                 )}
                 <button type="button" onClick={handleAddRecord}>Post</button>
             </div>

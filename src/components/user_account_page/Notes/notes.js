@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../InvestingModal/InvestingModal.css';
-import AddNote from '../AddNote/addNoteModal';
+import AddNote from './AddNote/addNoteModal';
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const priorityOptions = [

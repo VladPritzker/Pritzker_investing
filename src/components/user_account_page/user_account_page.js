@@ -11,7 +11,7 @@ import ContactsModal from '../user_account_page/Contacts/contacts';
 import MeetingsModal from './Meetings/MeetingsModal'; 
 import '../user_account_page/user_account_page.css';
 import SleepLogsModal from '../user_account_page/TimeManagementModal/TimeManagementModal';
-import InvestingComparison from './InvestingComparison/StockData'
+import InvestingComparison from './StockData/StockData'
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -382,8 +382,8 @@ function UserAccountPage() {
                             {hasTodayMeetings && <span style={styles.notificationIcon}></span>}
                         </button>
 
+                        <button id="InvestingComparison" type="button" onClick={() => setShowInvestingComparison(true)}>Stocks Data</button>
                         <button id="SleepLogs" type="button" onClick={() => setShowSleepLogsModal(true)}>Sleep Logs</button>
-                        <button id="InvestingComparison" type="button" onClick={() => setShowInvestingComparison(true)}>Investing Comparison</button>
                     </div>
                     <div className="data-rows">
                         <h1 style={{marginLeft: '-40%'}}>User Data</h1>

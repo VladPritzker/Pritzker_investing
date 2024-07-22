@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import '../InvestingModal/InvestingModal.css';
-import investmentTypes from '../AddInvestingRecord/investmentTypes.json';
-import AddInvestingRecord from '../AddInvestingRecord/AddInvestingRecord';
-import ConfirmDeleteModal from '../InvestingModal/ConfirmDelete/confirmDelete';
+import './InvestingModal.css';
+import investmentTypes from './AddInvestingRecord/investmentTypes.json';
+import AddInvestingRecord from './AddInvestingRecord/AddInvestingRecord';
+import ConfirmDeleteModal from './ConfirmDelete/confirmDelete';
+import EditInvestingRecordModal from './EditInvestingRecordModal/EditInvestingRecordModal';
+
 const apiUrl = process.env.REACT_APP_API_URL;
 
 function InvestingRecordsModal({ user, onClose }) {
@@ -20,6 +22,8 @@ function InvestingRecordsModal({ user, onClose }) {
     const [showAddInvesting, setShowAddInvesting] = useState(false);
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
     const [recordToDelete, setRecordToDelete] = useState(null);
+    const [showEditInvesting, setShowEditInvesting] = useState(false);
+    const [recordToEdit, setRecordToEdit] = useState(null);
 
     const formatNumber = (number) => {
         return number.toLocaleString();
@@ -27,7 +31,7 @@ function InvestingRecordsModal({ user, onClose }) {
 
     const fetchInvestingRecords = async () => {
         try {
-            const response = await fetch(`${apiUrl}/investing_records/?user_id=${user.id}`);
+            const response = await fetch(`${apiUrl}/investing_records/${user.id}/`);
             if (response.ok) {
                 const data = await response.json();
                 setInvestingRecords(data);
@@ -104,7 +108,7 @@ function InvestingRecordsModal({ user, onClose }) {
 
     const deleteRecord = async (id) => {
         try {
-            const response = await fetch(`${apiUrl}/investing_records/`, {
+            const response = await fetch(`${apiUrl}/investing_records/${user.id}/${id}/`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -141,6 +145,22 @@ function InvestingRecordsModal({ user, onClose }) {
     const cancelDelete = () => {
         setShowConfirmDelete(false);
         setRecordToDelete(null);
+    };
+
+    const handleEditClick = (record) => {
+        setRecordToEdit(record);
+        setShowEditInvesting(true);
+    };
+
+    const cancelEdit = () => {
+        setShowEditInvesting(false);
+        setRecordToEdit(null);
+    };
+
+    const saveEdit = () => {
+        setShowEditInvesting(false);
+        setRecordToEdit(null);
+        fetchInvestingRecords();
     };
 
     const style = {
@@ -189,7 +209,9 @@ function InvestingRecordsModal({ user, onClose }) {
                             <th>Type</th>
                             <th>Amount at Maturity</th>
                             <th>Maturity date</th>
-                            <th>Rate</th>
+                            <th>Discount Rate</th>
+                            <th>NPV</th>
+                            <th>IRR</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -203,9 +225,11 @@ function InvestingRecordsModal({ user, onClose }) {
                                 <td>{record.type_invest}</td>
                                 <td>{record.amount_at_maturity ? formatNumber(record.amount_at_maturity) : ''}</td>
                                 <td>{record.maturity_date}</td>
-                                <td>{record.rate ? formatNumber(record.rate) : ''}</td>
-                                <td>
-                                    <button style={{width: '60%', marginLeft: '25%'}} onClick={() => handleDeleteClick(record)}>Delete</button>
+                                <td>{record.discount_rate ? formatNumber(record.discount_rate) : ''}</td>
+                                <td>{record.NPV ? formatNumber(record.NPV) : ''}</td>
+                                <td>{record.IRR ? formatNumber(record.IRR) : ''}</td>
+                                <td>                                                                                                                        
+                                            <button onClick={() => handleDeleteClick(record)}>Delete</button>                                                                        
                                 </td>
                             </tr>
                         ))}

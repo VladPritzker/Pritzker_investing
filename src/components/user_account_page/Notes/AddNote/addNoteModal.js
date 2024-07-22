@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../Notes/notes.css';
+import '../notes.css';
 const apiUrl = process.env.REACT_APP_API_URL;
 
 function AddNoteModal({ user, onClose }) {
