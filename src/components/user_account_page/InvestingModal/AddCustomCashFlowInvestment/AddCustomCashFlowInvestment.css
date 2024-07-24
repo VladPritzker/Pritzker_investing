@@ -1,4 +1,4 @@
-.modal {
+.custom-modal {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,7 +12,7 @@
     background-color: rgba(0, 0, 0, 0.2);
 }
 
-.modal-content {
+.custom-modal-content {
     padding: 40px;
     background: rgba(255, 255, 255, 1);
     border-radius: 10px;
@@ -22,12 +22,12 @@
     animation: formAnimation 0.5s forwards;
 }
 
-.modal-content h2 {
+.custom-modal-content h2 {
     text-align: center;
     margin-bottom: 20px;
 }
 
-.modal-content input, .modal-content p {
+.custom-modal-content input, .custom-modal-content p {
     width: 100%;
     padding: 12px;
     margin-top: 8px;
@@ -37,7 +37,7 @@
     box-sizing: border-box;
 }
 
-.modal-content button {
+.custom-modal-content button {
     width: 100%;
     padding: 10px;
     background-color: #0056b3;
@@ -49,24 +49,24 @@
     letter-spacing: 1px;
 }
 
-.modal-content button:hover {
+.custom-modal-content button:hover {
     background-color: #004494;
 }
 
-.modal-content input:focus {
+.custom-modal-content input:focus {
     outline: none;
     border-bottom-color: #ff4500;
 }
 
-.close {
+.custom-close {
     color: #aaaaaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
 }
 
-.close:hover,
-.close:focus {
+.custom-close:hover,
+.custom-close:focus {
     color: #000;
     text-decoration: none;
     cursor: pointer;
@@ -81,16 +81,16 @@
     }
 }
 
-.select-container {
+.custom-select-container {
     position: relative;
     display: inline-block;
-    width: 50%;
+    width: 100%;
     margin-bottom: 20px;
 }
 
-.select-container select {
+.custom-select-container select {
     width: 100%;
-    padding: 20px;
+    padding: 12px;
     border: 2px solid #007bff; /* Blue border */
     border-radius: 5px;
     appearance: none; /* Removes default browser styles */
@@ -99,7 +99,7 @@
     color: #333;
 }
 
-.select-container::after {
+.custom-select-container::after {
     content: '\25BC'; /* Down arrow symbol */
     position: absolute;
     top: 50%;
@@ -110,33 +110,11 @@
     font-size: 12px;
 }
 
-.select-container select:hover {
+.custom-select-container select:hover {
     border-color: #0056b3; /* Darker blue on hover */
 }
 
-.select-container select:focus {
+.custom-select-container select:focus {
     outline: none;
     border-color: #003580; /* Even darker blue on focus */
-}
-
-.financial-records-table td:hover {
-    cursor: pointer;
-}
-
-.financial-records-table td[title] {
-    position: relative;
-}
-
-.financial-records-table td[title]:hover::after {
-    content: attr(title);
-    position: absolute;
-    background: #333;
-    color: #fff;
-    padding: 5px;
-    border-radius: 5px;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    z-index: 1;
 }

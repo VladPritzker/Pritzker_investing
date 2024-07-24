@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import '../AddInvestingRecord/AddInvestingRecord.css';
-import investmentTypes from './investmentTypes.json'; // Adjust the path as necessary
+import './AddCustomCashFlowInvestment.css';
+import investmentTypes from '../AddInvestingRecord/investmentTypes.json'; // Adjust the path as necessary
+import { npv, irr } from 'financial';
+
 const apiUrl = process.env.REACT_APP_API_URL;
 
-function AddInvestingRecord({ user, onClose, token, fetchInvestingRecords }) {
+function AddCustomCashFlowInvestment({ user, onClose, token, fetchInvestingRecords }) {
     const [recordName, setRecordName] = useState('');
     const [recordAmount, setRecordAmount] = useState('');
     const [recordTenor, setRecordTenor] = useState('');
     const [recordTypeInvest, setRecordTypeInvest] = useState('');
-    const [calculatedAmount, setCalculatedAmount] = useState('');
     const [manualRate, setManualRate] = useState('');
-    const [yearlyIncome, setYearlyIncome] = useState('');
+    const [cashFlows, setCashFlows] = useState([]);
+    const [npvValue, setNpvValue] = useState(null);
+    const [irrValue, setIrrValue] = useState(null);
 
     function getCookie(name) {
         const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
@@ -19,7 +22,7 @@ function AddInvestingRecord({ user, onClose, token, fetchInvestingRecords }) {
 
     const handleSaveInvestRecord = async (recordData) => {
         try {
-            const response = await fetch(`${apiUrl}/investing_records/${user.id}/`, {
+            const response = await fetch(`${apiUrl}/custom_cash_flow_investments/${user.id}/`, {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -33,15 +36,12 @@ function AddInvestingRecord({ user, onClose, token, fetchInvestingRecords }) {
                 alert('Record added successfully!');
                 fetchInvestingRecords();  // Fetch the updated records list
                 onClose();  // Close the modal after adding the record
-                console.log(recordData)
             } else {
                 const errorData = await response.json();
                 alert(`Failed to add record: ${errorData.error || "Unknown error"}`);
-                console.log(recordData);
             }
         } catch (error) {
             alert(`Network error: ${error.message}`);
-            console.log(recordData);
         }
     };
 
@@ -67,50 +67,57 @@ function AddInvestingRecord({ user, onClose, token, fetchInvestingRecords }) {
             record_date: new Date().toISOString().slice(0, 10),  // Ensure correct formatting
             tenor: recordTenor,  // Ensure this is a number if required by backend
             type_invest: recordTypeInvest,  // Ensure this matches one of the expected types
-            amount_at_maturity: calculatedAmount,  // New field
-            discount_rate: parseFloat(manualRate),  // New field
-            maturity_date: calculateMaturityDate(recordTenor),  // Calculate maturity date
-            yearly_income: yearlyIncome  // New field
+            cash_flows: JSON.stringify(cashFlows.map(cf => parseFloat(cf))),  // Parse each cash flow to float and convert to JSON string
+            discount_rate: parseFloat(manualRate),  // Discount rate instead of rate
+            NPV: npvValue,
+            IRR: irrValue
         };
 
-        console.log("Sending data to server:", recordData);
         handleSaveInvestRecord(recordData);
     };
 
-    const calculateFutureValue = (amount, rate, years) => {
-        const annualRate = parseFloat(rate) / 100;
-        const futureValue = amount * Math.pow((1 + annualRate), years);
-        return futureValue.toFixed(2);
-    };
+    const calculateNPVandIRR = (flows, rate) => {
+        const discountRate = parseFloat(rate) / 100;
+        const npvCalc = npv(discountRate, flows);
+        const irrCalc = irr(flows);
 
-    const calculateMaturityDate = (tenor) => {
-        const currentDate = new Date();
-        const maturityDate = new Date(currentDate.setFullYear(currentDate.getFullYear() + parseInt(tenor)));
-        return maturityDate.toISOString().slice(0, 10);
-    };
-
-    const calculateYearlyIncome = (amountAtMaturity, discountRate) => {
-        const yearlyIncome = (parseFloat(amountAtMaturity) * (parseFloat(discountRate) / 100));
-        return yearlyIncome.toFixed(2);
+        setNpvValue(npvCalc.toFixed(2));
+        setIrrValue((irrCalc * 100).toFixed(2));
     };
 
     useEffect(() => {
-        if (recordAmount && recordTenor && manualRate) {
-            if (!isNaN(manualRate)) {
-                const futureValue = calculateFutureValue(parseFloat(recordAmount), parseFloat(manualRate), parseFloat(recordTenor));
-                setCalculatedAmount(futureValue);
-
-                // Calculate and set yearly income
-                if (futureValue && manualRate) {
-                    const yearlyIncome = calculateYearlyIncome(futureValue, manualRate);
-                    setYearlyIncome(yearlyIncome);
-                }
+        if (recordTenor && recordAmount) {
+            const years = parseInt(recordTenor);
+            if (!isNaN(years) && years > 0) {
+                const initialInvestment = -Math.abs(parseFloat(recordAmount));
+                const flows = [initialInvestment, ...new Array(years).fill('')];
+                setCashFlows(flows);
             }
         }
-    }, [recordAmount, recordTenor, manualRate]);
+    }, [recordTenor, recordAmount]);
+
+    useEffect(() => {
+        if (cashFlows.length > 0 && manualRate) {
+            const parsedCashFlows = cashFlows.map(parseFloat);
+            if (!parsedCashFlows.includes(NaN)) {
+                calculateNPVandIRR(parsedCashFlows, manualRate);
+            }
+        }
+    }, [cashFlows, manualRate]);
 
     const handleInvestmentTypeChange = (type) => {
         setRecordTypeInvest(type);
+    };
+
+    const handleCashFlowChange = (index, value) => {
+        const newCashFlows = [...cashFlows];
+        newCashFlows[index] = value;
+        setCashFlows(newCashFlows);
+
+        const parsedCashFlows = newCashFlows.map(parseFloat);
+        if (!parsedCashFlows.includes(NaN)) {
+            calculateNPVandIRR(parsedCashFlows, manualRate);
+        }
     };
 
     useEffect(() => {
@@ -141,10 +148,10 @@ function AddInvestingRecord({ user, onClose, token, fetchInvestingRecords }) {
     }
 
     return (
-        <div className="modal">
-            <div className="modal-content" style={style}>
-                <span className="close" onClick={onClose}>&times;</span>
-                <h2>Add New Record</h2>
+        <div className="custom-modal">
+            <div className="custom-modal-content" style={style}>
+                <span className="custom-close" onClick={onClose}>&times;</span>
+                <h2>Add Custom Cash Flow Investment</h2>
                 <input
                     type="text"
                     placeholder="Record Name"
@@ -163,12 +170,12 @@ function AddInvestingRecord({ user, onClose, token, fetchInvestingRecords }) {
                     value={recordTenor}
                     onChange={(e) => setRecordTenor(e.target.value)}
                 />
-                <div className="select-container">
+                <div className="custom-select-container">
                     <select onChange={(e) => handleInvestmentTypeChange(e.target.value)}>
                         <option value="">Select Investment Type</option>
                         {Object.entries(investmentTypes).map(([type, details]) => (
                             <option key={type} value={type}>
-                                {type}  <span style={{ color: 'green' }}>(Rate : {details.rate})</span>
+                                {type} <span style={{ color: 'green' }}>(Rate: {details.rate})</span>
                             </option>
                         ))}
                     </select>
@@ -181,11 +188,22 @@ function AddInvestingRecord({ user, onClose, token, fetchInvestingRecords }) {
                         onChange={(e) => setManualRate(e.target.value)}
                     />
                 </div>
-                {calculatedAmount && (
-                    <p>Estimated Amount at Maturity: ${calculatedAmount}</p>
+                {cashFlows.map((cf, index) => (
+                    <div key={index}>
+                        <input
+                            type="number"
+                            placeholder={`Cash Flow ${index === 0 ? '(Initial Investment)' : index}`}
+                            value={cf}
+                            onChange={(e) => handleCashFlowChange(index, e.target.value)}
+                            readOnly={index === 0}  // Initial investment should not be editable
+                        />
+                    </div>
+                ))}
+                {npvValue && (
+                    <p>NPV: ${npvValue}</p>
                 )}
-                {yearlyIncome && (
-                    <p>Estimated Yearly Income: ${yearlyIncome}</p>
+                {irrValue && (
+                    <p>IRR: {irrValue}%</p>
                 )}
                 <button type="button" onClick={handleAddRecord}>Post</button>
             </div>
@@ -193,4 +211,4 @@ function AddInvestingRecord({ user, onClose, token, fetchInvestingRecords }) {
     );
 }
 
-export default AddInvestingRecord;
+export default AddCustomCashFlowInvestment;

@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import './InvestingModal.css';
 import investmentTypes from './AddInvestingRecord/investmentTypes.json';
 import AddInvestingRecord from './AddInvestingRecord/AddInvestingRecord';
+import AddCustomCashFlowInvestment from './AddCustomCashFlowInvestment/AddCustomCashFlowInvestment';
 import ConfirmDeleteModal from './ConfirmDelete/confirmDelete';
-import EditInvestingRecordModal from './EditInvestingRecordModal/EditInvestingRecordModal';
+import CashFlowModal from './CashFlowModal/CashFlowModal';
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
 function InvestingRecordsModal({ user, onClose }) {
     const [investingRecords, setInvestingRecords] = useState([]);
+    const [customCashFlowInvestments, setCustomCashFlowInvestments] = useState([]);
     const [displayRecords, setDisplayRecords] = useState([]);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
@@ -20,10 +22,16 @@ function InvestingRecordsModal({ user, onClose }) {
     const [filterType, setFilterType] = useState('');
     const [roundedTotal, setRoundedTotal] = useState(0);
     const [showAddInvesting, setShowAddInvesting] = useState(false);
+    const [showAddCustomCashFlow, setShowAddCustomCashFlow] = useState(false);
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
     const [recordToDelete, setRecordToDelete] = useState(null);
-    const [showEditInvesting, setShowEditInvesting] = useState(false);
-    const [recordToEdit, setRecordToEdit] = useState(null);
+    const [isCashFlowModalOpen, setIsCashFlowModalOpen] = useState(false);
+    const [selectedCashFlows, setSelectedCashFlows] = useState('');
+
+    const handleClick = (cashFlows) => {
+        setSelectedCashFlows(cashFlows);
+        setIsCashFlowModalOpen(true);
+    };
 
     const formatNumber = (number) => {
         return number.toLocaleString();
@@ -46,8 +54,23 @@ function InvestingRecordsModal({ user, onClose }) {
         }
     };
 
+    const fetchCustomCashFlowInvestments = async () => {
+        try {
+            const response = await fetch(`${apiUrl}/custom_cash_flow_investments/${user.id}/`);
+            if (response.ok) {
+                const data = await response.json();
+                setCustomCashFlowInvestments(data);
+            } else {
+                console.error('Failed to fetch custom cash flow investments.');
+            }
+        } catch (error) {
+            console.error('Error fetching custom cash flow investments:', error);
+        }
+    };
+
     useEffect(() => {
         fetchInvestingRecords();
+        fetchCustomCashFlowInvestments();
     }, [user.id]);
 
     useEffect(() => {
@@ -106,9 +129,10 @@ function InvestingRecordsModal({ user, onClose }) {
         setRoundedTotal(filtered.reduce((total, record) => total + parseFloat(record.amount), 0));
     }, [startDate, endDate, filterTitle, minAmount, maxAmount, minTenor, maxTenor, filterType, investingRecords]);
 
-    const deleteRecord = async (id) => {
+    const deleteRecord = async (id, isCustom = false) => {
         try {
-            const response = await fetch(`${apiUrl}/investing_records/${user.id}/${id}/`, {
+            const endpoint = isCustom ? 'custom_cash_flow_investments' : 'investing_records';
+            const response = await fetch(`${apiUrl}/${endpoint}/${user.id}/${id}/`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -117,8 +141,12 @@ function InvestingRecordsModal({ user, onClose }) {
             });
 
             if (response.ok) {
-                setInvestingRecords(investingRecords.filter(record => record.id !== id));
-                setDisplayRecords(displayRecords.filter(record => record.id !== id));
+                if (isCustom) {
+                    setCustomCashFlowInvestments(customCashFlowInvestments.filter(record => record.id !== id));
+                } else {
+                    setInvestingRecords(investingRecords.filter(record => record.id !== id));
+                    setDisplayRecords(displayRecords.filter(record => record.id !== id));
+                }
                 const totalAmount = displayRecords.reduce((total, record) => total + parseFloat(record.amount), 0);
                 setRoundedTotal(Math.round(totalAmount * 100) / 100);
             } else {
@@ -129,14 +157,14 @@ function InvestingRecordsModal({ user, onClose }) {
         }
     };
 
-    const handleDeleteClick = (record) => {
-        setRecordToDelete(record);
+    const handleDeleteClick = (record, isCustom = false) => {
+        setRecordToDelete({ ...record, isCustom });
         setShowConfirmDelete(true);
     };
 
     const confirmDelete = () => {
         if (recordToDelete) {
-            deleteRecord(recordToDelete.id);
+            deleteRecord(recordToDelete.id, recordToDelete.isCustom);
             setShowConfirmDelete(false);
             setRecordToDelete(null);
         }
@@ -147,20 +175,20 @@ function InvestingRecordsModal({ user, onClose }) {
         setRecordToDelete(null);
     };
 
-    const handleEditClick = (record) => {
-        setRecordToEdit(record);
-        setShowEditInvesting(true);
-    };
-
-    const cancelEdit = () => {
-        setShowEditInvesting(false);
-        setRecordToEdit(null);
-    };
-
-    const saveEdit = () => {
-        setShowEditInvesting(false);
-        setRecordToEdit(null);
-        fetchInvestingRecords();
+    const CashFlowWithTooltip = ({ cashFlows }) => {
+        try {
+            const parsedCashFlows = JSON.parse(cashFlows);
+            const cashFlowsString = parsedCashFlows.join(', ');
+            const truncated = cashFlowsString.length > 5 ? cashFlowsString.substring(0, 5) + '...' : cashFlowsString;
+            return (
+                <span onClick={() => handleClick(cashFlowsString)} style={{ cursor: 'pointer', position: 'relative' }}>
+                    {truncated}
+                </span>
+            );
+        } catch (e) {
+            console.error('Error parsing cash flows:', e);
+            return '';
+        }
     };
 
     const style = {
@@ -180,8 +208,8 @@ function InvestingRecordsModal({ user, onClose }) {
         <div className="modal">
             <div className="modal-content" style={style}>
                 <span className="close" onClick={onClose}>&times;</span>
-                <h2>Investing Records List</h2>
-                <div className="filters">                    
+                <h2>Fixed Rate Investments</h2>
+                <div className="filters">
                     <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
                     <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
                     <input type="text" placeholder="Filter by title" value={filterTitle} onChange={e => setFilterTitle(e.target.value)} />
@@ -197,7 +225,7 @@ function InvestingRecordsModal({ user, onClose }) {
                             ))}
                         </select>
                     </div>
-                    <button style={{ marginBottom: '10px' }} onClick={() => setShowAddInvesting(true)}>Add Investings</button>
+                    <button style={{ marginBottom: '10px' }} onClick={() => setShowAddInvesting(true)}>Add Fixed Rate Investment</button>
                 </div>
                 <table className="financial-records-table">
                     <thead>
@@ -207,11 +235,10 @@ function InvestingRecordsModal({ user, onClose }) {
                             <th>Date</th>
                             <th>Tenor</th>
                             <th>Type</th>
+                            <th>Income at Maturity</th>
                             <th>Amount at Maturity</th>
                             <th>Maturity date</th>
                             <th>Discount Rate</th>
-                            <th>NPV</th>
-                            <th>IRR</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -223,13 +250,12 @@ function InvestingRecordsModal({ user, onClose }) {
                                 <td>{record.record_date}</td>
                                 <td>{record.tenor ? formatNumber(record.tenor) : ''}</td>
                                 <td>{record.type_invest}</td>
+                                <td>{record.yearly_income}</td>
                                 <td>{record.amount_at_maturity ? formatNumber(record.amount_at_maturity) : ''}</td>
                                 <td>{record.maturity_date}</td>
                                 <td>{record.discount_rate ? formatNumber(record.discount_rate) : ''}</td>
-                                <td>{record.NPV ? formatNumber(record.NPV) : ''}</td>
-                                <td>{record.IRR ? formatNumber(record.IRR) : ''}</td>
-                                <td>                                                                                                                        
-                                            <button onClick={() => handleDeleteClick(record)}>Delete</button>                                                                        
+                                <td>
+                                    <button onClick={() => handleDeleteClick(record)}>Delete</button>
                                 </td>
                             </tr>
                         ))}
@@ -241,9 +267,48 @@ function InvestingRecordsModal({ user, onClose }) {
                         </tr>
                     </tfoot>
                 </table>
+
+                <h2>Custom Cash Flow Investments</h2>
+                <button style={{ marginBottom: '10px' }} onClick={() => setShowAddCustomCashFlow(true)}>Add Custom Cash Flow Investment</button>
+                <table className="financial-records-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Tenor</th>
+                            <th>Type</th>
+                            <th>Cash Flows</th>
+                            <th>Discount Rate</th>
+                            <th>NPV</th>
+                            <th>IRR</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {customCashFlowInvestments.map(record => (
+                            <tr key={record.id}>
+                                <td>{record.title}</td>
+                                <td>{formatNumber(record.amount)}</td>
+                                <td>{record.record_date}</td>
+                                <td>{record.tenor ? formatNumber(record.tenor) : ''}</td>
+                                <td>{record.type_invest}</td>
+                                <td>{record.cash_flows ? <CashFlowWithTooltip cashFlows={record.cash_flows} /> : ''}</td>
+                                <td>{record.discount_rate ? formatNumber(record.discount_rate) : ''}</td>
+                                <td>{record.NPV ? formatNumber(record.NPV) : ''}</td>
+                                <td>{record.IRR ? formatNumber(record.IRR) : ''}</td>
+                                <td>
+                                    <button onClick={() => handleDeleteClick(record, true)}>Delete</button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
             {showAddInvesting && <AddInvestingRecord user={user} onClose={() => { setShowAddInvesting(false); fetchInvestingRecords(); }} fetchInvestingRecords={fetchInvestingRecords} />}
+            {showAddCustomCashFlow && <AddCustomCashFlowInvestment user={user} onClose={() => { setShowAddCustomCashFlow(false); fetchCustomCashFlowInvestments(); }} fetchCustomCashFlowInvestments={fetchCustomCashFlowInvestments} />}
             {showConfirmDelete && <ConfirmDeleteModal onClose={cancelDelete} onConfirm={confirmDelete} />}
+            <CashFlowModal isOpen={isCashFlowModalOpen} onClose={() => setIsCashFlowModalOpen(false)} cashFlows={selectedCashFlows} />
         </div>
     );
 }
