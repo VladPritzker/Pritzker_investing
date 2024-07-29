@@ -1,5 +1,3 @@
-// src/pages/UserAccountPage.js
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import FinancialRecordsModal from '../user_account_page/FinancialRecordsModal/FinancialRecordsModal';
@@ -51,6 +49,7 @@ function UserAccountPage() {
     const [sleepLogs, setSleepLogs] = useState([]);
     const [showSleepLogsModal, setShowSleepLogsModal] = useState(false);
     const [showInvestingComparison, setShowInvestingComparison] = useState(false);
+    const [isBalanceVisible, setIsBalanceVisible] = useState(true);
 
     const numberFormat = (number) =>
         new Intl.NumberFormat('en-US', { style: 'decimal', maximumFractionDigits: 2 }).format(number || 0);
@@ -294,6 +293,10 @@ function UserAccountPage() {
 
     const goalDifference = user?.balance_goal ? (user.balance_goal - user.balance).toFixed(2) : null;
 
+    const toggleBalanceVisibility = () => {
+        setIsBalanceVisible(!isBalanceVisible);
+    };
+
     const styles = {
         updateButton: {
             width: '60px',
@@ -397,7 +400,7 @@ function UserAccountPage() {
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                             <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('balance')}>Update</button>
-                            <p style={styles.textStyle}><strong>Balance:</strong> ${numberFormat(user?.balance)}</p>
+                            <p style={styles.textStyle} onClick={toggleBalanceVisibility}><strong>Balance:</strong> ${isBalanceVisible ? numberFormat(user?.balance) : '****'}</p>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                             <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('balance_goal')}>Update</button>
