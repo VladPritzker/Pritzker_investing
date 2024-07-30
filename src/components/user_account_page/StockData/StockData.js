@@ -116,18 +116,20 @@ const StockDataModal = ({ isOpen, onClose }) => {
         {Object.keys(groupedStockData).length > 0 && (
           <div>
             <h3>Stock Data</h3>
-            {Object.keys(groupedStockData).map(date => (
-              <div key={date}>
-                <h4>{date}</h4>
-                <ul className="stock-data-list">
-                  {groupedStockData[date].items.map(item => (
-                    <li key={item.id}>
-                      {item.name}: {item[filter]} : {item.date}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+            <div className="stock-data-scrollable">
+              {Object.keys(groupedStockData).map(date => (
+                <div key={date}>
+                  <h4>{date}</h4>
+                  <ul className="stock-data-list">
+                    {groupedStockData[date].items.map(item => (
+                      <li key={item.id}>
+                        {item.name}: {item[filter]} : {item.date}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
