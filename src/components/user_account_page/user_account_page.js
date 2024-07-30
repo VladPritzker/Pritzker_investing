@@ -9,7 +9,7 @@ import ContactsModal from '../user_account_page/Contacts/contacts';
 import MeetingsModal from './Meetings/MeetingsModal'; 
 import '../user_account_page/user_account_page.css';
 import SleepLogsModal from '../user_account_page/TimeManagementModal/TimeManagementModal';
-import InvestingComparison from './StockData/StockData'
+import InvestingComparison from './StockData/StockData';
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -49,7 +49,8 @@ function UserAccountPage() {
     const [sleepLogs, setSleepLogs] = useState([]);
     const [showSleepLogsModal, setShowSleepLogsModal] = useState(false);
     const [showInvestingComparison, setShowInvestingComparison] = useState(false);
-    const [isBalanceVisible, setIsBalanceVisible] = useState(true);
+    const [isBalanceVisible, setIsBalanceVisible] = useState(false); // Default to false
+    const [isBalanceGoalVisible, setIsBalanceGoalVisible] = useState(false); // Default to false
 
     const numberFormat = (number) =>
         new Intl.NumberFormat('en-US', { style: 'decimal', maximumFractionDigits: 2 }).format(number || 0);
@@ -297,6 +298,10 @@ function UserAccountPage() {
         setIsBalanceVisible(!isBalanceVisible);
     };
 
+    const toggleBalanceGoalVisibility = () => {
+        setIsBalanceGoalVisible(!isBalanceGoalVisible);
+    };
+
     const styles = {
         updateButton: {
             width: '60px',
@@ -314,7 +319,8 @@ function UserAccountPage() {
         },
         textStyle: {
             fontSize: '1.8em',
-            marginLeft: '10px'
+            marginLeft: '10px',
+            cursor: 'pointer' // Change the cursor to indicate clickable
         },
         timeStyle: {
             fontSize: '1.5em',
@@ -404,8 +410,8 @@ function UserAccountPage() {
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                             <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('balance_goal')}>Update</button>
-                            <p style={styles.textStyle}>
-                                <strong>Balance Goal:</strong> ${numberFormat(user?.balance_goal)}
+                            <p style={styles.textStyle} onClick={toggleBalanceGoalVisibility}>
+                                <strong>Balance Goal:</strong> ${isBalanceGoalVisible ? numberFormat(user?.balance_goal) : '****'}
                                 <span style={{ color: "red", marginLeft: '20px' }}>
                                     {goalDifference !== null && `(${goalDifference > 0 ? '-' : '+'}$${numberFormat(Math.abs(goalDifference))})`}
                                 </span>
