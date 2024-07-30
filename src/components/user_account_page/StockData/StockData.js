@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './StockData.css'; // Import the CSS file for the modal
 import ChartModal from './ChartModal/ChartModal'; // Import the ChartModal component
+import StockDataPdfModal from './StockDataPdfModal/StockDataPdfModal'; // Import the StockDataPdfModal component
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -8,6 +9,7 @@ const StockDataModal = ({ isOpen, onClose }) => {
   const [stockData, setStockData] = useState([]);
   const [error, setError] = useState(null);
   const [isChartModalOpen, setIsChartModalOpen] = useState(false);
+  const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
   const [chartData, setChartData] = useState([]);
   const [filter, setFilter] = useState('price');
 
@@ -76,6 +78,10 @@ const StockDataModal = ({ isOpen, onClose }) => {
     setIsChartModalOpen(true);
   };
 
+  const openPdfModal = () => {
+    setIsPdfModalOpen(true);
+  };
+
   if (!isOpen) {
     return null;
   }
@@ -103,6 +109,7 @@ const StockDataModal = ({ isOpen, onClose }) => {
         <h2 className="stock-data-modal-header">Stock Data</h2>
         <button className="stock-data-modal-button" onClick={fetchStockDataFromApi}>Fetch and Post Data</button>
         <button className="stock-data-modal-button" onClick={openChartModal}>Open Chart</button>
+        <button className="stock-data-modal-button" onClick={openPdfModal}>Show PDF Modal</button>
         <select
           className="stock-data-modal-select"
           value={filter}
@@ -140,6 +147,12 @@ const StockDataModal = ({ isOpen, onClose }) => {
           data={chartData}
           filter={filter}
           filterOptions={filterOptions}
+        />
+      )}
+      {isPdfModalOpen && (
+        <StockDataPdfModal
+          isOpen={isPdfModalOpen}
+          onClose={() => setIsPdfModalOpen(false)}
         />
       )}
     </div>
