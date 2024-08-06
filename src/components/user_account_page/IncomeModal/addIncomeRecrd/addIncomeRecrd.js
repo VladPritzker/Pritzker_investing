@@ -13,7 +13,7 @@ function AddRecordModal({ user, onClose, onRecordAdded }) {
     const handleAddRecordSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`${apiUrl}/users/${user.id}/add_income/`, {
+            const response = await fetch(`${apiUrl}/users/${user.id}/income_records/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
