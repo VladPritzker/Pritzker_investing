@@ -92,7 +92,7 @@ function IncomeRecordsModal({ user, onClose }) {
 
     const handleDeleteConfirm = async () => {
         try {
-            const response = await fetch(`${apiUrl}/users/${user.id}/delete_income/${recordToDelete.id}/`, {
+            const response = await fetch(`${apiUrl}/users/${user.id}/income_records/${recordToDelete.id}/`, {
                 method: 'DELETE',
             });
             if (response.ok) {
