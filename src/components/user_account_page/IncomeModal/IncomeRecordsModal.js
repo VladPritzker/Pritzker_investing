@@ -155,6 +155,20 @@ function IncomeRecordsModal({ user, onClose }) {
 
     const totalIncome = filteredRecords.reduce((total, record) => total + parseFloat(record.amount), 0).toFixed(2);
 
+
+    useEffect(() => {
+        const handleOnline = () => setIsOffline(false);
+        const handleOffline = () => setIsOffline(true);
+    
+        window.addEventListener('online', handleOnline);
+        window.addEventListener('offline', handleOffline);
+    
+        return () => {
+            window.removeEventListener('online', handleOnline);
+            window.removeEventListener('offline', handleOffline);
+        };
+    }, []);
+    
     return (
         <div className="income-modal">
             <div className="income-modal-content">
