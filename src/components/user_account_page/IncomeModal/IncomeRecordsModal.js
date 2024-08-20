@@ -159,7 +159,7 @@ function IncomeRecordsModal({ user, onClose }) {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredRecords.slice(0, 5).map(record => (
+                            {filteredRecords.map(record => (
                                 <tr key={record.id}>
                                     <td>{record.title}</td>
                                     <td>{record.amount}</td>
