@@ -269,8 +269,10 @@ function NotesModal({ user, onClose }) {
                             <textarea    name="note" value={editNote.note} onChange={handleEditChange} />
                         </label>
                     </div>
+                    <div className="button-group">
                     <button style={{width: '95px', padding: '5px 5px 5px 5px'}} onClick={saveNoteDetails}>Save</button>
                     <button style={{width: '95px', padding: '5px 5px 5px 5px'}} onClick={cancelEdit}>Cancel</button>
+                    </div>
                 </div>
             )}
            

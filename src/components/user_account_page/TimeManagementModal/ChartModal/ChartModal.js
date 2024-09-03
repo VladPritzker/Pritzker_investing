@@ -1,10 +1,10 @@
-// ChartModal.js
 import React, { useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
+import annotationPlugin from 'chartjs-plugin-annotation';
 import './ChartModal.css'; // Import the CSS file
 
-Chart.register(...registerables);
+Chart.register(...registerables, annotationPlugin);
 
 const ChartModal = ({ sleepLogs, onClose }) => {
     const [startDate, setStartDate] = useState('');
@@ -30,6 +30,7 @@ const ChartModal = ({ sleepLogs, onClose }) => {
                 fill: false,
                 backgroundColor: 'rgba(75, 192, 192, 0.6)',
                 borderColor: 'rgba(75, 192, 192, 1)',
+                borderCapStyle: 'butt',
             },
             {
                 label: 'Wake Time',
@@ -37,6 +38,7 @@ const ChartModal = ({ sleepLogs, onClose }) => {
                 fill: false,
                 backgroundColor: 'rgba(153, 102, 255, 0.6)',
                 borderColor: 'rgba(153, 102, 255, 1)',
+                borderCapStyle: 'butt',
             },
         ],
     };
@@ -61,6 +63,36 @@ const ChartModal = ({ sleepLogs, onClose }) => {
             },
         },
         plugins: {
+            annotation: {
+                annotations: {
+                    line1: {
+                        type: 'line',
+                        yMin: 22, // 10 PM
+                        yMax: 22,
+                        borderColor: 'green',
+                        borderWidth: 2,
+                        label: {
+                            content: '10 PM',
+                            enabled: true,
+                            position: 'start',
+                            backgroundColor: 'green',
+                        }
+                    },
+                    line2: {
+                        type: 'line',
+                        yMin: 6, // 6 AM
+                        yMax: 6,
+                        borderColor: 'green',
+                        borderWidth: 2,
+                        label: {
+                            content: '6 AM',
+                            enabled: true,
+                            position: 'start',
+                            backgroundColor: 'green',
+                        }
+                    },
+                }
+            },
             tooltip: {
                 callbacks: {
                     label: function (context) {

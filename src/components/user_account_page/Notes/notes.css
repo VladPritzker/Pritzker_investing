@@ -162,21 +162,34 @@
     line-height: 1.6; /* Improved line spacing */
 }
 
+
+.description{
+    width: 100%;
+    }
+    
+
+
 .note-details-modal button {
-    padding: 12px 24px; /* Larger buttons */
-    background-color: #007bff; /* Standard blue */
+    width: 145px;
+    padding: 5px;
+    background-color: #0056b3;
     color: white;
+    border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-    letter-spacing: 1px; /* Added letter spacing for clarity */
-    margin-top: 20px; /* Space from the text */
+    letter-spacing: 1px;
 }
+    
+    
 
 .note-details-modal button:hover {
     background-color: #0056b3; /* Darker blue on hover */
 }
 
-.description{
-width: 100%;
+.note-details-modal .button-group {
+    display: flex;
+    justify-content: space-between; /* Adjusts the space between buttons */
+    gap: 10px; /* Optional: adds space between buttons */
+    margin-top: 80px; /* Optional: adds space above the buttons */
 }
