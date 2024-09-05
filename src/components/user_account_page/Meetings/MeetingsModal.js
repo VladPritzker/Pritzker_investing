@@ -203,6 +203,7 @@ function MeetingsModal({ user, onClose }) {
                     <button className="clear-filters" onClick={clearFilters}>Clear Filters</button>
                 </div>
                 <button className="add-meeting" onClick={handleAddMeetingClick}>Add New Meeting</button>
+                <MeetingsCalendar meetings={filteredMeetings} />
                 <div className="meetings-list-container">
                     {filteredMeetings.length > 0 ? (
                         <ul>
@@ -257,7 +258,6 @@ function MeetingsModal({ user, onClose }) {
                         onCancel={() => setShowConfirmDeleteMeetingModal(false)}
                     />
                 )}
-                <MeetingsCalendar meetings={filteredMeetings} />
                 {selectedMeeting && (
                     <div className="meetings-popup">
                         <div className="meetings-popup-content">
