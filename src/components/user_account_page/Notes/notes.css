@@ -125,12 +125,12 @@
     z-index: 1050;
     left: 0;
     top: 0;
-    width: 30%;
-    height: 50%;
+    width: 60%;
+    height: 80%;
     overflow: auto;
     background-color: rgba(255, 255, 255, 0.997); /* Light background for a cleaner look */
     justify-content: center;
-    margin-left: 35%;
+    margin-left: 20%;
     margin-top: 10%;
     border: 2px solid rgba(0, 123, 255, 0.75); /* Solid blue border with transparency */
     border-radius: 12px; /* Rounded corners */
