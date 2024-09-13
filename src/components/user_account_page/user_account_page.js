@@ -373,8 +373,8 @@ function UserAccountPage() {
                         {user?.photo && (
                             <div style={{ textAlign: 'center', marginBottom: '10px' }}>
                                 <h2 style={{ ...styles.textStyle, marginBottom: '10px' }}>Profile Photo</h2>
-                                <img src={`${apiUrl}${user.photo}`} alt="User Photo" width="100" /> {/* Use the correct photo URL */}
-                            </div>
+                                <img src={`${apiUrl}${user.photo}`} alt="User Photo" width="100" />
+                                </div>
                         )}
                          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', marginLeft: '35%' }}>
                             <button type="button" className="upload-button" style={stylesUp.updateButton} onClick={handlePhotoUploadClick}>Upload</button>
