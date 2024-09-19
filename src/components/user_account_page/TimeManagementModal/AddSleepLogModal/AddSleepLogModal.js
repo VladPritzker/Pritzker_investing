@@ -63,18 +63,18 @@ const AddSleepLogModal = ({ userId, onClose, onSave }) => {
                         type="date"
                         value={date}
                         onChange={(e) => setDate(e.target.value)}
+                    />                    
+                    <label>Wake Up Time:</label>
+                    <input
+                        type="time"
+                        value={wakeUpTime}
+                        onChange={(e) => setWakeUpTime(e.target.value)}
                     />
                     <label>Sleep Time:</label>
                     <input
                         type="time"
                         value={sleepTime}
                         onChange={(e) => setSleepTime(e.target.value)}
-                    />
-                    <label>Wake Up Time:</label>
-                    <input
-                        type="time"
-                        value={wakeUpTime}
-                        onChange={(e) => setWakeUpTime(e.target.value)}
                     />
                     <div className='addLogButtons'>
                         <button onClick={handleSave} className="save-button">Save</button>

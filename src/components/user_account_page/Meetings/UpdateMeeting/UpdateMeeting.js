@@ -4,10 +4,9 @@ const apiUrl = process.env.REACT_APP_API_URL;
 function UpdateMeetingModal({ user, meeting, onClose, onUpdate }) {
     const [title, setTitle] = useState(meeting.title);
     const [datetime, setDatetime] = useState(meeting.datetime);
-    const [done, setDone] = useState(meeting.done);
 
     const handleSaveClick = async () => {
-        const updatedMeeting = { ...meeting, title, datetime, done };
+        const updatedMeeting = { ...meeting, title, datetime };
 
         try {
             const response = await fetch(`${apiUrl}/meetings/${user.id}/${meeting.id}/`, {
@@ -44,15 +43,7 @@ function UpdateMeetingModal({ user, meeting, onClose, onUpdate }) {
                     type="datetime-local"
                     value={datetime}
                     onChange={(e) => setDatetime(e.target.value)}
-                />
-                <label>
-                    Done:
-                    <input
-                        type="checkbox"
-                        checked={done}
-                        onChange={(e) => setDone(e.target.checked)}
-                    />
-                </label>
+                />                
                 <button onClick={handleSaveClick}>Save</button>
                 <button onClick={onClose}>Cancel</button>
             </div>

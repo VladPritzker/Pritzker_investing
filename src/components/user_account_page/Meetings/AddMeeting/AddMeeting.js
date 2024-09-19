@@ -4,8 +4,6 @@ const apiUrl = process.env.REACT_APP_API_URL;
 function AddMeetingModal({ user, onClose, onSave }) {
     const [title, setTitle] = useState('');
     const [datetime, setDatetime] = useState('');
-    const [done, setDone] = useState(false);
-
     const handleSaveClick = async () => {
         if (title.trim() === '' || datetime.trim() === '') {
             alert('Please ensure all fields are filled out correctly.');
@@ -15,8 +13,7 @@ function AddMeetingModal({ user, onClose, onSave }) {
         const meetingData = {
             user_id: user.id,
             title,
-            datetime, // Do not convert to ISO here
-            done
+            datetime, // Do not convert to ISO here            
         };
 
         try {
@@ -57,15 +54,7 @@ function AddMeetingModal({ user, onClose, onSave }) {
                     placeholder="Date and Time"
                     value={datetime}
                     onChange={(e) => setDatetime(e.target.value)}
-                />
-                <label>
-                    Done:
-                    <input
-                        type="checkbox"
-                        checked={done}
-                        onChange={(e) => setDone(e.target.checked)}
-                    />
-                </label>
+                />                
                 <button onClick={handleSaveClick}>Save</button>
                 <button onClick={onClose}>Cancel</button>
             </div>
