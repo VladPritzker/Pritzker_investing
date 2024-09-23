@@ -266,7 +266,12 @@ function NotesModal({ user, onClose }) {
                     <div style={{marginTop: '5%'}}>
                         <label>
                             Note:
-                            <textarea    name="note" value={editNote.note} onChange={handleEditChange} />
+                            <textarea 
+                                    style={{ width: "900px", height: "400px" }} 
+                                    name="note" 
+                                    value={editNote.note} 
+                                    onChange={handleEditChange} 
+                            />
                         </label>
                     </div>
                     <div className="button-group">
