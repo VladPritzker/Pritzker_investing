@@ -267,7 +267,7 @@ function NotesModal({ user, onClose }) {
                         <label>
                             Note:
                             <textarea 
-                                    style={{ width: "900px", height: "400px" }} 
+                                    style={{ width: "600px", height: "400px" }} 
                                     name="note" 
                                     value={editNote.note} 
                                     onChange={handleEditChange} 
