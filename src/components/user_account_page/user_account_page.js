@@ -10,6 +10,8 @@ import MeetingsModal from './Meetings/MeetingsModal';
 import '../user_account_page/user_account_page.css';
 import SleepLogsModal from '../user_account_page/TimeManagementModal/TimeManagementModal';
 import InvestingComparison from './StockData/StockData';
+import VirtualAssistant from './VirtualAssistant/VirtualAssistant';
+
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -367,6 +369,7 @@ function UserAccountPage() {
     return (
         <div className="login-container">
             <form className="login-form">
+            <VirtualAssistant />
                 <div className="content-container">
                     <div className="buttons" style={{marginTop: '5%'}}>                        
                         <button className='logout' style={{marginBottom: "20%"}} onClick={handleLogout}>Logout</button>
@@ -395,6 +398,7 @@ function UserAccountPage() {
                         <button id="SleepLogs" type="button" onClick={() => setShowSleepLogsModal(true)}>Sleep Logs</button>
                     </div>
                     <div className="data-rows">
+                        
                         <h1 style={{marginLeft: '-40%'}}>User Data</h1>
                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                             <button type="button" className="update-button" style={styles.updateButton} onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.updateButtonHover.backgroundColor} onMouseOut={(e) => e.currentTarget.style.backgroundColor = styles.updateButton.backgroundColor} onClick={() => handleUpdateClick('username')}>Update</button>
@@ -474,7 +478,9 @@ function UserAccountPage() {
                     </div>
                 </div>
                         <p style={styles.timeStyle}><strong>Time:</strong> {localTime}</p>
+                        
             </form>
+            
             {showInvestList && (
                 <InvestingRecordsModal user={user} onClose={() => setShowInvestList(false)} />
             )}
@@ -511,7 +517,7 @@ function UserAccountPage() {
                     onSave={handleSaveSleepLog}
                     onDelete={handleDeleteSleepLog}
                 />
-            )}
+            )}                  
         </div>
     );
 }

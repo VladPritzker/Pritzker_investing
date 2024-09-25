@@ -12,7 +12,7 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-image: url('../../components/login_registration_page/img/istockphoto-1480323436-1024x1024.jpg'); /* Path to the background image */
+    /* background-image: url('../../components/login_registration_page/img/istockphoto-1480323436-1024x1024.jpg'); Path to the background image */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -137,4 +137,8 @@
 .data-rows {
     flex: 1;
     margin-left: 10%;
+}
+
+form button[type="button"] {
+    background-color: #6c757d;
 }

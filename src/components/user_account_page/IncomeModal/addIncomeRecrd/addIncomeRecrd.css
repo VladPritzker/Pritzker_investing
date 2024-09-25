@@ -57,9 +57,6 @@ form button {
     color: white;
 }
 
-form button[type="button"] {
-    background-color: #6c757d;
-}
 
 form button:hover {
     opacity: 0.9;
