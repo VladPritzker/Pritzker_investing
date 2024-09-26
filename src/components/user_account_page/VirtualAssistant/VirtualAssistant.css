@@ -17,6 +17,12 @@
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   font-size: 24px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.assistant-icon:hover {
+  transform: scale(1.1);  /* Make it a bit larger on hover */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .assistant-modal {
@@ -25,48 +31,61 @@
   right: 10%;
   width: 300px;
   height: 400px;
-  min-width: 250px;  /* Minimum size */
-  min-height: 200px; /* Minimum size */
-  max-width: 600px;  /* Maximum size */
-  max-height: 600px; /* Maximum size */
+  min-width: 300px;
+  min-height: 300px;
+  max-width: 600px;
+  max-height: 600px;
   background-color: white;
-  border-radius: 10px;
+  border-radius: 15px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   z-index: 1000;
   display: flex;
   flex-direction: column;
-  resize: both; /* Enable resizing */
-  overflow: auto; /* Ensure content remains scrollable when resizing */
+  resize: both;
+  overflow: hidden;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  opacity: 1;
 }
 
 .assistant-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 15px;
   background-color: #007aff;
   color: white;
-  border-radius: 10px 10px 0 0;
+  border-radius: 15px 15px 0 0;
+  font-family: 'Arial', sans-serif;
+  font-size: 20px;
 }
 
-.close-button {
+.AI_close_button {
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: 30px;
   color: white;
   cursor: pointer;
+  transition: color 0.3s ease;
+  margin-top: 0px;
+  margin-right: 12px;
+}
+
+.AI_close_button:hover {
+  color: #ff4949;  /* Close button turns red when hovered */
 }
 
 .chat-window {
   flex: 1;
-  padding: 10px;
+  padding: 15px;
   overflow-y: auto;
   border-top: 1px solid #ccc;
   border-bottom: 1px solid #ccc;
+  font-family: 'Arial', sans-serif;
 }
 
 .message {
   margin-bottom: 10px;
+  font-size: 14px;
 }
 
 .message.user {
@@ -82,8 +101,8 @@
 .input-area {
   display: flex;
   padding: 10px;
-  background-color: #f9f9f9;
-  border-radius: 0 0 10px 10px;
+  background-color: #f1f1f1;
+  border-radius: 0 0 15px 15px;
 }
 
 .input-area input {
@@ -92,17 +111,38 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   margin-right: 10px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
 }
 
-.input-area button {
-  padding: 10px 20px;
+.input-area input:focus {
+  border-color: #007aff;
+}
+
+.input-area .AI_button {
+  padding: 10px;
   background-color: #007aff;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 38px;
+  margin-top: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.input-area button:disabled {
+.input-area .AI_button:hover {
+  background-color: #0056b3;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.input-area .AI_button:disabled {
   background-color: #ccc;
+  cursor: not-allowed;
 }

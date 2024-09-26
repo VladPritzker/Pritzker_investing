@@ -68,10 +68,10 @@ const VirtualAssistant = () => {
             {isAssistantOpen && (
                 <div className="assistant-modal">
                     <div className="assistant-modal-header">
-                        <h3>Rusik Assistant</h3>
-                        <button className="close-button" onClick={() => setIsAssistantOpen(false)}>
+                        <h3>Pritzker assistant</h3>
+                        <i className="AI_close_button" onClick={() => setIsAssistantOpen(false)}>
                             &times;
-                        </button>
+                        </i>
                     </div>
                     <div className="chat-window" ref={chatWindowRef}>
                         {messages.map((msg, index) => (
@@ -91,7 +91,7 @@ const VirtualAssistant = () => {
                             }}
                             disabled={isLoading} // Disable input when assistant is responding
                         />
-                        <button onClick={sendMessage} disabled={isLoading || input.trim() === ''}>
+                        <button className='AI_button' onClick={sendMessage} disabled={isLoading || input.trim() === ''}>
                             Send
                         </button>
                     </div>
