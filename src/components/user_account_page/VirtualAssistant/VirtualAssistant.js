@@ -61,7 +61,7 @@ const VirtualAssistant = () => {
         <div className="virtual-assistant-container">
             {/* Icon to trigger the assistant modal */}
             <div className="assistant-icon" onClick={() => setIsAssistantOpen(true)}>
-                🤖
+            ❔
             </div>
 
             {/* Modal for Virtual Assistant */}
