@@ -4,7 +4,7 @@ import './VirtualAssistant.css'; // Add styles for the assistant icon and modal
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
-const VirtualAssistant = () => {
+const VirtualAssistant = ({ userId }) => {  // Accept userId as a prop
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false); // New state for loading indicator
@@ -20,43 +20,46 @@ const VirtualAssistant = () => {
 
     const sendMessage = async () => {
         if (input.trim() === '') return;
-
-        // Add user's message to the chat
+    
         setMessages(prevMessages => [
-            ...prevMessages,
-            { sender: 'user', text: input },
+          ...prevMessages,
+          { sender: 'user', text: input },
         ]);
-
-        setInput(''); // Clear the input field
-        setIsLoading(true); // Show loading indicator
-
+    
+        setInput('');
+        setIsLoading(true);
+    
         try {
-            // Send the entire conversation history to the backend
             const response = await axios.post(`${apiUrl}/api/assistant/`, {
-                message: input,
-                messages: messages.concat({ sender: 'user', text: input }),
+              message: input,
+              messages: messages.concat({ sender: 'user', text: input }),
+              user_id: userId,
             });
-
-            // Add assistant's response to the chat
+        
+            const replyText = response.data.reply || response.data.message || 'No response from assistant.';
+        
             setMessages(prevMessages => [
-                ...prevMessages,
-                { sender: 'assistant', text: response.data.reply },
+              ...prevMessages,
+              { sender: 'assistant', text: replyText },
             ]);
+        
         } catch (error) {
-            console.error('Error communicating with the assistant:', error);
-            // Optionally, display an error message in the chat
-            setMessages(prevMessages => [
-                ...prevMessages,
-                {
-                    sender: 'assistant',
-                    text: 'Sorry, there was an error. Please try again later.',
-                },
-            ]);
+          console.error('Error communicating with the assistant:', error);
+          setMessages(prevMessages => [
+            ...prevMessages,
+            {
+              sender: 'assistant',
+              text: 'Sorry, there was an error. Please try again later.',
+            },
+          ]);
         } finally {
-            setIsLoading(false); // Hide loading indicator
+          setIsLoading(false);
         }
     };
+    
 
+    
+    
     return (
         <div className="virtual-assistant-container">
             {/* Icon to trigger the assistant modal */}

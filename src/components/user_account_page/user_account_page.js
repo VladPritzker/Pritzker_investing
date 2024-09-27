@@ -369,14 +369,14 @@ function UserAccountPage() {
     return (
         <div className="login-container">
             <form className="login-form">
-            <VirtualAssistant />
+            <VirtualAssistant userId={user?.id} />
                 <div className="content-container">
                     <div className="buttons" style={{marginTop: '5%'}}>                        
                         <button className='logout' style={{marginBottom: "20%"}} onClick={handleLogout}>Logout</button>
                         {user?.photo && (
                             <div style={{ textAlign: 'center', marginBottom: '10px' }}>
                                 <h2 style={{ ...styles.textStyle, marginBottom: '10px' }}>Profile Photo</h2>
-                                <img src={`${apiUrl}${user.photo}`} alt="User Photo" width="100" />
+                                <img src={`${apiUrl}${user.photo}`} alt={`${user.username}`} width="100" />
                                 </div>
                         )}
                          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', marginLeft: '35%' }}>
