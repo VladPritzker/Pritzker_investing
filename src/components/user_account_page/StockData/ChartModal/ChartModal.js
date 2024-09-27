@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import './ChartModal.css'; // Import the CSS file for the modal
-import { Line } from 'react-chartjs-2';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import React, { useState, useEffect } from "react";
+import "./ChartModal.css"; // Import the CSS file for the modal
+import { Line } from "react-chartjs-2";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const ChartModal = ({ isOpen, onClose, data, filter, filterOptions }) => {
   const [selectedFilter, setSelectedFilter] = useState(filter);
@@ -17,21 +17,21 @@ const ChartModal = ({ isOpen, onClose, data, filter, filterOptions }) => {
       oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
       setStartDate(oneWeekAgo);
 
-      const filtered = data.filter(item => {
+      const filtered = data.filter((item) => {
         const itemDate = new Date(item.date);
         return itemDate >= oneWeekAgo && itemDate <= endDate;
       });
       setFilteredData(filtered);
 
-      const companyNames = Array.from(new Set(data.map(item => item.name)));
+      const companyNames = Array.from(new Set(data.map((item) => item.name)));
       setSelectedCompanies(companyNames);
     }
   }, [isOpen, data, endDate]);
 
   const handleCompanyChange = (e) => {
     const { value, checked } = e.target;
-    setSelectedCompanies(prev =>
-      checked ? [...prev, value] : prev.filter(company => company !== value)
+    setSelectedCompanies((prev) =>
+      checked ? [...prev, value] : prev.filter((company) => company !== value),
     );
   };
 
@@ -40,25 +40,31 @@ const ChartModal = ({ isOpen, onClose, data, filter, filterOptions }) => {
   }
 
   const colors = [
-    'rgba(75,192,192,1)',
-    'rgba(192,75,192,1)',
-    'rgba(192,192,75,1)',
-    'rgba(75,75,192,1)',
-    'rgba(192,75,75,1)',
-    'rgba(75,192,75,1)',
+    "rgba(75,192,192,1)",
+    "rgba(192,75,192,1)",
+    "rgba(192,192,75,1)",
+    "rgba(75,75,192,1)",
+    "rgba(192,75,75,1)",
+    "rgba(75,192,75,1)",
   ];
 
   const chartData = {
     labels: filteredData
-      ? Array.from(new Set(filteredData.map(item => new Date(item.date).toLocaleDateString())))
+      ? Array.from(
+          new Set(
+            filteredData.map((item) =>
+              new Date(item.date).toLocaleDateString(),
+            ),
+          ),
+        )
       : [],
     datasets: selectedCompanies.map((company, index) => {
-      const companyData = filteredData.filter(item => item.name === company);
+      const companyData = filteredData.filter((item) => item.name === company);
       return {
         label: `${company} ${selectedFilter}`,
-        data: companyData.map(item => item[selectedFilter]),
+        data: companyData.map((item) => item[selectedFilter]),
         borderColor: colors[index % colors.length],
-        backgroundColor: colors[index % colors.length].replace('1)', '0.2)'),
+        backgroundColor: colors[index % colors.length].replace("1)", "0.2)"),
         fill: false,
       };
     }),
@@ -67,7 +73,9 @@ const ChartModal = ({ isOpen, onClose, data, filter, filterOptions }) => {
   return (
     <div className="chart-modal">
       <div className="chart-modal-content">
-        <span className="chart-modal-close" onClick={onClose}>&times;</span>
+        <span className="chart-modal-close" onClick={onClose}>
+          &times;
+        </span>
         <h2 className="chart-modal-header">Stock Chart</h2>
         <div className="chart-modal-filters">
           <label>Start Date:</label>
@@ -90,23 +98,27 @@ const ChartModal = ({ isOpen, onClose, data, filter, filterOptions }) => {
             value={selectedFilter}
             onChange={(e) => setSelectedFilter(e.target.value)}
           >
-            {filterOptions.map(option => (
-              <option key={option} value={option}>{option}</option>
+            {filterOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
             ))}
           </select>
           <label>Select Companies:</label>
           <div className="chart-modal-companies">
-            {Array.from(new Set(data.map(item => item.name))).map(company => (
-              <div key={company} className="chart-modal-company">
-                <input
-                  type="checkbox"
-                  value={company}
-                  checked={selectedCompanies.includes(company)}
-                  onChange={handleCompanyChange}
-                />
-                {company}
-              </div>
-            ))}
+            {Array.from(new Set(data.map((item) => item.name))).map(
+              (company) => (
+                <div key={company} className="chart-modal-company">
+                  <input
+                    type="checkbox"
+                    value={company}
+                    checked={selectedCompanies.includes(company)}
+                    onChange={handleCompanyChange}
+                  />
+                  {company}
+                </div>
+              ),
+            )}
           </div>
         </div>
         <Line data={chartData} />

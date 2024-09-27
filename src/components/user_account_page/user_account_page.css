@@ -1,144 +1,144 @@
 /* Add this to your CSS file */
 .data-rows {
-    flex: 1;
-    margin-left: 10%;
-    max-height: 80vh; /* Adjust this value as needed */
-    overflow-y: auto;
-    padding-right: 15px;
+  flex: 1;
+  margin-left: 10%;
+  max-height: 80vh; /* Adjust this value as needed */
+  overflow-y: auto;
+  padding-right: 15px;
 }
 
 .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    /* background-image: url('../../components/login_registration_page/img/istockphoto-1480323436-1024x1024.jpg'); Path to the background image */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  /* background-image: url('../../components/login_registration_page/img/istockphoto-1480323436-1024x1024.jpg'); Path to the background image */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .login-form {
-    padding: 40px;
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 1000px;
-    transition: transform 0.3s ease-in-out;
-    animation: formAnimation 0.5s forwards;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 1000px;
+  transition: transform 0.3s ease-in-out;
+  animation: formAnimation 0.5s forwards;
 }
 
 .login-form-time {
-    padding: 40px;
-    background: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    transition: transform 0.3s ease-in-out;
-    animation: formAnimation 0.5s forwards;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  transition: transform 0.3s ease-in-out;
+  animation: formAnimation 0.5s forwards;
 }
 
 .login-form h2 {
-    text-align: center;
-    margin-bottom: 20px;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-.login-form input, .login-form p {
-    width: 50%;
-    margin-left: 10PX;
-    padding: 12px;
-    margin-top: 8px;
-    margin-bottom: 16px;
-    border: none;
-    border-bottom: 2px solid #0056b3;
-    box-sizing: border-box;
-    display: inline-block;
+.login-form input,
+.login-form p {
+  width: 50%;
+  margin-left: 10px;
+  padding: 12px;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  border: none;
+  border-bottom: 2px solid #0056b3;
+  box-sizing: border-box;
+  display: inline-block;
 }
 
 .login-form button {
-    width: 50%;
-    padding: 10px;
-    background-color: #0056b3;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    letter-spacing: 1px;
-    margin-left: 1%;
+  width: 50%;
+  padding: 10px;
+  background-color: #0056b3;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  letter-spacing: 1px;
+  margin-left: 1%;
 }
 
 .login-form button:hover {
-    background-color: #004494;
+  background-color: #004494;
 }
 
 .login-form input:focus {
-    outline: none;
-    border-bottom-color: #ff4500;
+  outline: none;
+  border-bottom-color: #ff4500;
 }
 
 @keyframes formAnimation {
-    from {
-        transform: scale(0.95);
-    }
-    to {
-        transform: scale(1);
-    }
+  from {
+    transform: scale(0.95);
+  }
+  to {
+    transform: scale(1);
+  }
 }
 
 .toggle {
-    background-color: #f8f9fa;
-    color: #333;
-    border: 1px solid #ddd;
-    padding: 8px 16px;
-    margin-top: 10px;
+  background-color: #f8f9fa;
+  color: #333;
+  border: 1px solid #ddd;
+  padding: 8px 16px;
+  margin-top: 10px;
 }
 
 .content-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
 }
 
 .buttons {
-    display: grid;
-    flex-direction: column;
-    align-items: flex-start;
-    padding-right: 20px;
-    margin-top: 20%;
+  display: grid;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-right: 20px;
+  margin-top: 20%;
 }
 
-.logout{
-    display: grid;
-    flex-direction: column;
-    align-items: flex-start;
-    padding-right: 20px;
-    margin-bottom: 20%;
-
+.logout {
+  display: grid;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-right: 20px;
+  margin-bottom: 20%;
 }
 
 .buttons button {
-    margin-bottom: 10px;
-    width: 200px;
-    padding: 10px 20px;
-    background-color: #0056b3;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    letter-spacing: 1px;
+  margin-bottom: 10px;
+  width: 200px;
+  padding: 10px 20px;
+  background-color: #0056b3;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  letter-spacing: 1px;
 }
 
 .buttons button:hover {
-    background-color: #004494;
+  background-color: #004494;
 }
 
 .data-rows {
-    flex: 1;
-    margin-left: 10%;
+  flex: 1;
+  margin-left: 10%;
 }
 
 form button[type="button"] {
-    background-color: #6c757d;
+  background-color: #6c757d;
 }

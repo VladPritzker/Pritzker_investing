@@ -1,33 +1,33 @@
 .meetings-calendar-container {
-    position: relative;
+  position: relative;
 }
 
 .meeting-dot {
-    width: 10px;
-    height: 10px;
-    background-color: #007bff;
-    border-radius: 50%;
-    display: inline-block;
-    margin: 2px;
-    cursor: pointer;
+  width: 10px;
+  height: 10px;
+  background-color: #007bff;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 2px;
+  cursor: pointer;
 }
 
 .react-calendar {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .meeting-details-popup {
-    position: absolute;
-    background: white;
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    width: 200px;
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  width: 200px;
 }
 
 .react-calendar__tile--active .meeting-dot {
-    background-color: #28a745;
+  background-color: #28a745;
 }

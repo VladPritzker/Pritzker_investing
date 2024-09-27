@@ -1,6 +1,6 @@
 .App {
   text-align: center;
-  background-image: url('./components/login_registration_page/img/istockphoto-1480323436-1024x1024.jpg'); /* Path to the background image */
+  background-image: url("./components/login_registration_page/img/istockphoto-1480323436-1024x1024.jpg"); /* Path to the background image */
 }
 
 .App-logo {
@@ -37,5 +37,3 @@
     transform: rotate(360deg);
   }
 }
-
-

@@ -1,74 +1,74 @@
 {
-    "Stocks": {
-        "rate": "8-10%"
-    },
-    "Bonds": {
-        "rate": "3-5%"
-    },
-    "Mutual fund": {
-        "rate": "6-8%"
-    },
-    "ETFs": {
-        "rate": "7-10%"
-    },
-    "Commodities": {
-        "rate": "2-6%"
-    },
-    "Funds": {
-        "rate": "Depends on type (e.g., index funds 6-8%, actively managed funds 5-7%)"
-    },
-    "Brokerage account": {
-        "rate": "Varies based on the assets held"
-    },
-    "Real Estate": {
-        "rate": "8-12%"
-    },
-    "Cash": {
-        "rate": "0.5-1%"
-    },
-    "Options": {
-        "rate": "Varies widely, typically high risk/high reward"
-    },
-    "Annuities": {
-        "rate": "3-4%"
-    },
-    "Index funds": {
-        "rate": "6-8%"
-    },
-    "CDS": {
-        "rate": "Varies, typically complex financial instruments"
-    },
-    "Cryptocurrencies": {
-        "rate": "Varies widely, very volatile, typically high risk/high reward"
-    },
-    "Retirement": {
-        "rate": "Depends on the assets held (e.g., mix of stocks, bonds)"
-    },
-    "Investment trusts": {
-        "rate": "5-7%"
-    },
-    "Collectibles": {
-        "rate": "Varies widely, typically high risk"
-    },
-    "Private companies": {
-        "rate": "Varies widely, typically high risk"
-    },
-    "Corporate bonds": {
-        "rate": "3-6%"
-    },
-    "Alternative investments": {
-        "rate": "Varies widely, typically high risk"
-    },
-    "Money market funds": {
-        "rate": "0.5-2%"
-    },
-    "Certificates of deposit": {
-        "rate": "1-3%"
-    },
-    "Treasurys": {
-        "rate": "1-3%"
-    },
-    "Cash investments": {
-        "rate": "0.5-1%"
-    }
+  "Stocks": {
+    "rate": "8-10%"
+  },
+  "Bonds": {
+    "rate": "3-5%"
+  },
+  "Mutual fund": {
+    "rate": "6-8%"
+  },
+  "ETFs": {
+    "rate": "7-10%"
+  },
+  "Commodities": {
+    "rate": "2-6%"
+  },
+  "Funds": {
+    "rate": "Depends on type (e.g., index funds 6-8%, actively managed funds 5-7%)"
+  },
+  "Brokerage account": {
+    "rate": "Varies based on the assets held"
+  },
+  "Real Estate": {
+    "rate": "8-12%"
+  },
+  "Cash": {
+    "rate": "0.5-1%"
+  },
+  "Options": {
+    "rate": "Varies widely, typically high risk/high reward"
+  },
+  "Annuities": {
+    "rate": "3-4%"
+  },
+  "Index funds": {
+    "rate": "6-8%"
+  },
+  "CDS": {
+    "rate": "Varies, typically complex financial instruments"
+  },
+  "Cryptocurrencies": {
+    "rate": "Varies widely, very volatile, typically high risk/high reward"
+  },
+  "Retirement": {
+    "rate": "Depends on the assets held (e.g., mix of stocks, bonds)"
+  },
+  "Investment trusts": {
+    "rate": "5-7%"
+  },
+  "Collectibles": {
+    "rate": "Varies widely, typically high risk"
+  },
+  "Private companies": {
+    "rate": "Varies widely, typically high risk"
+  },
+  "Corporate bonds": {
+    "rate": "3-6%"
+  },
+  "Alternative investments": {
+    "rate": "Varies widely, typically high risk"
+  },
+  "Money market funds": {
+    "rate": "0.5-2%"
+  },
+  "Certificates of deposit": {
+    "rate": "1-3%"
+  },
+  "Treasurys": {
+    "rate": "1-3%"
+  },
+  "Cash investments": {
+    "rate": "0.5-1%"
+  }
 }

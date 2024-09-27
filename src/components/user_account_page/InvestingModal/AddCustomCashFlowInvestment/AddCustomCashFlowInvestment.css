@@ -1,120 +1,121 @@
 .custom-modal {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .custom-modal-content {
-    padding: 40px;
-    background: rgba(255, 255, 255, 1);
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 900px; 
-    transition: transform 0.3s ease-in-out;
-    animation: formAnimation 0.5s forwards;
+  padding: 40px;
+  background: rgba(255, 255, 255, 1);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 900px;
+  transition: transform 0.3s ease-in-out;
+  animation: formAnimation 0.5s forwards;
 }
 
 .custom-modal-content h2 {
-    text-align: center;
-    margin-bottom: 20px;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-.custom-modal-content input, .custom-modal-content p {
-    width: 100%;
-    padding: 12px;
-    margin-top: 8px;
-    margin-bottom: 16px;
-    border: none;
-    border-bottom: 2px solid #0056b3;
-    box-sizing: border-box;
+.custom-modal-content input,
+.custom-modal-content p {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  border: none;
+  border-bottom: 2px solid #0056b3;
+  box-sizing: border-box;
 }
 
 .custom-modal-content button {
-    width: 100%;
-    padding: 10px;
-    background-color: #0056b3;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    letter-spacing: 1px;
+  width: 100%;
+  padding: 10px;
+  background-color: #0056b3;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  letter-spacing: 1px;
 }
 
 .custom-modal-content button:hover {
-    background-color: #004494;
+  background-color: #004494;
 }
 
 .custom-modal-content input:focus {
-    outline: none;
-    border-bottom-color: #ff4500;
+  outline: none;
+  border-bottom-color: #ff4500;
 }
 
 .custom-close {
-    color: #aaaaaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
 }
 
 .custom-close:hover,
 .custom-close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 @keyframes formAnimation {
-    from {
-        transform: scale(0.95);
-    }
-    to {
-        transform: scale(1);
-    }
+  from {
+    transform: scale(0.95);
+  }
+  to {
+    transform: scale(1);
+  }
 }
 
 .custom-select-container {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-    margin-bottom: 20px;
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 20px;
 }
 
 .custom-select-container select {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid #007bff; /* Blue border */
-    border-radius: 5px;
-    appearance: none; /* Removes default browser styles */
-    background-color: white;
-    font-size: 16px;
-    color: #333;
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #007bff; /* Blue border */
+  border-radius: 5px;
+  appearance: none; /* Removes default browser styles */
+  background-color: white;
+  font-size: 16px;
+  color: #333;
 }
 
 .custom-select-container::after {
-    content: '\25BC'; /* Down arrow symbol */
-    position: absolute;
-    top: 50%;
-    right: 15px;
-    transform: translateY(-50%);
-    color: #007bff;
-    pointer-events: none; /* Ensures the arrow doesn't interfere with the dropdown click */
-    font-size: 12px;
+  content: "\25BC"; /* Down arrow symbol */
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  color: #007bff;
+  pointer-events: none; /* Ensures the arrow doesn't interfere with the dropdown click */
+  font-size: 12px;
 }
 
 .custom-select-container select:hover {
-    border-color: #0056b3; /* Darker blue on hover */
+  border-color: #0056b3; /* Darker blue on hover */
 }
 
 .custom-select-container select:focus {
-    outline: none;
-    border-color: #003580; /* Even darker blue on focus */
+  outline: none;
+  border-color: #003580; /* Even darker blue on focus */
 }

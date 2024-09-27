@@ -17,11 +17,13 @@
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   font-size: 24px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .assistant-icon:hover {
-  transform: scale(1.1);  /* Make it a bit larger on hover */
+  transform: scale(1.1); /* Make it a bit larger on hover */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
@@ -43,7 +45,9 @@
   flex-direction: column;
   resize: both;
   overflow: hidden;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
   opacity: 1;
 }
 
@@ -55,7 +59,7 @@
   background-color: #007aff;
   color: white;
   border-radius: 15px 15px 0 0;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   font-size: 20px;
 }
 
@@ -71,7 +75,7 @@
 }
 
 .AI_close_button:hover {
-  color: #ff4949;  /* Close button turns red when hovered */
+  color: #ff4949; /* Close button turns red when hovered */
 }
 
 .chat-window {
@@ -80,7 +84,7 @@
   overflow-y: auto;
   border-top: 1px solid #ccc;
   border-bottom: 1px solid #ccc;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
 }
 
 .message {
@@ -94,6 +98,7 @@
 }
 
 .message.assistant {
+  white-space: pre-wrap;
   text-align: left;
   color: #555;
 }
@@ -134,7 +139,9 @@
   height: 38px;
   margin-top: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .input-area .AI_button:hover {

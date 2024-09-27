@@ -1,70 +1,68 @@
 .modal-content {
-    padding: 20px; /* Adjusted padding for visual appeal */
-    background: #f8f9fa;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 900px; /* Width as needed */
-    margin: auto;
-    overflow: hidden; /* Ensures content does not bleed outside the modal */
+  padding: 20px; /* Adjusted padding for visual appeal */
+  background: #f8f9fa;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 900px; /* Width as needed */
+  margin: auto;
+  overflow: hidden; /* Ensures content does not bleed outside the modal */
 }
 
 .financial-records-table {
-    width: 100%;
-    table-layout: fixed; /* Important for consistent column widths */
-    border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed; /* Important for consistent column widths */
+  border-collapse: collapse;
 }
 
 .financial-records-table thead,
 .financial-records-table tfoot {
-    display: table; /* Needed to align with tbody */
-    width: calc(100% - 17px); /* Adjust based on the scrollbar width, usually 15-20px */
-    table-layout: fixed; /* Fixing layout to match tbody */
-    background: #007bff;
+  display: table; /* Needed to align with tbody */
+  width: calc(
+    100% - 17px
+  ); /* Adjust based on the scrollbar width, usually 15-20px */
+  table-layout: fixed; /* Fixing layout to match tbody */
+  background: #007bff;
 }
 
-
-
 .financial-records-table tbody {
-    display: block;
-    overflow-y: auto; /* Enables scrolling */
-    max-height: 300px; /* Sets a maximum height with scroll */
-    width: 100%;
+  display: block;
+  overflow-y: auto; /* Enables scrolling */
+  max-height: 300px; /* Sets a maximum height with scroll */
+  width: 100%;
 }
 
 .financial-records-table th,
 .financial-records-table td {
-    width: 40%; /* Ensures equal width for three columns, adjust as needed */
-    text-align: center;
-    padding: 8px;
+  width: 40%; /* Ensures equal width for three columns, adjust as needed */
+  text-align: center;
+  padding: 8px;
 }
 
 .financial-records-table th {
-    color: white; /* For better visibility on blue background */
+  color: white; /* For better visibility on blue background */
 }
-
-
 
 /* Enhancing interactivity */
 .close {
-    float: right;
-    cursor: pointer;
-    color: #6c757d;
-    font-size: 28px;
-    font-weight: bold;
+  float: right;
+  cursor: pointer;
+  color: #6c757d;
+  font-size: 28px;
+  font-weight: bold;
 }
 
 .close:hover,
 .close:focus {
-    color: #000;
-    text-decoration: none;
+  color: #000;
+  text-decoration: none;
 }
 
 /* Animation for modal entry for better UX */
 @keyframes formAnimation {
-    from {
-        transform: translateY(-20px) scale(0.9);
-    }
-    to {
-        transform: translateY(0) scale(1);
-    }
+  from {
+    transform: translateY(-20px) scale(0.9);
+  }
+  to {
+    transform: translateY(0) scale(1);
+  }
 }
