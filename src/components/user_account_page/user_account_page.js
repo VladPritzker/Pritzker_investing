@@ -398,7 +398,7 @@ function UserAccountPage() {
                 <img
                   src={`${apiUrl}${user.photo}`}
                   alt={`${user.username}`}
-                  width="100"
+                  style={{ width: "150px", height: "150px", objectFit: "cover", borderRadius: "50%" }}
                 />
               </div>
             )}
