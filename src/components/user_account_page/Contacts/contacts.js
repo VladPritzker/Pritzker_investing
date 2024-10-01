@@ -91,7 +91,7 @@ function ContactsModal({ user, onClose }) {
   const handleSaveClick = async () => {
     try {
       const response = await fetch(
-        `${apiUrl}/users/${user.id}/contacts/${editContact.id}/`,
+        `${apiUrl}/contacts/${user.id}/${editContact.id}/`,
         {
           method: "PATCH",
           headers: {
