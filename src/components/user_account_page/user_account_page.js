@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import FinancialRecordsModal from "../user_account_page/FinancialRecordsModal/FinancialRecordsModal";
@@ -11,6 +12,9 @@ import "../user_account_page/user_account_page.css";
 import SleepLogsModal from "../user_account_page/TimeManagementModal/TimeManagementModal";
 import InvestingComparison from "./StockData/StockData";
 import VirtualAssistant from "./VirtualAssistant/VirtualAssistant";
+import EnvelopeModal from './Docusign/docusign_modal';
+
+
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -52,6 +56,39 @@ function UserAccountPage() {
   const [showInvestingComparison, setShowInvestingComparison] = useState(false);
   const [isBalanceVisible, setIsBalanceVisible] = useState(false); // Default to false
   const [isBalanceGoalVisible, setIsBalanceGoalVisible] = useState(false); // Default to false
+  const [showModal, setShowModal] = useState(false);
+
+
+
+  
+
+    const handleShowModal = () => setShowModal(true);
+    const handleCloseModal = () => setShowModal(false);
+    const handleSendEnvelope = async (email, name) => {
+        try {
+            const response = await axios.post('http://localhost:8000/send-envelope/', {
+                email,
+                name
+            });
+            alert('Envelope sent successfully!');
+            handleCloseModal();
+        } catch (error) {
+            console.error('Error sending envelope:', error);
+            alert('Failed to send envelope. Please try again.');
+        }
+    };
+
+    const handleDownloadEnvelopes = async () => {
+        try {
+            const response = await axios.post('http://localhost:8000/download-new-envelopes/');
+            alert('Envelopes downloaded successfully!');
+            handleCloseModal();
+        } catch (error) {
+            console.error('Error downloading envelopes:', error);
+            alert('Failed to download envelopes. Please try again.');
+        }
+    };
+
 
   const numberFormat = (number) =>
     new Intl.NumberFormat("en-US", {
@@ -480,6 +517,10 @@ function UserAccountPage() {
             >
               Sleep Logs
             </button>
+
+            <button variant="primary" type="button" onClick={handleShowModal}>
+                Manage Envelopes
+            </button>
           </div>
           <div className="data-rows">
             <h1 style={{ marginLeft: "-40%" }}>User Data</h1>
@@ -821,6 +862,15 @@ function UserAccountPage() {
           <strong>Time:</strong> {localTime}
         </p>
       </form>
+
+      
+      {showModal && (<EnvelopeModal
+                show={showModal}
+                handleClose={handleCloseModal}
+                handleSendEnvelope={handleSendEnvelope}
+                handleDownloadEnvelopes={handleDownloadEnvelopes}
+            /> 
+      )}
 
       {showInvestList && (
         <InvestingRecordsModal
