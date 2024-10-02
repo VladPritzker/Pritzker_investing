@@ -14,7 +14,7 @@ const EnvelopeModal = ({ show, handleClose, handleSendEnvelope, handleDownloadEn
         <Modal show={show} onHide={handleClose}>
             <button onClick={handleClose}>Close</button>
             <Modal.Header >
-                <Modal.Title>Send or Download Envelopes</Modal.Title>
+                <Modal.Title>Send Envelopes</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <h5>Send a New Envelope</h5>
@@ -46,16 +46,16 @@ const EnvelopeModal = ({ show, handleClose, handleSendEnvelope, handleDownloadEn
 
                 <hr />
 
-                <h5>Download Completed Envelopes</h5>
+                {/* <h5>Download Completed Envelopes</h5>
                 <Button variant="success" onClick={handleDownloadEnvelopes}>
                     Download Completed Envelopes
-                </Button>
+                </Button> */}
             </Modal.Body>
-            <Modal.Footer>
+            {/* <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>
                     Close
                 </Button>
-            </Modal.Footer>
+            </Modal.Footer> */}
         </Modal>
     );
 };
