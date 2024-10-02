@@ -9,7 +9,7 @@ function AddCustomCashFlowInvestment({
   user,
   onClose,
   token,
-  fetchInvestingRecords,
+  // fetchInvestingRecords,
 }) {
   const [recordName, setRecordName] = useState("");
   const [recordAmount, setRecordAmount] = useState("");
@@ -44,7 +44,7 @@ function AddCustomCashFlowInvestment({
 
       if (response.ok) {
         alert("Record added successfully!");
-        fetchInvestingRecords(); // Fetch the updated records list
+        // fetchInvestingRecords(); // Fetch the updated records list
         onClose(); // Close the modal after adding the record
       } else {
         const errorData = await response.json();
