@@ -142,3 +142,33 @@
 form button[type="button"] {
   background-color: #6c757d;
 }
+
+
+
+/* Mobile */
+
+@media (max-width: 768px) {
+  /* Hide all elements except those in the .buttons container */
+  
+  .login-container,
+  .login-form,
+  .login-form-time,
+  .data-rows,
+  .content-container,
+  .logout {
+    display: none !important; /* Hide all these elements on mobile */
+  }
+
+  /* Ensure that .buttons is visible and properly aligned */
+  .buttons {
+    display: block !important; /* Ensure buttons are displayed */
+    margin: 0 auto; /* Center the buttons */
+    padding: 20px; /* Add some padding for mobile */
+  }
+
+  /* Style the buttons for mobile */
+  .buttons button {
+    width: 100%; /* Make the buttons take full width on mobile */
+    margin-bottom: 15px; /* Add spacing between buttons */
+  }
+}
