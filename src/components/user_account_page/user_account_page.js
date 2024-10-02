@@ -66,7 +66,7 @@ function UserAccountPage() {
     const handleCloseModal = () => setShowModal(false);
     const handleSendEnvelope = async (email, name) => {
         try {
-            const response = await axios.post('http://localhost:8000/send-envelope/', {
+            const response = await axios.post(`${apiUrl}/send-envelope/`, {
                 email,
                 name
             });
@@ -80,7 +80,7 @@ function UserAccountPage() {
 
     const handleDownloadEnvelopes = async () => {
         try {
-            const response = await axios.post('http://localhost:8000/download-new-envelopes/');
+            const response = await axios.post(`${apiUrl}/download-new-envelopes/`);
             alert('Envelopes downloaded successfully!');
             handleCloseModal();
         } catch (error) {
