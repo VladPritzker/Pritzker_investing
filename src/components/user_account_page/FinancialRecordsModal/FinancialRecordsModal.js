@@ -15,6 +15,8 @@ import AddNewSpendings from "../RecordModal/RecordModal";
 import MonthlyExpensesModal from "./Monthly_Expenses/Monthly_Expenses";
 import ConfirmDeleteModal from "../FinancialRecordsModal/deletConf/deleteConf.js";
 import ChartModal from "./spendingsChart/spendingsChart.js";
+import ExchangeLinkTokenModal from './ExchangeLinkTokenModal/ExchangeLinkTokenModal.js';
+
 const apiUrl = process.env.REACT_APP_API_URL;
 
 // Register Chart.js components
@@ -43,6 +45,30 @@ function FinancialRecordsModal({ user, onClose }) {
   const [recordToDelete, setRecordToDelete] = useState(null);
   const [showChartModal, setShowChartModal] = useState(false);
   const [filterType, setFilterType] = useState("date");
+  const [showExchangeTokenModal, setShowExchangeTokenModal] = useState(false);
+
+
+  const csrftoken = getCookie('csrftoken');
+
+const exchangePublicToken = async (publicToken) => {
+  try {
+    const response = await fetch(`${apiUrl}/exchange_public_token/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken,
+      },
+      body: JSON.stringify({ public_token: publicToken }),
+      credentials: 'include',
+    });
+    // ... rest of the code
+  } catch (error) {
+    console.error('Error exchanging public token:', error);
+  }
+};
+
+  
+
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -82,6 +108,22 @@ function FinancialRecordsModal({ user, onClose }) {
     }
   };
 
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  
   useEffect(() => {
     fetchFinancialRecords();
   }, [user.id]);
@@ -263,6 +305,7 @@ function FinancialRecordsModal({ user, onClose }) {
         </span>
         <h2>Spending Records List</h2>
         <div className="filters">
+        <button style={{ marginBottom: "10px" }} onClick={() => setShowExchangeTokenModal(true)}>Exchange Link Token</button>
           <input
             type="date"
             value={startDate}
@@ -370,6 +413,12 @@ function FinancialRecordsModal({ user, onClose }) {
           setFilterType={setFilterType}
           records={financialRecords} // Pass the financial records to ChartModal
         />
+      )}
+      {showExchangeTokenModal && (
+      <ExchangeLinkTokenModal
+        onClose={() => setShowExchangeTokenModal(false)}
+        onExchange={exchangePublicToken}
+      />
       )}
     </div>
   );
