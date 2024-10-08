@@ -62,6 +62,9 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isOtpRequired, setIsOtpRequired] = useState(false); // OTP state
+  const [otp, setOtp] = useState("");
+  const [otpMessage, setOtpMessage] = useState(""); // OTP message state
   const navigate = useNavigate();
 
   const settings = {
@@ -78,21 +81,18 @@ function LoginPage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(`API URL: ${apiUrl}`);
-
-    if (isLogin) {
+  
+    if (isLogin && !isOtpRequired) {
       const loginData = {
         action: "login",
         email: email,
         password: password,
       };
-
       try {
         const response = await postUserData(loginData);
         if (response.ok) {
-          const result = await response.json();
-          console.log("Login successful:", result);
-          navigate(`/account/${result.id}`, { state: { user: result } });
+          setIsOtpRequired(true); // Enable OTP verification stage
+          setOtpMessage("A code has been sent to your email. Please check your inbox.");
         } else {
           throw new Error("Login failed.");
         }
@@ -100,29 +100,23 @@ function LoginPage() {
         console.error("Login error:", error);
         alert(error.message);
       }
-    } else {
-      if (password !== confirmPassword) {
-        alert("Passwords do not match.");
-        return;
-      }
-
-      const userData = {
-        action: "register",
-        username: username,
+    } else if (isOtpRequired) {
+      const otpData = {
+        action: "verify_otp",
         email: email,
-        password: password,
+        otp: otp,
       };
-
       try {
-        const response = await postUserData(userData);
+        const response = await postUserData(otpData);
         if (response.ok) {
-          alert("Registration successful. Please login.");
-          window.location.reload();
+          const result = await response.json();
+          console.log("Login successful:", result);
+          navigate(`/account/${result.id}`, { state: { user: result } });
         } else {
-          throw new Error("Registration failed.");
+          throw new Error("OTP verification failed.");
         }
       } catch (error) {
-        console.error("Registration error:", error);
+        console.error("OTP verification error:", error);
         alert(error.message);
       }
     }
@@ -180,15 +174,11 @@ function LoginPage() {
     return cookieValue;
   };
 
-  const handleLinkClick = (url, e) => {
-    e.preventDefault();
-    window.open(url, "_blank");
-  };
-
   return (
     <div className="login-container">
       <form onSubmit={handleSubmit} className="login-form login">
         <h2>{isLogin ? "Login" : "Register"}</h2>
+        
         {!isLogin && (
           <input
             style={inputStyle}
@@ -218,6 +208,7 @@ function LoginPage() {
           required
           autoComplete="current-password"
         />
+
         {!isLogin && (
           <input
             style={inputStyle}
@@ -229,7 +220,23 @@ function LoginPage() {
             autoComplete="new-password"
           />
         )}
+
+        {isOtpRequired && (
+          <div>
+            <input
+              style={inputStyle}
+              type="text"
+              placeholder="Enter OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              required
+            />
+            {otpMessage && <p className="otp-message">{otpMessage}</p>}
+          </div>
+        )}
+
         <button type="submit">{isLogin ? "Login" : "Register"}</button>
+        
         <button
           style={{ marginBottom: "10%" }}
           type="button"
@@ -238,6 +245,7 @@ function LoginPage() {
         >
           {isLogin ? "Need an account? Register" : "Have an account? Login"}
         </button>
+        
         {isLogin && (
           <button
             style={{ marginBottom: "10%" }}
@@ -248,6 +256,7 @@ function LoginPage() {
             Forgot Password?
           </button>
         )}
+
         <Slider {...settings}>
           {[img1, img2, img3, img4].map((src, index) => (
             <div key={index}>
