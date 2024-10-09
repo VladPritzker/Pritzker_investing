@@ -191,13 +191,13 @@ function UserAccountPage() {
       return;
     }
 
-    console.log("Checking for today's meetings:", new Date().toDateString());
-    console.log("Meetings:", meetings); // Log meetings data
+    // console.log("Checking for today's meetings:", new Date().toDateString());
+    // console.log("Meetings:", meetings); // Log meetings data
     const today = new Date().toDateString();
     const todayMeetings = meetings.filter(
       (meeting) => new Date(meeting.datetime).toDateString() === today,
     );
-    console.log("Today's meetings:", todayMeetings); // Log today's meetings
+    // console.log("Today's meetings:", todayMeetings); // Log today's meetings
     setHasTodayMeetings(todayMeetings.length > 0);
   };
 

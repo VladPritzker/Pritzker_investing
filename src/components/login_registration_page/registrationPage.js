@@ -62,9 +62,6 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [isOtpRequired, setIsOtpRequired] = useState(false); // OTP state
-  const [otp, setOtp] = useState("");
-  const [otpMessage, setOtpMessage] = useState(""); // OTP message state
   const [resetMessage, setResetMessage] = useState(""); // Message after password reset request
   const navigate = useNavigate();
 
@@ -80,48 +77,50 @@ function LoginPage() {
     prevArrow: <SamplePrevArrow />,
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-  
-    if (isLogin && !isOtpRequired) {
-      const loginData = {
-        action: "login",
-        email: email,
-        password: password,
-      };
-      try {
-        const response = await postUserData(loginData);
-        if (response.ok) {
-          setIsOtpRequired(true); // Enable OTP verification stage
-          setOtpMessage("A code has been sent to your email. Please check your inbox.");
-        } else {
-          throw new Error("Login failed.");
+  const getCookie = (name) => {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
         }
-      } catch (error) {
-        console.error("Login error:", error);
-        alert(error.message);
-      }
-    } else if (isOtpRequired) {
-      const otpData = {
-        action: "verify_otp",
-        email: email,
-        otp: otp,
-      };
-      try {
-        const response = await postUserData(otpData);
-        if (response.ok) {
-          const result = await response.json();
-          console.log("Login successful:", result);
-          navigate(`/account/${result.id}`, { state: { user: result } });
-        } else {
-          throw new Error("OTP verification failed.");
-        }
-      } catch (error) {
-        console.error("OTP verification error:", error);
-        alert(error.message);
       }
     }
-  }; 
+    return cookieValue;
+  };
+
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    const loginData = {
+      email: email,
+      password: password,
+    };
+  
+    try {
+      const response = await fetch(`${apiUrl}/simple-login/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(loginData),
+      });
+  
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Login successful:", result);
+        navigate(`/account/${result.id}`, { state: { user: result } });
+      } else {
+        throw new Error("Login failed. Invalid credentials.");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert(error.message);
+    }
+  };
+  
 
   const handleForgotPassword = async () => {
     if (!email) {
@@ -130,12 +129,18 @@ function LoginPage() {
     }
 
     const resetData = {
-      action: "reset_password",
       email: email,
     };
 
     try {
-      const response = await postUserData(resetData);
+      const response = await fetch(`${apiUrl}/reset-password/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(resetData),
+      });
+
       if (response.ok) {
         setResetMessage("Password reset link sent to your email.");
       } else {
@@ -147,37 +152,9 @@ function LoginPage() {
     }
   };
 
-  const postUserData = async (data) => {
-    const csrftoken = getCookie("csrftoken");
-    const response = await fetch(`${apiUrl}/users/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": csrftoken,
-      },
-      body: JSON.stringify(data),
-    });
-    return response;
-  };
-
-  const getCookie = (name) => {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== "") {
-      const cookies = document.cookie.split(";");
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.substring(0, name.length + 1) === name + "=") {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
-      }
-    }
-    return cookieValue;
-  };
-
   return (
     <div className="login-container">
-      <form onSubmit={handleSubmit} className="login-form login">
+      <form onSubmit={handleLogin} className="login-form login">
         <h2>{isLogin ? "Login" : "Register"}</h2>
         
         {!isLogin && (
@@ -220,20 +197,6 @@ function LoginPage() {
             required
             autoComplete="new-password"
           />
-        )}
-
-        {isOtpRequired && (
-          <div>
-            <input
-              style={inputStyle}
-              type="text"
-              placeholder="Enter OTP"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              required
-            />
-            {otpMessage && <p className="otp-message">{otpMessage}</p>}
-          </div>
         )}
 
         <button type="submit">{isLogin ? "Login" : "Register"}</button>
