@@ -65,6 +65,7 @@ function LoginPage() {
   const [isOtpRequired, setIsOtpRequired] = useState(false); // OTP state
   const [otp, setOtp] = useState("");
   const [otpMessage, setOtpMessage] = useState(""); // OTP message state
+  const [resetMessage, setResetMessage] = useState(""); // Message after password reset request
   const navigate = useNavigate();
 
   const settings = {
@@ -136,13 +137,13 @@ function LoginPage() {
     try {
       const response = await postUserData(resetData);
       if (response.ok) {
-        alert("Password reset link sent to your email.");
+        setResetMessage("Password reset link sent to your email.");
       } else {
         throw new Error("Password reset failed.");
       }
     } catch (error) {
       console.error("Password reset error:", error);
-      alert(error.message);
+      setResetMessage("An error occurred while requesting the reset link.");
     }
   };
 
@@ -247,14 +248,17 @@ function LoginPage() {
         </button>
         
         {isLogin && (
-          <button
-            style={{ marginBottom: "10%" }}
-            type="button"
-            onClick={handleForgotPassword}
-            className="forgot-password"
-          >
-            Forgot Password?
-          </button>
+          <>
+            <button
+              style={{ marginBottom: "10%" }}
+              type="button"
+              onClick={handleForgotPassword}
+              className="forgot-password"
+            >
+              Forgot Password?
+            </button>
+            {resetMessage && <p className="reset-message">{resetMessage}</p>}
+          </>
         )}
 
         <Slider {...settings}>
