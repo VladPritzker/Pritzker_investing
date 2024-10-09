@@ -120,7 +120,7 @@ function LoginPage() {
         alert(error.message);
       }
     }
-  };
+  }; 
 
   const handleForgotPassword = async () => {
     if (!email) {
