@@ -191,3 +191,124 @@ form button[type="button"] {
     padding: 12px;
   }
 }
+
+
+/* Small Devices (Smartphones) */
+@media (max-width: 480px) {
+  /* Hide the .data-rows elements on small devices */
+  .data-rows {
+    display: none !important;
+  }
+
+  /* Adjust layout for small devices */
+  .login-container {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+  }
+
+  .login-form {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .content-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .buttons {
+    width: 100%;
+    margin-top: 15px;
+    align-items: center;
+  }
+
+  .buttons button {
+    width: 100%;
+    margin-bottom: 12px;
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+
+  .login-form h2 {
+    font-size: 1.3em;
+  }
+
+  .login-form input,
+  .login-form p {
+    width: 100%;
+    margin-left: 0;
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  img[alt="User profile"] {
+    width: 100px;
+    margin-bottom: 15px;
+  }
+
+  .logout {
+    margin-bottom: 15px;
+  }
+}
+
+@media (max-width: 360px) {
+  /* Adjust the container */
+  .login-container {
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+  }
+
+  /* Adjust the form */
+  .login-form {
+    width: 100%;
+    padding: 10px;
+  }
+
+  /* Adjust content container */
+  .content-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Adjust buttons */
+  .buttons {
+    width: 100%;
+    margin-top: 10px;
+    align-items: center;
+  }
+
+  .buttons button {
+    width: 100%;
+    margin-bottom: 10px;
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+
+  /* Adjust headings */
+  .login-form h2 {
+    font-size: 1.2em;
+  }
+
+  /* Adjust inputs and paragraphs */
+  .login-form input,
+  .login-form p {
+    width: 100%;
+    margin-left: 0;
+    padding: 8px;
+    font-size: 13px;
+  }
+
+  /* Adjust profile image */
+  img[alt="User profile"] {
+    width: 80px;
+    margin-bottom: 10px;
+  }
+
+  /* Adjust logout button */
+  .logout {
+    margin-bottom: 10px;
+  }
+
+}

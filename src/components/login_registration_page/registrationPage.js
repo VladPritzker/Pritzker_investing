@@ -77,50 +77,80 @@ function LoginPage() {
     prevArrow: <SamplePrevArrow />,
   };
 
-  const getCookie = (name) => {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      const cookies = document.cookie.split(';');
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
-      }
-    }
-    return cookieValue;
-  };
-
-  const handleLogin = async (event) => {
+  const handleFormSubmit = async (event) => {
     event.preventDefault();
-    const loginData = {
-      email: email,
-      password: password,
-    };
-  
-    try {
-      const response = await fetch(`${apiUrl}/simple-login/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(loginData),
-      });
-  
-      if (response.ok) {
-        const result = await response.json();
-        console.log("Login successful:", result);
-        navigate(`/account/${result.id}`, { state: { user: result } });
-      } else {
-        throw new Error("Login failed. Invalid credentials.");
+
+    if (isLogin) {
+      // Handle Login
+      const loginData = {
+        email: email,
+        password: password,
+      };
+
+      try {
+        const response = await fetch(`${apiUrl}/simple-login/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(loginData),
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          console.log("Login successful:", result);
+          navigate(`/account/${result.id}`, { state: { user: result } });
+        } else {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Login failed. Invalid credentials.");
+        }
+      } catch (error) {
+        console.error("Login error:", error);
+        alert(error.message);
       }
-    } catch (error) {
-      console.error("Login error:", error);
-      alert(error.message);
+    } else {
+      // Handle Registration
+      if (password !== confirmPassword) {
+        alert("Passwords do not match.");
+        return;
+      }
+
+      const registrationData = {
+        username: username,
+        email: email,
+        password: password,
+      };
+
+      try {
+        const response = await fetch(`${apiUrl}/register/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(registrationData),
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          console.log("Registration successful:", result);
+          alert("Registration successful! You can now log in.");
+          // Clear the registration form fields
+          setUsername("");
+          setEmail("");
+          setPassword("");
+          setConfirmPassword("");
+          // Switch back to login form
+          setIsLogin(true);
+        } else {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Registration failed.");
+        }
+      } catch (error) {
+        console.error("Registration error:", error);
+        alert(error.message);
+      }
     }
   };
-  
 
   const handleForgotPassword = async () => {
     if (!email) {
@@ -134,9 +164,9 @@ function LoginPage() {
 
     try {
       const response = await fetch(`${apiUrl}/reset-password/`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(resetData),
       });
@@ -154,9 +184,9 @@ function LoginPage() {
 
   return (
     <div className="login-container">
-      <form onSubmit={handleLogin} className="login-form login">
+      <form onSubmit={handleFormSubmit} className="login-form login">
         <h2>{isLogin ? "Login" : "Register"}</h2>
-        
+
         {!isLogin && (
           <input
             style={inputStyle}
@@ -184,7 +214,7 @@ function LoginPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          autoComplete="current-password"
+          autoComplete={isLogin ? "current-password" : "new-password"}
         />
 
         {!isLogin && (
@@ -200,7 +230,7 @@ function LoginPage() {
         )}
 
         <button type="submit">{isLogin ? "Login" : "Register"}</button>
-        
+
         <button
           style={{ marginBottom: "10%" }}
           type="button"
@@ -209,7 +239,7 @@ function LoginPage() {
         >
           {isLogin ? "Need an account? Register" : "Have an account? Login"}
         </button>
-        
+
         {isLogin && (
           <>
             <button
