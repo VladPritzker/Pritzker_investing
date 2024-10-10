@@ -304,8 +304,8 @@ function UserAccountPage() {
   const handlePhotoUpload = async (event) => {
     const files = event.target.files;
     if (!files || files.length === 0) {
-      console.error("No files selected");
-      return;
+        console.error("No files selected");
+        return;
     }
 
     const file = files[0];
@@ -313,28 +313,31 @@ function UserAccountPage() {
     formData.append("photo", file);
 
     try {
-      const response = await fetch(`${apiUrl}/users/${user.id}/upload_photo/`, {
-        method: "POST",
-        body: formData,
-        headers: {
-          "X-CSRFToken": getCookie("csrftoken"), // Include CSRF token in the headers
-        },
-      });
+        const response = await fetch(`${apiUrl}/users/${user.id}/upload_photo/`, {
+            method: "POST",
+            body: formData,
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken"),
+            },
+        });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Photo uploaded successfully:", data.file_url);
-        setUser((prevUser) => ({ ...prevUser, photo: data.file_url }));
-        setShowPhotoInput(false);
-        handleRefreshDataClick(); // Refresh data after upload
-      } else {
-        const errorData = await response.json();
-        console.error("Failed to upload photo:", errorData);
-      }
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Photo uploaded successfully:", data.file_url);
+          // Set the user's photo to the full image URL
+          setUser((prevUser) => ({ ...prevUser, photo: data.file_url }));
+          setShowPhotoInput(false);
+          handleRefreshDataClick();
+        } else {
+            const errorData = await response.json();
+            console.error("Failed to upload photo:", errorData);
+        }
     } catch (error) {
-      console.error("Error uploading photo:", error);
+        console.error("Error uploading photo:", error);
     }
-  };
+};
+
+  
 
   const handlePhotoUploadClick = () => {
     setShowPhotoInput(true);
@@ -414,6 +417,13 @@ function UserAccountPage() {
     },
   };
 
+  function getImageUrl(photoPath) {
+    if (!photoPath) return null;
+    if (photoPath.startsWith('http')) return photoPath;
+    return `${apiUrl}${photoPath}`;
+  }
+  
+
   return (
     <div className="login-container">
       <form className="login-form">
@@ -427,24 +437,37 @@ function UserAccountPage() {
             >
               Logout
             </button>
-            {user?.photo && (
-              <div style={{ textAlign: "center", marginBottom: "10px" }}>
-                <h2 style={{ ...styles.textStyle, marginBottom: "10px" }}>
-                  Profile Photo
-                </h2>
-                <img
-                  src={`${apiUrl}${user.photo}`}
-                  alt={`${user.username}`}
-                  style={{ width: "150px", height: "150px", objectFit: "cover", borderRadius: "50%" }}
-                />
-              </div>
-            )}
+            {user ? (
+  <>
+    <h1>{user.username}'s Profile</h1>
+    {user && user.photo ? (
+  <img 
+    src={user.photo} 
+    alt="User profile" 
+    style={{
+      width: "150px", 
+      height: "150px", 
+      borderRadius: "50%", 
+      objectFit: "cover", 
+      border: "2px solid #ccc",
+      marginLeft: "25px",
+      marginBottom: "30px"
+
+    }} 
+  />
+) : (
+  <p>No profile photo available</p>
+)}
+  </>
+) : (
+  <p>Loading user data...</p>
+)}
             <div
               style={{
                 display: "flex",
                 alignItems: "center",
                 marginBottom: "10px",
-                marginLeft: "35%",
+                marginLeft: "30%",
               }}
             >
               <button
@@ -888,11 +911,11 @@ function UserAccountPage() {
         <NotesModal user={user} onClose={() => setShowNotesModal(false)} />
       )}
       {showPhotoInput && (
-        <PhotoUploadModal
-          onClose={() => setShowPhotoInput(false)}
-          onUpload={handlePhotoUpload}
-        />
-      )}
+      <PhotoUploadModal
+        onClose={() => setShowPhotoInput(false)}
+        onUpload={handlePhotoUpload}
+      />
+    )}
       {showIncomeModal && (
         <IncomeRecordsModal
           user={user}
