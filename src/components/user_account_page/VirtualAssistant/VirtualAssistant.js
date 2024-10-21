@@ -18,6 +18,19 @@ const VirtualAssistant = ({ userId }) => {
       chatWindowRef.current.scrollTop = chatWindowRef.current.scrollHeight;
     }
   }, [messages]);
+  
+  useEffect(() => {
+    const handleEsc = (event) => {
+      if (event.key === "Escape"){
+        setIsAssistantOpen(false);
+      }
+    }
+    window.addEventListener('keydown', handleEsc)
+    return () => {
+      window.removeEventListener("keydown", handleEsc)
+    }
+  }
+)
 
   const sendMessage = async () => {
     if (input.trim() === "") return;
