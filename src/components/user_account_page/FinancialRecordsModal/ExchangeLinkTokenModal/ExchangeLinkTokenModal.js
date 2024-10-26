@@ -3,7 +3,7 @@ import { usePlaidLink } from 'react-plaid-link';
 
 const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
-function ExchangeLinkTokenModal({ onClose }) {
+function ExchangeLinkTokenModal({ onClose, user_id }) {  // Accept user_id as prop
   const [linkToken, setLinkToken] = useState('');
   const [accounts, setAccounts] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -15,7 +15,6 @@ function ExchangeLinkTokenModal({ onClose }) {
         console.error('No auth token found');
         return;
       }
-      // console.log('Auth Token found in sessionStorage:', token);
 
       try {
         const response = await fetch(`${apiUrl}/create_link_token/`, {
@@ -24,11 +23,11 @@ function ExchangeLinkTokenModal({ onClose }) {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
           },
+          body: JSON.stringify({ user_id }), // Send user_id to backend
         });
         const data = await response.json();
         if (data.link_token) {
           setLinkToken(data.link_token);
-          // console.log('Link token fetched:', data.link_token);
         } else {
           console.error('Error fetching link token:', data.error);
         }
@@ -38,19 +37,15 @@ function ExchangeLinkTokenModal({ onClose }) {
     };
 
     fetchLinkToken();
-  }, []);
+  }, [user_id]);
 
   const onSuccess = async (public_token) => {
     setLoading(true);
-
     const token = sessionStorage.getItem('authToken');
     if (!token) {
       console.error('No auth token found in sessionStorage');
       return;
     }
-
-    // console.log('Auth Token for exchanging public token:', token);
-    // console.log('Plaid Public Token received from onSuccess:', public_token);
 
     try {
       const response = await fetch(`${apiUrl}/get_access_token/`, {
@@ -59,14 +54,10 @@ function ExchangeLinkTokenModal({ onClose }) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ public_token }),
+        body: JSON.stringify({ public_token, user_id }), // Send user_id in request body
       });
 
       const data = await response.json();
-
-      // console.log('Response from /get_access_token/:', response);
-      // console.log('Response data from /get_access_token/:', data);
-
       if (response.ok) {
         console.log('Access token exchange successful:', data);
         sessionStorage.setItem('accessToken', data.access_token);
@@ -89,20 +80,15 @@ function ExchangeLinkTokenModal({ onClose }) {
       return;
     }
 
-    // console.log('Access Token for fetching account data:', accessToken);
-
     try {
       const response = await fetch(`${apiUrl}/get_account_data/`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ access_token: accessToken }),
       });
       const data = await response.json();
       if (response.ok) {
         setAccounts(data.accounts);
-        // console.log('Accounts fetched:', data.accounts);
       } else {
         console.error('Error fetching accounts:', data.error);
       }
@@ -117,12 +103,8 @@ function ExchangeLinkTokenModal({ onClose }) {
     ? {
         token: linkToken,
         onSuccess,
-        onExit: (err, metadata) => {
-          if (err) {
-            console.error('Link flow exited with error:', err);
-          } else {
-            console.log('Link flow exited:', metadata);
-          }
+        onExit: (err) => {
+          if (err) console.error('Link flow exited with error:', err);
         },
       }
     : null;
@@ -132,19 +114,14 @@ function ExchangeLinkTokenModal({ onClose }) {
   return (
     <div className="modal">
       <div className="modal-content">
-        <span className="close" onClick={onClose}>
-          &times;
-        </span>
+        <span className="close" onClick={onClose}>&times;</span>
         <h2>Connect Your Bank Account</h2>
-
         {loading && <div className="spinner">Loading...</div>}
-
         {!loading && (
           <button onClick={() => open()} disabled={!ready}>
             Open Plaid Link
           </button>
         )}
-
         {accounts && accounts.length > 0 && (
           <div>
             <h3>Accounts</h3>

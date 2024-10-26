@@ -50,22 +50,27 @@ function FinancialRecordsModal({ user, onClose }) {
 
   const csrftoken = getCookie('csrftoken');
 
-const exchangePublicToken = async (publicToken) => {
-  try {
-    const response = await fetch(`${apiUrl}/exchange_public_token/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrftoken,
-      },
-      body: JSON.stringify({ public_token: publicToken }),
-      credentials: 'include',
-    });
-    // ... rest of the code
-  } catch (error) {
-    console.error('Error exchanging public token:', error);
-  }
-};
+  const exchangePublicToken = async (publicToken, user_id) => {
+    try {
+      const response = await fetch(`${apiUrl}/exchange_public_token/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({ public_token: publicToken, user_id }), // Send user_id to backend
+        credentials: 'include',
+      });
+      if (response.ok) {
+        console.log('Public token exchanged successfully');
+      } else {
+        console.error('Failed to exchange public token');
+      }
+    } catch (error) {
+      console.error('Error exchanging public token:', error);
+    }
+  };
+
 
   
 
@@ -415,10 +420,11 @@ const exchangePublicToken = async (publicToken) => {
         />
       )}
       {showExchangeTokenModal && (
-      <ExchangeLinkTokenModal
-        onClose={() => setShowExchangeTokenModal(false)}
-        onExchange={exchangePublicToken}
-      />
+       <ExchangeLinkTokenModal
+       onClose={() => setShowExchangeTokenModal(false)}
+       onExchange={exchangePublicToken}
+       user_id={user.id} // Pass user_id prop
+     />
       )}
     </div>
   );
