@@ -5,18 +5,30 @@ const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 function ExchangeLinkTokenModal({ onClose }) {
   const [linkToken, setLinkToken] = useState('');
-  const [accounts, setAccounts] = useState(null); // For storing the fetched account data
+  const [accounts, setAccounts] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Fetch the link token from the backend when the component mounts
     const fetchLinkToken = async () => {
+      const token = sessionStorage.getItem('authToken');
+      if (!token) {
+        console.error('No auth token found');
+        return;
+      }
+      // console.log('Auth Token found in sessionStorage:', token);
+
       try {
         const response = await fetch(`${apiUrl}/create_link_token/`, {
-          credentials: 'include',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
         });
         const data = await response.json();
         if (data.link_token) {
           setLinkToken(data.link_token);
+          // console.log('Link token fetched:', data.link_token);
         } else {
           console.error('Error fetching link token:', data.error);
         }
@@ -29,61 +41,93 @@ function ExchangeLinkTokenModal({ onClose }) {
   }, []);
 
   const onSuccess = async (public_token) => {
-    console.log('Public Token:', public_token);
+    setLoading(true);
 
-    // Exchange the public token for an access token
+    const token = sessionStorage.getItem('authToken');
+    if (!token) {
+      console.error('No auth token found in sessionStorage');
+      return;
+    }
+
+    // console.log('Auth Token for exchanging public token:', token);
+    // console.log('Plaid Public Token received from onSuccess:', public_token);
+
     try {
       const response = await fetch(`${apiUrl}/get_access_token/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({ public_token }),
-        credentials: 'include',
       });
+
       const data = await response.json();
+
+      // console.log('Response from /get_access_token/:', response);
+      // console.log('Response data from /get_access_token/:', data);
+
       if (response.ok) {
         console.log('Access token exchange successful:', data);
-
-        // Fetch account data after exchanging the public token
+        sessionStorage.setItem('accessToken', data.access_token);
         fetchAccountData();
       } else {
         console.error('Error exchanging public token:', data.error);
       }
     } catch (error) {
       console.error('Error exchanging public token:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const fetchAccountData = async () => {
+    setLoading(true);
+    const accessToken = sessionStorage.getItem('accessToken');
+    if (!accessToken) {
+      console.error('No access token found');
+      return;
+    }
+
+    // console.log('Access Token for fetching account data:', accessToken);
+
     try {
       const response = await fetch(`${apiUrl}/get_account_data/`, {
-        credentials: 'include',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ access_token: accessToken }),
       });
       const data = await response.json();
       if (response.ok) {
         setAccounts(data.accounts);
+        // console.log('Accounts fetched:', data.accounts);
       } else {
         console.error('Error fetching accounts:', data.error);
       }
     } catch (error) {
       console.error('Error fetching accounts:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const config = {
-    token: linkToken,
-    onSuccess,
-    onExit: (err, metadata) => {
-      if (err) {
-        console.error('Link flow exited with error:', err);
-      } else {
-        console.log('Link flow exited:', metadata);
+  const config = linkToken
+    ? {
+        token: linkToken,
+        onSuccess,
+        onExit: (err, metadata) => {
+          if (err) {
+            console.error('Link flow exited with error:', err);
+          } else {
+            console.log('Link flow exited:', metadata);
+          }
+        },
       }
-    },
-  };
+    : null;
 
-  const { open, ready } = usePlaidLink(config);
+  const { open, ready } = usePlaidLink(config || {});
 
   return (
     <div className="modal">
@@ -93,12 +137,14 @@ function ExchangeLinkTokenModal({ onClose }) {
         </span>
         <h2>Connect Your Bank Account</h2>
 
-        {/* Button to open the Plaid Link widget */}
-        <button onClick={() => open()} disabled={!ready}>
-          Open Plaid Link
-        </button>
+        {loading && <div className="spinner">Loading...</div>}
 
-        {/* Display accounts after they are fetched */}
+        {!loading && (
+          <button onClick={() => open()} disabled={!ready}>
+            Open Plaid Link
+          </button>
+        )}
+
         {accounts && accounts.length > 0 && (
           <div>
             <h3>Accounts</h3>

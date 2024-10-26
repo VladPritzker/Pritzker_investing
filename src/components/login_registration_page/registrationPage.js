@@ -79,14 +79,14 @@ function LoginPage() {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-
+  
     if (isLogin) {
       // Handle Login
       const loginData = {
         email: email,
         password: password,
       };
-
+  
       try {
         const response = await fetch(`${apiUrl}/simple-login/`, {
           method: "POST",
@@ -95,10 +95,19 @@ function LoginPage() {
           },
           body: JSON.stringify(loginData),
         });
-
+  
         if (response.ok) {
           const result = await response.json();
-          console.log("Login successful:", result);
+  
+          // Store tokens in sessionStorage
+          sessionStorage.setItem("authToken", result.access); // Store access token
+          sessionStorage.setItem("refreshToken", result.refresh); // Store refresh token
+  
+          // Log the tokens to the console for debugging
+          console.log("Access token stored in sessionStorage:", sessionStorage.getItem("authToken"));
+          console.log("Refresh token stored in sessionStorage:", sessionStorage.getItem("refreshToken"));
+  
+          // Redirect to the account page with user information
           navigate(`/account/${result.id}`, { state: { user: result } });
         } else {
           const errorData = await response.json();
@@ -114,13 +123,13 @@ function LoginPage() {
         alert("Passwords do not match.");
         return;
       }
-
+  
       const registrationData = {
         username: username,
         email: email,
         password: password,
       };
-
+  
       try {
         const response = await fetch(`${apiUrl}/register/`, {
           method: "POST",
@@ -129,7 +138,7 @@ function LoginPage() {
           },
           body: JSON.stringify(registrationData),
         });
-
+  
         if (response.ok) {
           const result = await response.json();
           console.log("Registration successful:", result);
@@ -151,6 +160,9 @@ function LoginPage() {
       }
     }
   };
+
+  
+  
 
   const handleForgotPassword = async () => {
     if (!email) {

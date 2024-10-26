@@ -541,9 +541,9 @@ function UserAccountPage() {
               Sleep Logs
             </button>
 
-            <button variant="primary" type="button" onClick={handleShowModal}>
+            {/* <button variant="primary" type="button" onClick={handleShowModal}>
                 Manage Envelopes
-            </button>
+            </button> */}
           </div>
           <div className="data-rows">
             <h1 style={{ marginLeft: "-40%" }}>User Data</h1>
