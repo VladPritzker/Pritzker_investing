@@ -104,23 +104,23 @@ function UserAccountPage() {
     return () => clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    const fetchTimezone = async () => {
-      try {
-        const response = await fetch("http://worldtimeapi.org/api/ip");
-        if (!response.ok) throw new Error("Failed to fetch timezone data");
-        const data = await response.json();
-        const timezone = data.timezone;
-        setLocalTime(
-          new Date().toLocaleTimeString("en-US", { timeZone: timezone }),
-        );
-      } catch (error) {
-        console.error("Failed to fetch timezone:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchTimezone = async () => {
+  //     try {
+  //       const response = await fetch("http://worldtimeapi.org/api/ip");
+  //       if (!response.ok) throw new Error("Failed to fetch timezone data");
+  //       const data = await response.json();
+  //       const timezone = data.timezone;
+  //       setLocalTime(
+  //         new Date().toLocaleTimeString("en-US", { timeZone: timezone }),
+  //       );
+  //     } catch (error) {
+  //       console.error("Failed to fetch timezone:", error);
+  //     }
+  //   };
 
-    fetchTimezone();
-  }, []);
+  //   fetchTimezone();
+  // }, []);
 
   const fetchMeetings = useCallback(async () => {
     if (user && user.id) {
