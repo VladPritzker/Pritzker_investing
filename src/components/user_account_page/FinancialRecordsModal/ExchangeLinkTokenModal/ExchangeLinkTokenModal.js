@@ -3,7 +3,7 @@ import { usePlaidLink } from 'react-plaid-link';
 
 const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
-function ExchangeLinkTokenModal({ onClose }) {
+function ExchangeLinkTokenModal({ onClose, user_id}) {
   const [linkToken, setLinkToken] = useState('');
   const [accounts, setAccounts] = useState([]);
   const [selectedAccounts, setSelectedAccounts] = useState([]);
@@ -24,6 +24,7 @@ function ExchangeLinkTokenModal({ onClose }) {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
           },
+          body: JSON.stringify({ user_id }),
         });
         const data = await response.json();
         if (data.link_token) {
