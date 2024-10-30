@@ -56,7 +56,7 @@ function ExchangeLinkTokenModal({ onClose, user_id}) {
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({ public_token }),
-      });
+    });
 
       const data = await response.json();
       if (response.ok) {
