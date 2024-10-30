@@ -3,9 +3,10 @@ import { usePlaidLink } from 'react-plaid-link';
 
 const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
-function ExchangeLinkTokenModal({ onClose, user_id }) {  // Accept user_id as prop
+function ExchangeLinkTokenModal({ onClose }) {
   const [linkToken, setLinkToken] = useState('');
-  const [accounts, setAccounts] = useState(null);
+  const [accounts, setAccounts] = useState([]);
+  const [selectedAccounts, setSelectedAccounts] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -23,7 +24,6 @@ function ExchangeLinkTokenModal({ onClose, user_id }) {  // Accept user_id as pr
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
           },
-          body: JSON.stringify({ user_id }), // Send user_id to backend
         });
         const data = await response.json();
         if (data.link_token) {
@@ -37,7 +37,7 @@ function ExchangeLinkTokenModal({ onClose, user_id }) {  // Accept user_id as pr
     };
 
     fetchLinkToken();
-  }, [user_id]);
+  }, []);
 
   const onSuccess = async (public_token) => {
     setLoading(true);
@@ -54,7 +54,7 @@ function ExchangeLinkTokenModal({ onClose, user_id }) {  // Accept user_id as pr
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ public_token, user_id }), // Send user_id in request body
+        body: JSON.stringify({ public_token }),
       });
 
       const data = await response.json();
@@ -75,16 +75,19 @@ function ExchangeLinkTokenModal({ onClose, user_id }) {  // Accept user_id as pr
   const fetchAccountData = async () => {
     setLoading(true);
     const accessToken = sessionStorage.getItem('accessToken');
-    if (!accessToken) {
-      console.error('No access token found');
+    const token = sessionStorage.getItem('authToken');
+    if (!accessToken || !token) {
+      console.error('No access token or auth token found');
       return;
     }
 
     try {
       const response = await fetch(`${apiUrl}/get_account_data/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ access_token: accessToken }),
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
       });
       const data = await response.json();
       if (response.ok) {
@@ -94,6 +97,49 @@ function ExchangeLinkTokenModal({ onClose, user_id }) {  // Accept user_id as pr
       }
     } catch (error) {
       console.error('Error fetching accounts:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAccountSelection = (account_id) => {
+    setSelectedAccounts((prevSelected) => {
+      if (prevSelected.includes(account_id)) {
+        return prevSelected.filter((id) => id !== account_id);
+      } else {
+        return [...prevSelected, account_id];
+      }
+    });
+  };
+
+  const saveSelectedAccounts = async () => {
+    setLoading(true);
+    const token = sessionStorage.getItem('authToken');
+    if (!token) {
+      console.error('No auth token found in sessionStorage');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${apiUrl}/save_selected_accounts/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ account_ids: selectedAccounts }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log('Selected accounts saved successfully:', data);
+        // Optionally, close the modal or redirect the user
+        onClose();
+      } else {
+        console.error('Error saving selected accounts:', data.error);
+      }
+    } catch (error) {
+      console.error('Error saving selected accounts:', error);
     } finally {
       setLoading(false);
     }
@@ -117,21 +163,30 @@ function ExchangeLinkTokenModal({ onClose, user_id }) {  // Accept user_id as pr
         <span className="close" onClick={onClose}>&times;</span>
         <h2>Connect Your Bank Account</h2>
         {loading && <div className="spinner">Loading...</div>}
-        {!loading && (
+        {!loading && !accounts.length && (
           <button onClick={() => open()} disabled={!ready}>
             Open Plaid Link
           </button>
         )}
         {accounts && accounts.length > 0 && (
           <div>
-            <h3>Accounts</h3>
-            <ul>
-              {accounts.map((account, index) => (
-                <li key={index}>
-                  <strong>{account.name}</strong>: ${account.balances.current}
-                </li>
+            <h3>Select Accounts to Track</h3>
+            <form onSubmit={(e) => { e.preventDefault(); saveSelectedAccounts(); }}>
+              {accounts.map((account) => (
+                <div key={account.account_id}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      value={account.account_id}
+                      checked={selectedAccounts.includes(account.account_id)}
+                      onChange={() => handleAccountSelection(account.account_id)}
+                    />
+                    {account.name} ending with {account.mask}
+                  </label>
+                </div>
               ))}
-            </ul>
+              <button type="submit">Save Selected Accounts</button>
+            </form>
           </div>
         )}
       </div>
