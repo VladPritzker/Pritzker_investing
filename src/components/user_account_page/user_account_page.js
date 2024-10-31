@@ -53,7 +53,7 @@ function UserAccountPage() {
   const [showYearlyIncome, setShowYearlyIncome] = useState(false);
   const [sleepLogs, setSleepLogs] = useState([]);
   const [showSleepLogsModal, setShowSleepLogsModal] = useState(false);
-  const [showInvestingComparison, setShowInvestingComparison] = useState(false);
+  // const [showInvestingComparison, setShowInvestingComparison] = useState(false);
   const [isBalanceVisible, setIsBalanceVisible] = useState(false); // Default to false
   const [isBalanceGoalVisible, setIsBalanceGoalVisible] = useState(false); // Default to false
   const [showModal, setShowModal] = useState(false);
@@ -508,13 +508,13 @@ function UserAccountPage() {
               )}
             </button>
 
-            <button
+            {/* <button
               id="InvestingComparison"
               type="button"
               onClick={() => setShowInvestingComparison(true)}
             >
               Stocks Data
-            </button>
+            </button> */}
             <button
               id="SleepLogs"
               type="button"
@@ -916,13 +916,13 @@ function UserAccountPage() {
           onClose={() => setShowMeetingsModal(false)}
         />
       )}
-      {showInvestingComparison && (
+      {/* {showInvestingComparison && (
         <InvestingComparison
           user={user}
           isOpen={showInvestingComparison}
           onClose={() => setShowInvestingComparison(false)}
         />
-      )}
+      )} */}
       {showSleepLogsModal && (
         <SleepLogsModal
           userId={user?.id} // Pass userId to the SleepLogsModal
