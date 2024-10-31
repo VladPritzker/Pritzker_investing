@@ -12,22 +12,13 @@ function ExchangeLinkTokenModal({ onClose, user_id }) {
 
   useEffect(() => {
     const fetchLinkToken = async () => {
-      const token = sessionStorage.getItem('authToken');
-      console.log('JWT Token:', token); // For debugging
-
-      if (!token) {
-        console.error('No auth token found');
-        return;
-      }
-
       try {
         const response = await fetch(`${apiUrl}/create_link_token/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`, // Ensure 'Bearer' is used
           },
-          body: JSON.stringify({}),
+          body: JSON.stringify({ user_id }),  // Include user_id in request body
         });
         const data = await response.json();
         if (response.ok) {
@@ -41,30 +32,23 @@ function ExchangeLinkTokenModal({ onClose, user_id }) {
     };
 
     fetchLinkToken();
-  }, []);
+  }, [user_id]);
 
   const onSuccess = async (public_token) => {
     setLoading(true);
-    const token = sessionStorage.getItem('authToken');
-    if (!token) {
-      console.error('No auth token found in sessionStorage');
-      return;
-    }
 
     try {
       const response = await fetch(`${apiUrl}/get_access_token/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ public_token }),
+        body: JSON.stringify({ public_token, user_id }),  // Include user_id
       });
 
       const data = await response.json();
       if (response.ok) {
         console.log('Access token exchange successful:', data);
-        sessionStorage.setItem('accessToken', data.access_token);
         fetchAccountData();
       } else {
         console.error('Error exchanging public token:', data.error);
@@ -78,19 +62,12 @@ function ExchangeLinkTokenModal({ onClose, user_id }) {
 
   const fetchAccountData = async () => {
     setLoading(true);
-    const accessToken = sessionStorage.getItem('accessToken');
-    const token = sessionStorage.getItem('authToken');
-    if (!accessToken || !token) {
-      console.error('No access token or auth token found');
-      return;
-    }
 
     try {
-      const response = await fetch(`${apiUrl}/get_account_data/`, {
+      const response = await fetch(`${apiUrl}/get_account_data/?user_id=${user_id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
         },
       });
       const data = await response.json();
@@ -118,20 +95,14 @@ function ExchangeLinkTokenModal({ onClose, user_id }) {
 
   const saveSelectedAccounts = async () => {
     setLoading(true);
-    const token = sessionStorage.getItem('authToken');
-    if (!token) {
-      console.error('No auth token found in sessionStorage');
-      return;
-    }
 
     try {
       const response = await fetch(`${apiUrl}/save_selected_accounts/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ account_ids: selectedAccounts }),
+        body: JSON.stringify({ account_ids: selectedAccounts, user_id }),  // Include user_id
       });
 
       const data = await response.json();
