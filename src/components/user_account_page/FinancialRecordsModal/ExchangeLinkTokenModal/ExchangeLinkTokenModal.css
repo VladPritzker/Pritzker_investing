@@ -1,0 +1,22 @@
+.accounts-list {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+  
+  .account-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .account-item span {
+    flex: 1;
+  }
+  
+  .account-item input[type="checkbox"] {
+    margin-left: 10px;
+  }
+  

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { usePlaidLink } from 'react-plaid-link';
+import "./ExchangeLinkTokenModal.css"
 
 const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
-function ExchangeLinkTokenModal({ onClose, user_id}) {
+function ExchangeLinkTokenModal({ onClose, user_id }) {
   const [linkToken, setLinkToken] = useState('');
   const [accounts, setAccounts] = useState([]);
   const [selectedAccounts, setSelectedAccounts] = useState([]);
@@ -12,6 +13,8 @@ function ExchangeLinkTokenModal({ onClose, user_id}) {
   useEffect(() => {
     const fetchLinkToken = async () => {
       const token = sessionStorage.getItem('authToken');
+      console.log('JWT Token:', token); // For debugging
+
       if (!token) {
         console.error('No auth token found');
         return;
@@ -22,12 +25,12 @@ function ExchangeLinkTokenModal({ onClose, user_id}) {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `Bearer ${token}`, // Ensure 'Bearer' is used
           },
-          body: JSON.stringify({ user_id }),
+          body: JSON.stringify({}),
         });
         const data = await response.json();
-        if (data.link_token) {
+        if (response.ok) {
           setLinkToken(data.link_token);
         } else {
           console.error('Error fetching link token:', data.error);
@@ -56,7 +59,7 @@ function ExchangeLinkTokenModal({ onClose, user_id}) {
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({ public_token }),
-    });
+      });
 
       const data = await response.json();
       if (response.ok) {
@@ -172,20 +175,27 @@ function ExchangeLinkTokenModal({ onClose, user_id}) {
         {accounts && accounts.length > 0 && (
           <div>
             <h3>Select Accounts to Track</h3>
-            <form onSubmit={(e) => { e.preventDefault(); saveSelectedAccounts(); }}>
-              {accounts.map((account) => (
-                <div key={account.account_id}>
-                  <label>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                saveSelectedAccounts();
+              }}
+            >
+              <div className="accounts-list">
+                {accounts.map((account) => (
+                  <div key={account.account_id} className="account-item">
+                    <span>
+                      {account.name} ending with {account.mask}
+                    </span>
                     <input
                       type="checkbox"
                       value={account.account_id}
                       checked={selectedAccounts.includes(account.account_id)}
                       onChange={() => handleAccountSelection(account.account_id)}
                     />
-                    {account.name} ending with {account.mask}
-                  </label>
-                </div>
-              ))}
+                  </div>
+                ))}
+              </div>
               <button type="submit">Save Selected Accounts</button>
             </form>
           </div>

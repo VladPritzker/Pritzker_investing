@@ -476,13 +476,6 @@ function UserAccountPage() {
               Spendings
             </button>
             <button
-              id="refresh"
-              type="button"
-              onClick={handleInvestRecordsListClick}
-            >
-              Investings
-            </button>
-            <button
               id="income"
               type="button"
               onClick={handleIncomeRecordsListClick}
@@ -495,6 +488,13 @@ function UserAccountPage() {
               onClick={handleContactsListClick}
             >
               Contacts
+            </button>
+            <button
+              id="refresh"
+              type="button"
+              onClick={handleInvestRecordsListClick}
+            >
+              Investings
             </button>
             <button
               id="meetings"
