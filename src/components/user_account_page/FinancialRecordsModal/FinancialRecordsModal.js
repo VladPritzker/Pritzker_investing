@@ -49,6 +49,8 @@ function FinancialRecordsModal({ user, onClose }) {
   const [showExchangeTokenModal, setShowExchangeTokenModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false); // New state for Edit Modal
   const [recordToEdit, setRecordToEdit] = useState(null); // State to track which record to edit
+  const [loading, setLoading] = useState(true); // New loading state
+
 
 
   const csrftoken = getCookie('csrftoken');
@@ -106,6 +108,7 @@ function FinancialRecordsModal({ user, onClose }) {
 
 
   const fetchFinancialRecords = async () => {
+    setLoading(true); // Start loading
     try {
       const response = await fetch(
         `${apiUrl}/financial_records/?user_id=${user.id}`,
@@ -126,6 +129,8 @@ function FinancialRecordsModal({ user, onClose }) {
       }
     } catch (error) {
       console.error("Error fetching financial records:", error);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -325,6 +330,12 @@ function FinancialRecordsModal({ user, onClose }) {
           &times;
         </span>
         <h2>Spending Records List</h2>
+        {loading ? (
+          <div className="spinner">
+            <i className="fas fa-spinner fa-spin"></i> Loading...
+          </div>
+        ) : (
+          <>
         <div className="filters">
         <button style={{ marginBottom: "10px" }} onClick={() => setShowExchangeTokenModal(true)}>Exchange Link Token</button>
           <input
@@ -403,6 +414,8 @@ function FinancialRecordsModal({ user, onClose }) {
             </tr>
           </tfoot>
         </table>
+        </>
+        )} 
       </div>
       {showAddSpending && (
         <AddNewSpendings user={user} onClose={handleAddSpendingClose} />
