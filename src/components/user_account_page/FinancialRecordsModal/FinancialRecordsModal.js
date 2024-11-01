@@ -16,6 +16,7 @@ import MonthlyExpensesModal from "./Monthly_Expenses/Monthly_Expenses";
 import ConfirmDeleteModal from "../FinancialRecordsModal/deletConf/deleteConf.js";
 import ChartModal from "./spendingsChart/spendingsChart.js";
 import ExchangeLinkTokenModal from './ExchangeLinkTokenModal/ExchangeLinkTokenModal.js';
+import EditModal from './EditModal/EditModal.js'
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -46,6 +47,8 @@ function FinancialRecordsModal({ user, onClose }) {
   const [showChartModal, setShowChartModal] = useState(false);
   const [filterType, setFilterType] = useState("date");
   const [showExchangeTokenModal, setShowExchangeTokenModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false); // New state for Edit Modal
+  const [recordToEdit, setRecordToEdit] = useState(null); // State to track which record to edit
 
 
   const csrftoken = getCookie('csrftoken');
@@ -88,6 +91,19 @@ function FinancialRecordsModal({ user, onClose }) {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [onClose]);
+
+// Edit record 
+  const handleEditClick = (record) => {
+    setRecordToEdit(record); // Set the selected record to edit
+    setShowEditModal(true); // Open the Edit Modal
+  };
+// Edit record 
+  const handleEditClose = () => {
+    setShowEditModal(false); // Close the Edit Modal
+    setRecordToEdit(null); // Reset the selected record
+    fetchFinancialRecords(); // Refresh records after editing
+  };
+
 
   const fetchFinancialRecords = async () => {
     try {
@@ -367,24 +383,19 @@ function FinancialRecordsModal({ user, onClose }) {
               <th>Action</th>
             </tr>
           </thead>
-          <tbody>
-            {displayRecords.map((record) => (
-              <tr key={record.id}>
-                <td>{record.title}</td>
-                <td>{record.amount}</td>
-                <td>{record.record_date}</td>
-                <td>
-                  <button
-                    style={{ width: "80%" }}
-                    onClick={() => handleDeleteClick(record)}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-
+              <tbody>
+              {displayRecords.map((record) => (
+                <tr key={record.id}>
+                  <td>{record.title}</td>
+                  <td>{record.amount}</td>
+                  <td>{record.record_date}</td>
+                  <td>
+                    <button onClick={() => handleEditClick(record)}>Edit</button>
+                    <button onClick={() => handleDeleteClick(record)}>Delete</button>
+                  </td>
+                </tr>
+              ))}
+              </tbody>
           <tfoot>
             <tr>
               <th>Total Amount - </th>
@@ -425,6 +436,12 @@ function FinancialRecordsModal({ user, onClose }) {
        onExchange={exchangePublicToken}
        user_id={user.id} // Pass user_id prop
      />
+      )}
+     {showEditModal && (
+      <EditModal
+        record={recordToEdit} // Pass the selected record for editing
+        onClose={handleEditClose} // Function to close the Edit Modal
+      />
       )}
     </div>
   );
