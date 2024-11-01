@@ -13,7 +13,7 @@ const priorityOptions = [
 function NotesModal({ user, onClose }) {
   const [notes, setNotes] = useState([]);
   const [showHiddenNotes, setShowHiddenNotes] = useState(false);
-
+  const [loading, setLoading] = useState(true);
   const [editNote, setEditNote] = useState(null);
   const [filters, setFilters] = useState({
     title: "",
@@ -34,48 +34,46 @@ function NotesModal({ user, onClose }) {
         onClose();
       }
     };
-
     document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
   const fetchNotes = async () => {
+    setLoading(true);
     try {
       const response = await axios.get(`${apiUrl}/notes/user/${user.id}/`);
       if (response.status === 200) {
         let filteredNotes = response.data;
         if (filters.title) {
           filteredNotes = filteredNotes.filter((note) =>
-            note.title.toLowerCase().includes(filters.title.toLowerCase()),
+            note.title.toLowerCase().includes(filters.title.toLowerCase())
           );
         }
         if (filters.dateFrom) {
           filteredNotes = filteredNotes.filter(
-            (note) => new Date(note.date) >= new Date(filters.dateFrom),
+            (note) => new Date(note.date) >= new Date(filters.dateFrom)
           );
         }
         if (filters.dateTo) {
           filteredNotes = filteredNotes.filter(
-            (note) => new Date(note.date) <= new Date(filters.dateTo),
+            (note) => new Date(note.date) <= new Date(filters.dateTo)
           );
         }
         if (filters.priority) {
           filteredNotes = filteredNotes.filter(
-            (note) => note.priority === filters.priority,
+            (note) => note.priority === filters.priority
           );
         }
         if (!showHiddenNotes) {
           filteredNotes = filteredNotes.filter((note) => !note.hide);
         }
-        // Sort notes by order attribute
         filteredNotes.sort((a, b) => a.order - b.order);
         setNotes(filteredNotes);
       }
     } catch (error) {
       console.error("Failed to fetch notes:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -84,7 +82,7 @@ function NotesModal({ user, onClose }) {
       await axios.patch(`${apiUrl}/notes/user/${user.id}/${noteId}/`, {
         hide: !hideStatus,
       });
-      fetchNotes(); // Refresh list to reflect changes
+      fetchNotes();
     } catch (error) {
       console.error("Error updating note visibility:", error);
     }
@@ -95,7 +93,7 @@ function NotesModal({ user, onClose }) {
       await axios.patch(`${apiUrl}/notes/user/${user.id}/${noteId}/`, {
         done: !doneStatus,
       });
-      fetchNotes(); // Refresh list to reflect changes
+      fetchNotes();
     } catch (error) {
       console.error("Error updating note done status:", error);
     }
@@ -129,7 +127,7 @@ function NotesModal({ user, onClose }) {
 
   const handleAddNoteClose = () => {
     setShowAddNoteModal(false);
-    fetchNotes(); // Refresh notes list after adding a new note
+    fetchNotes();
   };
 
   const handleDragStart = (index) => {
@@ -173,10 +171,7 @@ function NotesModal({ user, onClose }) {
 
   const saveNoteDetails = async () => {
     try {
-      const response = await axios.patch(
-        `${apiUrl}/notes/user/${user.id}/${editNote.id}/`,
-        editNote,
-      );
+      await axios.patch(`${apiUrl}/notes/user/${user.id}/${editNote.id}/`, editNote);
       setEditNote(null);
       fetchNotes();
     } catch (error) {
@@ -187,6 +182,7 @@ function NotesModal({ user, onClose }) {
   const cancelEdit = () => {
     setEditNote(null);
   };
+
   const style = {
     padding: "20px",
     background: "#f8f9fa",
@@ -206,7 +202,8 @@ function NotesModal({ user, onClose }) {
         <span className="close" onClick={onClose}>
           &times;
         </span>
-        <h2>Tasks List </h2>
+        <h2>Tasks List</h2>
+
         <div className="filters">
           <input
             type="text"
@@ -285,56 +282,67 @@ function NotesModal({ user, onClose }) {
             </button>
           </div>
         </div>
-        <table className="financial-records-table">
-          <p>(Tasks displayed {notes.length} )</p>
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Note</th>
-              <th>Date</th>
-              <th>Priority</th>
-              <th>Done</th>
-              <th>Hide</th>
-            </tr>
-          </thead>
-          <tbody style={{ marginLeft: "-15px" }}>
-            {notes.map((note, index) => (
-              <tr
-                key={note.id}
-                draggable
-                onDragStart={() => handleDragStart(index)}
-                onDragOver={(e) => e.preventDefault()} // Allow the row to be a drop target
-                onDrop={() => handleDragOver(index)} // Handle dropping the row
-                onDragEnd={handleDragEnd}
-              >
-                <td onClick={() => handleNoteClick(note)}>{note.title}</td>
-                <td onClick={() => handleNoteClick(note)}>
-                  {note.note.length > 10
-                    ? `${note.note.substring(0, 10)}...`
-                    : note.note}
-                </td>
-                <td>{note.date}</td>
-                <td>{note.priority}</td>
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={note.done}
-                    onChange={() => toggleNoteDone(note.id, note.done)}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={note.hide}
-                    onChange={() => toggleNoteVisibility(note.id, note.hide)}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        
+        {loading ? (
+          <div className="spinner">
+            <i className="fas fa-spinner fa-spin"></i> Loading...
+          </div>
+        ) : (
+          <>
+            <table className="financial-records-table">
+              <p>(Tasks displayed {notes.length})</p>
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Note</th>
+                  <th>Date</th>
+                  <th>Priority</th>
+                  <th>Done</th>
+                  <th>Hide</th>
+                </tr>
+              </thead>
+              <tbody style={{ marginLeft: "-15px" }}>
+                {notes.map((note, index) => (
+                  <tr
+                    key={note.id}
+                    draggable
+                    onDragStart={() => handleDragStart(index)}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={() => handleDragOver(index)}
+                    onDragEnd={handleDragEnd}
+                  >
+                    <td onClick={() => handleNoteClick(note)}>{note.title}</td>
+                    <td onClick={() => handleNoteClick(note)}>
+                      {note.note.length > 10
+                        ? `${note.note.substring(0, 10)}...`
+                        : note.note}
+                    </td>
+                    <td>{note.date}</td>
+                    <td>{note.priority}</td>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={note.done}
+                        onChange={() => toggleNoteDone(note.id, note.done)}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={note.hide}
+                        onChange={() => toggleNoteVisibility(note.id, note.hide)}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
       </div>
+
       {showAddNoteModal && <AddNote user={user} onClose={handleAddNoteClose} />}
+
       {editNote && (
         <div className="note-details-modal">
           <h4>Edit Task</h4>
@@ -342,7 +350,7 @@ function NotesModal({ user, onClose }) {
             <label>
               Title:
               <input
-                stype="text"
+                type="text"
                 name="title"
                 value={editNote.title}
                 onChange={handleEditChange}
@@ -362,13 +370,13 @@ function NotesModal({ user, onClose }) {
           </div>
           <div className="button-group">
             <button
-              style={{ width: "95px", padding: "5px 5px 5px 5px" }}
+              style={{ width: "95px", padding: "5px" }}
               onClick={saveNoteDetails}
             >
               Save
             </button>
             <button
-              style={{ width: "95px", padding: "5px 5px 5px 5px" }}
+              style={{ width: "95px", padding: "5px" }}
               onClick={cancelEdit}
             >
               Cancel

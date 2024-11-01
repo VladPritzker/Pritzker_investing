@@ -14,6 +14,7 @@ import InvestingComparison from "./StockData/StockData";
 import VirtualAssistant from "./VirtualAssistant/VirtualAssistant";
 import EnvelopeModal from './Docusign/docusign_modal';
 
+const customRedStyle = { color: "#a60101", marginLeft: "10px" };
 
 
 const apiUrl = process.env.REACT_APP_API_URL;
@@ -53,7 +54,7 @@ function UserAccountPage() {
   const [showYearlyIncome, setShowYearlyIncome] = useState(false);
   const [sleepLogs, setSleepLogs] = useState([]);
   const [showSleepLogsModal, setShowSleepLogsModal] = useState(false);
-  // const [showInvestingComparison, setShowInvestingComparison] = useState(false);
+  const [showInvestingComparison, setShowInvestingComparison] = useState(false);
   const [isBalanceVisible, setIsBalanceVisible] = useState(false); // Default to false
   const [isBalanceGoalVisible, setIsBalanceGoalVisible] = useState(false); // Default to false
   const [showModal, setShowModal] = useState(false);
@@ -483,18 +484,18 @@ function UserAccountPage() {
               Income
             </button>
             <button
-              id="contacts"
-              type="button"
-              onClick={handleContactsListClick}
-            >
-              Contacts
-            </button>
-            <button
               id="refresh"
               type="button"
               onClick={handleInvestRecordsListClick}
             >
               Investings
+            </button>
+            <button
+              id="contacts"
+              type="button"
+              onClick={handleContactsListClick}
+            >
+              Contacts
             </button>
             <button
               id="meetings"
@@ -639,7 +640,7 @@ function UserAccountPage() {
                 {isBalanceGoalVisible
                   ? numberFormat(user?.balance_goal)
                   : "****"}
-                <span style={{ color: "red", marginLeft: "20px" }}>
+                <span style={customRedStyle}>
                   {goalDifference !== null &&
                     `(${goalDifference > 0 ? "-" : "+"}$${numberFormat(Math.abs(goalDifference))})`}
                 </span>
@@ -792,7 +793,7 @@ function UserAccountPage() {
               </button>
               <p style={styles.textStyle} onClick={showMonthlyYearlySpending}>
                 <strong>Spent this Week:</strong>
-                <span style={{ color: "red", marginLeft: "10px" }}>
+                <span style={customRedStyle}>
                   ${numberFormat(user?.spent_by_week)}
                 </span>
               </p>
@@ -823,7 +824,7 @@ function UserAccountPage() {
                 </button>
                 <p style={styles.textStyle}>
                   <strong>Spent this Month:</strong>
-                  <span style={{ color: "red", marginLeft: "10px" }}>
+                  <span style={customRedStyle}>
                     ${numberFormat(user?.spent_by_month)}
                   </span>
                 </p>
@@ -855,7 +856,7 @@ function UserAccountPage() {
                 </button>
                 <p style={styles.textStyle}>
                   <strong>Spent this Year:</strong>
-                  <span style={{ color: "red", marginLeft: "10px" }}>
+                  <span style={customRedStyle}>
                     ${numberFormat(user?.spent_by_year)}
                   </span>
                 </p>
@@ -916,13 +917,13 @@ function UserAccountPage() {
           onClose={() => setShowMeetingsModal(false)}
         />
       )}
-      {/* {showInvestingComparison && (
+      {showInvestingComparison && (
         <InvestingComparison
           user={user}
           isOpen={showInvestingComparison}
           onClose={() => setShowInvestingComparison(false)}
         />
-      )} */}
+      )}
       {showSleepLogsModal && (
         <SleepLogsModal
           userId={user?.id} // Pass userId to the SleepLogsModal
