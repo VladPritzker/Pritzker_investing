@@ -4,9 +4,16 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const AddSleepLogModal = ({ userId, onClose, onSave }) => {
-  const [wakeUpTime, setWakeUpTime] = useState("");
-  const [sleepTime, setSleepTime] = useState("");
-  const [date, setDate] = useState("");
+  // Function to get yesterday's date in YYYY-MM-DD format
+  const getYesterdayDate = () => {
+    const date = new Date();
+    date.setDate(date.getDate() - 1);
+    return date.toISOString().split("T")[0];
+  };
+
+  const [wakeUpTime, setWakeUpTime] = useState("06:00"); // Default to 6:00 AM
+  const [sleepTime, setSleepTime] = useState("22:00"); // Default to 10:00 PM
+  const [date, setDate] = useState(getYesterdayDate()); // Default to yesterday
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -40,9 +47,9 @@ const AddSleepLogModal = ({ userId, onClose, onSave }) => {
       if (response.ok) {
         const savedLog = await response.json();
         onSave(savedLog);
-        setDate("");
-        setWakeUpTime("");
-        setSleepTime("");
+        setDate(getYesterdayDate());
+        setWakeUpTime("06:00");
+        setSleepTime("22:00");
         onClose();
       } else {
         console.error("Failed to save sleep log");
