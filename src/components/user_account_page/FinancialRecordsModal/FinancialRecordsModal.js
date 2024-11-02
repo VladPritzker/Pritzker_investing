@@ -122,7 +122,7 @@ function FinancialRecordsModal({ user, onClose }) {
           (total, record) => total + parseFloat(record.amount),
           0,
         );
-        const roundedTotal = Math.round(totalAmount * 100) / 100; // Round to two decimal places
+        const roundedTotal = (Math.round(totalAmount * 100) / 100).toFixed(2);
         setRoundedTotal(roundedTotal);
       } else {
         throw new Error("Failed to fetch financial records.");
