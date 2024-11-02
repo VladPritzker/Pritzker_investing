@@ -101,12 +101,7 @@ function LoginPage() {
   
           // Store tokens in sessionStorage
           sessionStorage.setItem("authToken", result.access); // Store access token
-          sessionStorage.setItem("refreshToken", result.refresh); // Store refresh token
-  
-          // Log the tokens to the console for debugging
-          console.log("Access token stored in sessionStorage:", sessionStorage.getItem("authToken"));
-          console.log("Refresh token stored in sessionStorage:", sessionStorage.getItem("refreshToken"));
-  
+          sessionStorage.setItem("refreshToken", result.refresh); // Store refresh token              
           // Redirect to the account page with user information
           navigate(`/account/${result.id}`, { state: { user: result } });
         } else {

@@ -337,7 +337,7 @@ function FinancialRecordsModal({ user, onClose }) {
         ) : (
           <>
         <div className="filters">
-        <button style={{ marginBottom: "10px" }} onClick={() => setShowExchangeTokenModal(true)}>Exchange Link Token</button>
+        <button style={{ marginBottom: "10px" }} onClick={() => setShowExchangeTokenModal(true)}>Connect bank account</button>
           <input
             type="date"
             value={startDate}

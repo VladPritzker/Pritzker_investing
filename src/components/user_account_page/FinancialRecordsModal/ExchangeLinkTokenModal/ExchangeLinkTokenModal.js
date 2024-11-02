@@ -48,7 +48,6 @@ function ExchangeLinkTokenModal({ onClose, user_id }) {
 
       const data = await response.json();
       if (response.ok) {
-        console.log('Access token exchange successful:', data);
         fetchAccountData();
       } else {
         console.error('Error exchanging public token:', data.error);
@@ -107,7 +106,6 @@ function ExchangeLinkTokenModal({ onClose, user_id }) {
 
       const data = await response.json();
       if (response.ok) {
-        console.log('Selected accounts saved successfully:', data);
         // Optionally, close the modal or redirect the user
         onClose();
       } else {
