@@ -4,7 +4,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import "./App.css";
-import Registration_page from "./components/login_registration_page/registrationPage";
+import RegistrationPage from "./components/login_registration_page/registrationPage";
 import UserAccountPage from "./components/user_account_page/user_account_page";
 
 function App() {
@@ -12,8 +12,10 @@ function App() {
     <BrowserRouter>
       <div className="App">
         <Routes>
-          <Route path="/" element={<Registration_page />} />
+          <Route path="/login" element={<RegistrationPage />} />
           <Route path="/account/:userId" element={<UserAccountPage />} />
+          {/* Route for password reset with token */}
+          <Route path="/reset-password/:token" element={<RegistrationPage />} />
         </Routes>
       </div>
     </BrowserRouter>
