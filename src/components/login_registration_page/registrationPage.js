@@ -158,6 +158,21 @@ function LoginPage() {
   };
 
   
+  const getCookie = (name) => {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        // Check if this cookie string begins with the name we want
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  };
   
 
   const handleForgotPassword = async () => {
@@ -165,20 +180,24 @@ function LoginPage() {
       alert("Please enter your email to reset your password.");
       return;
     }
-
+  
     const resetData = {
       email: email,
     };
-
+  
+    const csrftoken = getCookie('csrftoken');  // Retrieve CSRF token from cookies
+  
     try {
-      const response = await fetch(`${apiUrl}/reset-password/`, {
+      const response = await fetch(`${apiUrl}/request-password-reset/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-CSRFToken": csrftoken  // Add the CSRF token to the headers
         },
         body: JSON.stringify(resetData),
+        credentials: 'include'  // Include cookies in the request
       });
-
+  
       if (response.ok) {
         setResetMessage("Password reset link sent to your email.");
       } else {
@@ -189,7 +208,8 @@ function LoginPage() {
       setResetMessage("An error occurred while requesting the reset link.");
     }
   };
-
+  
+  
   return (
     <div className="login-container">
       <form onSubmit={handleFormSubmit} className="login-form login">
