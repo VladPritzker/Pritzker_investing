@@ -13,6 +13,7 @@ import img2 from "../login_registration_page/img/slider/istockphoto-1311598658-6
 import img3 from "../login_registration_page/img/slider/istockphoto-1473508651-170667a.webp";
 import img4 from "../login_registration_page/img/slider/istockphoto-1490675795-170667a.webp";
 
+
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const inputStyle = {

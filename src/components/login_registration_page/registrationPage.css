@@ -3,7 +3,7 @@
   justify-content: center;
   align-items: center;
   height: 100vh; /* Full viewport height */
-  background-image: url("./img/istockphoto-1480323436-1024x1024.jpg"); /* Path to the background image */
+  background-image: url("../landing_page_main/images/image_5.jpg"); /* Path to the background image */
   background-size: cover; /* Cover the entire container */
   background-position: center; /* Center the background image */
   background-repeat: no-repeat; /* Do not repeat the image */
@@ -89,3 +89,5 @@
 .slick-next::before {
   color: black;
 }
+
+
