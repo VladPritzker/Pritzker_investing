@@ -13,11 +13,14 @@ import SleepLogsModal from "../user_account_page/TimeManagementModal/TimeManagem
 import InvestingComparison from "./StockData/StockData";
 import VirtualAssistant from "./VirtualAssistant/VirtualAssistant";
 import EnvelopeModal from './Docusign/docusign_modal';
-
 const customRedStyle = { color: "#a60101", marginLeft: "10px" };
-
-
 const apiUrl = process.env.REACT_APP_API_URL;
+const token = sessionStorage.getItem("authToken"); // Or localStorage.getItem("authToken")
+
+
+
+
+
 
 function getCookie(name) {
   let cookieValue = null;
@@ -108,11 +111,17 @@ function UserAccountPage() {
   const fetchMeetings = useCallback(async () => {
     if (user && user.id) {
       try {
-        const response = await fetch(`${apiUrl}/meetings/${user.id}/`);
+        const token = sessionStorage.getItem("authToken"); // Retrieve the token
+        const response = await fetch(`${apiUrl}/meetings/${user.id}/`, {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        });
         if (response.ok) {
           const data = await response.json();
           setMeetings(data);
-          checkForTodayMeetings(data); // Check for today's meetings after fetching
+          checkForTodayMeetings(data);
         } else {
           console.error("Failed to fetch meetings");
         }
@@ -121,16 +130,23 @@ function UserAccountPage() {
       }
     }
   }, [user]);
+  
 
   useEffect(() => {
     const fetchUserData = async () => {
       const storedUser = location.state?.user;
       if (storedUser?.id) {
         try {
-          const response = await fetch(`${apiUrl}/users/${storedUser.id}/`);
+          const token = sessionStorage.getItem("authToken"); // Retrieve the token
+          const response = await fetch(`${apiUrl}/users/${storedUser.id}/`, {
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`,
+            },
+          });
           if (response.ok) {
             const updatedUser = await response.json();
-            console.log("Fetched user data:", updatedUser); // Log the entire user data
+            console.log("Fetched user data:", updatedUser);
             setUser(updatedUser);
           } else {
             console.error("Failed to fetch user data");
@@ -140,6 +156,7 @@ function UserAccountPage() {
         }
       }
     };
+    
 
     fetchUserData();
   }, [location.state?.user]);
@@ -221,7 +238,13 @@ function UserAccountPage() {
 
   const handleRefreshDataClick = async () => {
     try {
-      const response = await fetch(`${apiUrl}/users/${user.id}/`);
+      const token = sessionStorage.getItem("authToken");
+      const response = await fetch(`${apiUrl}/users/${user.id}/`, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
       if (response.ok) {
         const updatedUser = await response.json();
         console.log("Data refreshed successfully:", updatedUser);
@@ -244,35 +267,32 @@ function UserAccountPage() {
     if (newValue !== null && newValue !== user[field]) {
       try {
         const csrfToken = getCookie("csrftoken");
+        const token = sessionStorage.getItem("authToken"); // Retrieve the token
         const response = await fetch(`${apiUrl}/users/${user.id}/`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            "X-CSRFToken": csrfToken, // Include CSRF token in headers
+            "X-CSRFToken": csrfToken,
+            "Authorization": `Bearer ${token}`, // Include the Authorization header
           },
-          credentials: "include", // Include credentials to ensure cookies are sent
+          credentials: "include",
           body: JSON.stringify({ [field]: newValue }),
         });
-
-        console.log("Response status:", response.status);
-        console.log("Response ok:", response.ok);
-
+  
         const responseData = await response.json();
-        console.log("Response data:", responseData);
-
         if (!response.ok) {
           console.error("Failed to update data:", responseData);
           alert("Failed to update data.");
           return;
         }
-
+  
         console.log("Data updated successfully:", responseData);
         setUser((prevUser) => ({ ...prevUser, [field]: newValue }));
-
-        // Ensure meetings data is updated before checking today's meetings
+  
+        // Update meetings data if necessary
         if (responseData.meetings && Array.isArray(responseData.meetings)) {
           setMeetings(responseData.meetings);
-          checkForTodayMeetings(responseData.meetings); // Check for today's meetings
+          checkForTodayMeetings(responseData.meetings);
         } else {
           setMeetings([]);
           console.warn("No meetings data found in response.");
@@ -283,6 +303,7 @@ function UserAccountPage() {
       }
     }
   };
+  
 
   const handlePhotoUpload = async (event) => {
     const files = event.target.files;

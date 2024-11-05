@@ -95,7 +95,7 @@ function LoginPage() {
         const response = await fetch(`${apiUrl}/simple-login/`, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json",            
           },
           body: JSON.stringify(loginData),
         });
@@ -105,7 +105,8 @@ function LoginPage() {
   
           // Store tokens in sessionStorage
           sessionStorage.setItem("authToken", result.access); // Store access token
-          sessionStorage.setItem("refreshToken", result.refresh); // Store refresh token              
+          sessionStorage.setItem("refreshToken", result.refresh); // Store refresh token     
+                   
           // Redirect to the account page with user information
           navigate(`/account/${result.id}`, { state: { user: result } });
         } else {
