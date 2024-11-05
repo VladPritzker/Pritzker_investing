@@ -245,12 +245,14 @@ function InvestingRecordsModal({ user, onClose }) {
   };
 
   return (
-    <div className="modal">
-      <div className="modal-content" style={style}>
-        <span className="close" onClick={onClose}>
+    <div className="investing-modal">
+      <div className="investing-modal-content" style={style}>
+        <span className="investing-close" onClick={onClose}>
           &times;
         </span>
         <h2>Fixed Rate Investments</h2>
+        {/* <div className="investing-select-container"> */}
+
         <div className="filters">
           <input
             type="date"
@@ -312,6 +314,8 @@ function InvestingRecordsModal({ user, onClose }) {
             Add Fixed Rate Investment
           </button>
         </div>
+     
+
         <table className="financial-records-table">
           <thead>
             <tr>
@@ -330,24 +334,24 @@ function InvestingRecordsModal({ user, onClose }) {
           <tbody>
             {displayRecords.map((record) => (
               <tr key={record.id}>
-                <td>{record.title}</td>
-                <td>{formatNumber(record.amount)}</td>
-                <td>{record.record_date}</td>
-                <td>{record.tenor ? formatNumber(record.tenor) : ""}</td>
-                <td>{record.type_invest}</td>
-                <td>{record.yearly_income}</td>
-                <td>
+                <td style={{paddingLeft: "24px"}}>{record.title}</td>
+                <td style={{paddingLeft: "24px"}}>{formatNumber(record.amount)}</td>
+                <td style={{paddingLeft: "24px"}}>{record.record_date}</td>
+                <td style={{paddingLeft: "24px"}}>{record.tenor ? formatNumber(record.tenor) : ""}</td>
+                <td style={{paddingLeft: "24px"}}>{record.type_invest}</td>
+                <td style={{paddingLeft: "24px"}}>{record.yearly_income}</td>
+                <td style={{paddingLeft: "24px"}}>
                   {record.amount_at_maturity
                     ? formatNumber(record.amount_at_maturity)
                     : ""}
                 </td>
-                <td>{record.maturity_date}</td>
-                <td>
+                <td style={{paddingLeft: "24px"}}>{record.maturity_date}</td>
+                <td style={{paddingLeft: "24px"}}>
                   {record.discount_rate
                     ? formatNumber(record.discount_rate)
                     : ""}
                 </td>
-                <td>
+                <td style={{paddingLeft: "24px"}}>
                   <button onClick={() => handleDeleteClick(record)}>
                     Delete
                   </button>
@@ -388,26 +392,26 @@ function InvestingRecordsModal({ user, onClose }) {
           <tbody>
             {customCashFlowInvestments.map((record) => (
               <tr key={record.id}>
-                <td>{record.title}</td>
-                <td>{formatNumber(record.amount)}</td>
-                <td>{record.record_date}</td>
-                <td>{record.tenor ? formatNumber(record.tenor) : ""}</td>
-                <td>{record.type_invest}</td>
-                <td>
+                <td style={{paddingLeft: "24px"}}>{record.title}</td>
+                <td style={{paddingLeft: "24px"}}>{formatNumber(record.amount)}</td>
+                <td style={{paddingLeft: "24px"}}>{record.record_date}</td>
+                <td style={{paddingLeft: "24px"}}>{record.tenor ? formatNumber(record.tenor) : ""}</td>
+                <td style={{paddingLeft: "24px"}}>{record.type_invest}</td>
+                <td style={{paddingLeft: "24px"}}>
                   {record.cash_flows ? (
                     <CashFlowWithTooltip cashFlows={record.cash_flows} />
                   ) : (
                     ""
                   )}
                 </td>
-                <td>
+                <td style={{paddingLeft: "24px"}}>
                   {record.discount_rate
                     ? formatNumber(record.discount_rate)
                     : ""}
                 </td>
-                <td>{record.NPV ? formatNumber(record.NPV) : ""}</td>
-                <td>{record.IRR ? formatNumber(record.IRR) : ""}</td>
-                <td>
+                <td style={{paddingLeft: "24px"}}>{record.NPV ? formatNumber(record.NPV) : ""}</td>
+                <td style={{paddingLeft: "24px"}}>{record.IRR ? formatNumber(record.IRR) : ""}</td>
+                <td style={{paddingLeft: "24px"}}>
                   <button onClick={() => handleDeleteClick(record, true)}>
                     Delete
                   </button>
