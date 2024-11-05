@@ -36,7 +36,7 @@
   box-sizing: border-box;
 }
 
-.login-form button {
+.login-form button, .about button {
   width: 100%;
   padding: 10px;
   background-color: #0056b3;

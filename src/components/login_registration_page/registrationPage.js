@@ -5,6 +5,8 @@ import "../login_registration_page/registrationPage.css";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { Link } from 'react-router-dom';
+
 
 import img1 from "../login_registration_page/img/slider/istockphoto-1297492947-612x612.jpg";
 import img2 from "../login_registration_page/img/slider/istockphoto-1311598658-612x612.jpg";
@@ -279,6 +281,11 @@ function LoginPage() {
               Forgot Password?
             </button>
             {resetMessage && <p className="reset-message">{resetMessage}</p>}
+            <Link to="/" className="about-btn" style={{ textDecoration: "none", color: "white" }}>
+            <button style={{ marginBottom: "3%"}} className="about-btn">
+                  About
+            </button>
+            </Link>
           </>
         )}
 
@@ -288,6 +295,7 @@ function LoginPage() {
               <img src={src} alt={`slider-img-${index}`} />
             </div>
           ))}
+          
         </Slider>
       </form>
     </div>

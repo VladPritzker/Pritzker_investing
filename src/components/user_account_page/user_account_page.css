@@ -66,6 +66,8 @@
   font-size: 16px;
   letter-spacing: 1px;
   margin-left: 1%;
+  text-decoration: none; /* Removes underline */
+
 }
 
 .login-form button:hover {
