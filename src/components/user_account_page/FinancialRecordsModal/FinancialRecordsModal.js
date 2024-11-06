@@ -122,7 +122,7 @@ function FinancialRecordsModal({ user, onClose }) {
           (total, record) => total + parseFloat(record.amount),
           0,
         );
-        const roundedTotal = Number((Math.round(totalAmount * 100) / 100).toFixed(2));
+        const roundedTotal = Number(totalAmount.toFixed(2));
         setRoundedTotal(roundedTotal);
       } else {
         throw new Error("Failed to fetch financial records.");

@@ -115,68 +115,77 @@
   background-color: #0056b3;
 }
 
-/* Path: notes_modal.css */
 .note-details-modal {
   display: flex;
   flex-direction: column;
   align-items: center;
   position: fixed;
   z-index: 1050;
-  left: 0;
-  top: 0;
-  width: 60%;
-  height: 80%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%); /* Center modal horizontally and vertically */
+  width: 90%; /* Initial width for larger screens */
+  max-width: 600px; /* Max width for desktop */
+  height: auto; /* Adjust height based on content */
   overflow: auto;
-  background-color: rgba(
-    255,
-    255,
-    255,
-    0.997
-  ); /* Light background for a cleaner look */
-  justify-content: center;
-  margin-left: 20%;
-  margin-top: 10%;
-  border: 2px solid rgba(0, 123, 255, 0.75); /* Solid blue border with transparency */
-  border-radius: 12px; /* Rounded corners */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25); /* Soft shadow for depth */
-  background: linear-gradient(
-    to bottom right,
-    #ffffff,
-    #f1f1f1
-  ); /* Subtle gradient from white to light gray */
-}
-
-.note-details-modal-content {
-  padding: 40px; /* Increased padding for better spacing */
-  background: #ffffff; /* Ensures bright background */
-  border-radius: 10px;
-  box-shadow: 0 8px 16px rgb(54, 50, 50); /* Stronger shadow for a pop-out effect */
-  width: 400px; /* Wider content area */
-  transition: transform 0.3s ease-in-out;
-  position: relative; /* For positioning the close button absolutely within */
+  background-color: rgba(255, 255, 255, 0.997);
+  border: 2px solid rgba(0, 123, 255, 0.75);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  background: linear-gradient(to bottom right, #ffffff, #f1f1f1);
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .note-details-modal h4 {
-  color: #333; /* Darker text for better visibility */
-  margin-bottom: 20px;
-  font-size: 24px; /* Larger text */
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 20px; /* Adjust font size for mobile */
+  text-align: center;
+}
+
+.note-details-modal-content {
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgb(54, 50, 50);
+  width: 100%; /* Full width for mobile */
 }
 
 .note-details-modal p {
-  display: contents;
-  text-align: left; /* Aligned text for standard reading */
-  color: #000000; /* Softer black for easier reading */
-  font-size: 18px; /* Larger font size for readability */
-  line-height: 1.6; /* Improved line spacing */
+  display: block;
+  text-align: left;
+  color: #000000;
+  font-size: 16px;
+  line-height: 1.5;
 }
 
-.description {
+.note-details-modal input,
+.note-details-modal textarea {
   width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.note-details-modal textarea {
+  height: 200px;
+  resize: none;
+}
+
+.note-details-modal .button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
 }
 
 .note-details-modal button {
-  width: 145px;
-  padding: 5px;
+  width: 100%;
+  padding: 10px;
   background-color: #0056b3;
   color: white;
   border: none;
@@ -187,12 +196,30 @@
 }
 
 .note-details-modal button:hover {
-  background-color: #0056b3; /* Darker blue on hover */
+  background-color: #004494;
 }
 
-.note-details-modal .button-group {
-  display: flex;
-  justify-content: space-between; /* Adjusts the space between buttons */
-  gap: 10px; /* Optional: adds space between buttons */
-  margin-top: 80px; /* Optional: adds space above the buttons */
+/* Responsive adjustments for mobile screens */
+@media (max-width: 768px) {
+  .note-details-modal {
+    width: 95%;
+    padding: 15px;
+  }
+
+  .note-details-modal h4 {
+    font-size: 18px;
+  }
+
+  .note-details-modal textarea {
+    height: 150px;
+  }
+
+  .note-details-modal .button-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .note-details-modal button {
+    width: 100%;
+  }
 }

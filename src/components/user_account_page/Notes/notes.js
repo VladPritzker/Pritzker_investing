@@ -344,7 +344,7 @@ function NotesModal({ user, onClose }) {
       {showAddNoteModal && <AddNote user={user} onClose={handleAddNoteClose} />}
 
       {editNote && (
-        <div className="note-details-modal">
+       <div className="note-details-modal">
           <h4>Edit Task</h4>
           <div>
             <label>
@@ -378,7 +378,7 @@ function NotesModal({ user, onClose }) {
             <button
               style={{ width: "95px", padding: "5px" }}
               onClick={cancelEdit}
-            >
+            > 
               Cancel
             </button>
           </div>
