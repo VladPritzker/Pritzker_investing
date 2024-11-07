@@ -109,21 +109,23 @@ function FinancialRecordsModal({ user, onClose }) {
 
   const fetchFinancialRecords = async () => {
     setLoading(true); // Start loading
-    try {
+    try { 
       const response = await fetch(
         `${apiUrl}/financial_records/?user_id=${user.id}`,
       );
       if (response.ok) {
         const data = await response.json();
+        let filtered = financialRecords;
+
         console.log(data); // Log the data to check structure
         setFinancialRecords(data);
         setDisplayRecords(data);
-        const totalAmount = data.reduce(
-          (total, record) => total + parseFloat(record.amount),
+        const totalAmount = filtered.reduce(
+          (total, record) => total + Math.round(parseFloat(record.amount)),
           0,
         );
-        const roundedTotal = Number(totalAmount.toFixed(2));
-        setRoundedTotal(roundedTotal);
+        const roundedTotal = totalAmount
+        setRoundedTotal(roundedTotal);      
       } else {
         throw new Error("Failed to fetch financial records.");
       }
@@ -183,10 +185,15 @@ function FinancialRecordsModal({ user, onClose }) {
       });
     }
 
-    setRoundedTotal(
-      filtered.reduce((total, record) => total + parseFloat(record.amount), 0),
+    const totalAmount = filtered.reduce(
+      (total, record) => total + Math.round(parseFloat(record.amount)),
+      0,
     );
+    const roundedTotal = totalAmount
+    setRoundedTotal(roundedTotal);
+
     setDisplayRecords(filtered);
+
   }, [startDate, endDate, financialRecords, filterTitle, minAmount, maxAmount]);
 
   const handleAddSpendingClose = () => {
@@ -398,7 +405,7 @@ function FinancialRecordsModal({ user, onClose }) {
               {displayRecords.map((record) => (
                 <tr key={record.id}>
                   <td>{record.title}</td>
-                  <td>{record.amount}</td>
+                  <td>{Math.round(record.amount)}</td>
                   <td>{record.record_date}</td>
                   <td>
                     <button onClick={() => handleEditClick(record)}>Edit</button>
