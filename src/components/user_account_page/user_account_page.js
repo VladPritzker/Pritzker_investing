@@ -62,6 +62,37 @@ function UserAccountPage() {
   const [isBalanceGoalVisible, setIsBalanceGoalVisible] = useState(false); // Default to false
   const [showModal, setShowModal] = useState(false);
 
+// Navigate to the login page if token expired 
+useEffect(() => {
+  const token = sessionStorage.getItem("authToken");
+
+  // Function to check token validity
+  const checkTokenValidity = async () => {
+    if (!token) {
+      navigate("/"); // Redirect if no token found
+      return;
+    }
+
+    try {
+      // Example API call to validate token
+      const response = await axios.get(`${apiUrl}/validate-token/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.data.valid) {
+        // If token is invalid, redirect to base page
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("Token validation failed:", error);
+      navigate("/"); // Redirect on error (token might be expired)
+    }
+  };
+
+  checkTokenValidity();
+}, [navigate]);
 
 
   
