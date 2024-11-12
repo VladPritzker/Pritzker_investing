@@ -72,23 +72,26 @@ useEffect(() => {
       navigate("/login"); // Redirect if no token found
       return;
     }
-  
+
     try {
+      // Attempt to validate the token
       const response = await axios.get(`${apiUrl}/api/validate-token/`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
-      if (response.status === 200) return;
-  
+      if (response.status === 200) return; // Token is valid
+
     } catch (error) {
+      // If 401, try refreshing the token
       if (error.response && error.response.status === 401 && refreshToken) {
         try {
           const refreshResponse = await axios.post(`${apiUrl}/api/token/refresh/`, {
             refresh: refreshToken,
           });
           sessionStorage.setItem("authToken", refreshResponse.data.access);
+          return; // Token refreshed, continue
         } catch (refreshError) {
           console.error("Token refresh failed:", refreshError);
-          navigate("/"); // Redirect to base page if refresh fails
+          navigate("/"); // Redirect if refresh fails
         }
       } else {
         console.error("Token validation failed:", error);
@@ -96,8 +99,6 @@ useEffect(() => {
       }
     }
   };
-  
-
   checkAndRefreshToken();
 }, [navigate]);
 
