@@ -64,65 +64,47 @@ function UserAccountPage() {
 
 // Navigate to the login page if token expired 
 useEffect(() => {
-  const token = sessionStorage.getItem("authToken");
+  const accessToken = sessionStorage.getItem("authToken");
+  const refreshToken = sessionStorage.getItem("refreshToken");
 
-  // Function to check token validity
-  const checkTokenValidity = async () => {
-    if (!token) {
-      navigate("/"); // Redirect if no token found
+  const checkAndRefreshToken = async () => {
+    if (!accessToken) {
+      navigate("/login"); // Redirect if no token found
       return;
     }
-
+  
     try {
-      // Example API call to validate token
-      const response = await axios.get(`${apiUrl}/validate-token/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await axios.get(`${apiUrl}/api/validate-token/`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
-
-      if (!response.data.valid) {
-        // If token is invalid, redirect to base page
-        navigate("/login");
-      }
+      if (response.status === 200) return;
+  
     } catch (error) {
-      console.error("Token validation failed:", error);
-      navigate("/"); // Redirect on error (token might be expired)
+      if (error.response && error.response.status === 401 && refreshToken) {
+        try {
+          const refreshResponse = await axios.post(`${apiUrl}/api/token/refresh/`, {
+            refresh: refreshToken,
+          });
+          sessionStorage.setItem("authToken", refreshResponse.data.access);
+        } catch (refreshError) {
+          console.error("Token refresh failed:", refreshError);
+          navigate("/"); // Redirect to base page if refresh fails
+        }
+      } else {
+        console.error("Token validation failed:", error);
+        navigate("/"); // Redirect on any other error
+      }
     }
   };
+  
 
-  checkTokenValidity();
+  checkAndRefreshToken();
 }, [navigate]);
 
 
   
 
-    const handleShowModal = () => setShowModal(true);
-    const handleCloseModal = () => setShowModal(false);
-    const handleSendEnvelope = async (email, name) => {
-        try {
-            const response = await axios.post(`${apiUrl}/send-envelope/`, {
-                email,
-                name
-            });
-            alert('Envelope sent successfully!');
-            handleCloseModal();
-        } catch (error) {
-            console.error('Error sending envelope:', error);
-            alert('Failed to send envelope. Please try again.');
-        }
-    };
-
-    const handleDownloadEnvelopes = async () => {
-        try {
-            const response = await axios.post(`${apiUrl}/download-new-envelopes/`);
-            alert('Envelopes downloaded successfully!');
-            handleCloseModal();
-        } catch (error) {
-            console.error('Error downloading envelopes:', error);
-            alert('Failed to download envelopes. Please try again.');
-        }
-    };
+    
 
 
   const numberFormat = (number) =>
@@ -922,13 +904,7 @@ useEffect(() => {
       </form>
 
       
-      {showModal && (<EnvelopeModal
-                show={showModal}
-                handleClose={handleCloseModal}
-                handleSendEnvelope={handleSendEnvelope}
-                handleDownloadEnvelopes={handleDownloadEnvelopes}
-            /> 
-      )}
+      
 
       {showInvestList && (
         <InvestingRecordsModal
