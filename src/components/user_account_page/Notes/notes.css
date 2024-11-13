@@ -202,17 +202,17 @@
 /* Responsive adjustments for mobile screens */
 @media (max-width: 768px) {
   .note-details-modal {
-    width: 95%;
-    padding: 15px;
-  }
+    padding: 15px; /* Reduced padding for smaller screens */
+}
 
   .note-details-modal h4 {
     font-size: 18px;
   }
 
   .note-details-modal textarea {
-    height: 150px;
-  }
+    min-height: 120px; /* Smaller minimum height for mobile */
+    font-size: 14px; /* Slightly smaller font size for mobile */
+}
 
   .note-details-modal .button-group {
     flex-direction: column;
