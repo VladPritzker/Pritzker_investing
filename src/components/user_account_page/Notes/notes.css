@@ -172,7 +172,8 @@
 }
 
 .note-details-modal textarea {
-  height: 200px;
+  width: 600px;
+  height: 400px;
   resize: none;
 }
 
@@ -199,7 +200,14 @@
   background-color: #004494;
 }
 
+.textArea{
+  width: 600px;
+  height: 400px;
+}
+
 /* Responsive adjustments for mobile screens */
+
+
 @media (max-width: 768px) {
   .note-details-modal {
     padding: 15px; /* Reduced padding for smaller screens */
@@ -221,5 +229,45 @@
 
   .note-details-modal button {
     width: 100%;
+  }
+}
+
+@media (max-width: 375px) {
+  .note-details-modal {
+    padding: 10px; /* Further reduced padding for very small screens */
+    width: 90%; /* Full width with margin on the sides */
+    max-width: none; /* Remove max-width for small screens */
+  }
+
+  .note-details-modal h4 {
+    font-size: 16px; /* Smaller font size for headings on mobile */
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .note-details-modal textarea {
+    width: 600px;
+    height: 400px;
+    min-height: 100px; /* Smaller minimum height for mobile */
+    font-size: 12px; /* Adjust font size for compact display */
+    padding: 8px; /* Adjust padding for smaller textarea */
+  }
+
+  .note-details-modal input,
+  .note-details-modal textarea {
+    width: 100%; /* Ensure input and textarea fill available width */
+    box-sizing: border-box;
+  }
+
+  .note-details-modal .button-group {
+    flex-direction: column;
+    gap: 8px; /* Space between buttons */
+    width: 100%;
+  }
+
+  .note-details-modal button {
+    width: 100%; /* Full-width buttons for mobile */
+    padding: 10px; /* Padding for comfortable tap size */
+    font-size: 14px; /* Slightly smaller font size for buttons */
   }
 }

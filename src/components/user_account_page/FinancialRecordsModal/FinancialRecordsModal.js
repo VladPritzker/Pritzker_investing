@@ -34,7 +34,7 @@ ChartJS.register(
 function FinancialRecordsModal({ user, onClose }) {
   const [financialRecords, setFinancialRecords] = useState([]);
   const [displayRecords, setDisplayRecords] = useState([]);
-  const [startDate, setStartDate] = useState("");
+  const [startDate, setStartDate] = useState(getCurrentMonday()); // Set initial startDate to current Monday
   const [endDate, setEndDate] = useState("");
   const [minAmount, setMinAmount] = useState("");
   const [maxAmount, setMaxAmount] = useState("");
@@ -52,7 +52,14 @@ function FinancialRecordsModal({ user, onClose }) {
   const [loading, setLoading] = useState(true); // New loading state
 
 
-
+  // Helper function to get the date of the most recent Monday
+  function getCurrentMonday() {
+    const now = new Date();
+    const dayOfWeek = now.getDay();
+    const monday = new Date();
+    monday.setDate(now.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1)); // Adjust for Sunday being day 0
+    return monday.toISOString().split("T")[0]; // Format to YYYY-MM-DD
+  }
   const csrftoken = getCookie('csrftoken');
 
   const exchangePublicToken = async (publicToken, user_id) => {
