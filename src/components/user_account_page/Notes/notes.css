@@ -244,18 +244,18 @@
     text-align: center;
     margin-bottom: 10px;
   }
-
+/* 
   .note-details-modal textarea {
     width: 600px;
     height: 400px;
     min-height: 100px; /* Smaller minimum height for mobile */
-    font-size: 12px; /* Adjust font size for compact display */
-    padding: 8px; /* Adjust padding for smaller textarea */
-  }
+    /* font-size: 12px; Adjust font size for compact display */
+    /* padding: 8px; Adjust padding for smaller textarea */
+  /* } */ 
 
   .note-details-modal input,
   .note-details-modal textarea {
-    width: 100%; /* Ensure input and textarea fill available width */
+    width: 80%; /* Ensure input and textarea fill available width */
     box-sizing: border-box;
   }
 
