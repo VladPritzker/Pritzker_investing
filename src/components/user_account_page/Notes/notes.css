@@ -220,6 +220,7 @@
   .note-details-modal textarea {
     min-height: 120px; /* Smaller minimum height for mobile */
     font-size: 14px; /* Slightly smaller font size for mobile */
+    width: 115%;
 }
 
   .note-details-modal .button-group {
