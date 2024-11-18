@@ -255,7 +255,7 @@
 
   .note-details-modal input,
   .note-details-modal textarea {
-    width: 80%; /* Ensure input and textarea fill available width */
+    width: 60%; /* Ensure input and textarea fill available width */
     box-sizing: border-box;
   }
 
