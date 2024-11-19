@@ -65,8 +65,7 @@ function LandingPage() {
             <div className="col-lg-6">
               <h2>About Pritzker Finance</h2>
               <p>
-              My name is Vlad Pritzker, and I am the founder of Pritzker Finance. Originally from Vinnytsia, Ukraine, I currently serve as an Application Developer at BHI Bank. I hold a Bachelor's degree in Computer Science and have been immersed in the technology industry since 2017. My previous experience includes working at Capital Dynamics, where I specialized in designing, developing, and hosting applications tailored to meet the needs of businesses across various industries.
-              </p>
+              My name is Vlad Pritzker, and I am the founder of Pritzker Finance. Originally from Vinnytsia, Ukraine, I currently serve as an Application Developer at Moody's. I hold a Bachelor's degree in Computer Science and have been immersed in the technology industry since 2017. My previous experience includes working at BHI Bank and Capital Dynamics, where I specialized in designing, developing, and hosting applications tailored to meet the needs of businesses across various industries.              </p>
             </div>
             <div className="col-lg-6">
               <img src={img2} alt="About Us" className="img-fluid rounded" />
