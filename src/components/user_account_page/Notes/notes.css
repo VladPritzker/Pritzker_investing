@@ -208,10 +208,15 @@
 /* Responsive adjustments for mobile screens */
 
 
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
+  body:after {
+      content: 'Screen width matches';
+      display: block;
+      color: red;
+  }
   .note-details-modal {
     padding: 15px; /* Reduced padding for smaller screens */
-}
+  }
 
   .note-details-modal h4 {
     font-size: 18px;
@@ -221,7 +226,7 @@
     min-height: 120px; /* Smaller minimum height for mobile */
     font-size: 14px; /* Slightly smaller font size for mobile */
     width: 115%;
-}
+  }
 
   .note-details-modal .button-group {
     flex-direction: column;
@@ -232,6 +237,7 @@
     width: 100%;
   }
 }
+
 
 @media (max-width: 375px) {
   .note-details-modal {

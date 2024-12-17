@@ -119,7 +119,7 @@ function LandingPage() {
             <div className="col-lg-6">
               <h2>Contact Us</h2>
               <p>We'd love to hear from you! Whether you have a question about our services or want to discuss your project, our team is ready to help.</p>
-              <p><strong>Phone:</strong> (347) 430-8497</p>
+              <p><strong>Phone:</strong> (347) 260-9941</p>
               <p><strong>Email:</strong> pritzkervlad@gmail.com</p>
             </div>
             <div className="col-lg-6">
