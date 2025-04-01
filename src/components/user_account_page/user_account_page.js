@@ -13,6 +13,10 @@ import SleepLogsModal from "../user_account_page/TimeManagementModal/TimeManagem
 import InvestingComparison from "./StockData/StockData";
 import VirtualAssistant from "./VirtualAssistant/VirtualAssistant";
 import EnvelopeModal from './Docusign/docusign_modal';
+import DailyGoalsModal from "../user_account_page/DailyGoalsModal/DailyGoalsModal"; // Import the modal
+
+
+
 const customRedStyle = { color: "#a60101", marginLeft: "10px" };
 const apiUrl = process.env.REACT_APP_API_URL;
 const token = sessionStorage.getItem("authToken"); // Or localStorage.getItem("authToken")
@@ -61,6 +65,8 @@ function UserAccountPage() {
   const [isBalanceVisible, setIsBalanceVisible] = useState(false); // Default to false
   const [isBalanceGoalVisible, setIsBalanceGoalVisible] = useState(false); // Default to false
   const [showModal, setShowModal] = useState(false);
+  const [showDailyGoalsModal, setShowDailyGoalsModal] = useState(false);
+
 
 // Navigate to the login page if token expired 
 useEffect(() => {
@@ -445,7 +451,7 @@ useEffect(() => {
   return (
     <div className="login-container">
       <form className="login-form">
-        <VirtualAssistant userId={user?.id} />
+        <VirtualAssistant userId={user?.id} />        
         <div className="content-container">
           <div className="buttons" style={{ marginTop: "5%" }}>
             <button
@@ -905,7 +911,11 @@ useEffect(() => {
       </form>
 
       
-      
+      {/* <DailyGoalsModal
+        isOpen={showDailyGoalsModal}
+        onClose={() => setShowDailyGoalsModal(false)}
+        user={user} // Ensure user is passed as a prop
+      /> */}
 
       {showInvestList && (
         <InvestingRecordsModal

@@ -1,0 +1,177 @@
+/* Overlay for the Activities modal */
+.activities-modal-overlay {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Arial", sans-serif;
+    overflow-y: auto; /* Allow vertical scrolling */
+  }
+  
+  .activities-modal {
+    background-color: #ffffff;
+    margin: 5% auto;
+    padding: 20px;
+    border: none;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+    max-height: 80vh; /* Limit the height to 80% of the viewport */
+    overflow-y: auto; /* Enable vertical scrolling within the modal */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: fadeIn 0.4s;
+  }
+  
+  /* Keyframe animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  /* Adjustments for mobile screens */
+  @media (max-width: 768px) {
+    .activities-modal {
+      width: 90%;
+      max-width: 100%;
+      max-height: 80vh; /* Maintain max-height for scrolling on mobile */
+    }
+  }
+  
+  .activities-modal-close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .activities-modal-close:hover,
+  .activities-modal-close:focus {
+    color: #000;
+    text-decoration: none;
+  }
+  
+  /* Buttons and container styling */
+  .activities-button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+  
+  .add-activity-button,
+  .delete-activity-button,
+  .edit-activity-button,
+  .save-activity-button,
+  .cancel-activity-button,
+  .chart-activity-button {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin: 5px;
+    width: 100px; /* consistent width */
+  }
+  
+  .add-activity-button:hover,
+  .delete-activity-button:hover,
+  .edit-activity-button:hover,
+  .save-activity-button:hover,
+  .cancel-activity-button:hover,
+  .chart-activity-button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* The main container that lists activities */
+  .activities-container {
+    max-height: 300px; /* Adjust height as needed */
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(145deg, #f0f0f0, #ffffff);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .activities-container:hover {
+    border-color: #007bff;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Each activity item row */
+  .activity-entry {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+  }
+  
+  .activity-entry:last-child {
+    border-bottom: none;
+  }
+  
+  /* Delete Confirmation Modal for Activities */
+  .activities-delete-confirmation-modal {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 400px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .activities-delete-modal-actions {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+  }
+  
+  .delete-activity-confirm-button,
+  .delete-activity-cancel-button {
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin-left: 10px;
+    width: 100px; /* consistent width */
+    background-color: #6c757d;
+    color: white;
+  }
+  
+  .delete-activity-confirm-button:hover,
+  .delete-activity-cancel-button:hover {
+    background-color: #5a6268;
+  }
+  
+  /* If you add any info text or instructions */
+  .activities-info-text {
+    text-align: center;
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f9f9f9; 
+    border: 1px solid #ccc; 
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .activities-info-text p {
+    margin: 0;
+    font-size: 1.1em;
+    color: #333;
+  }
+  
