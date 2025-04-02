@@ -479,17 +479,17 @@ useEffect(() => {
       <form className="login-form">
         <VirtualAssistant userId={user?.id} />        
         <div className="content-container">
-          <div className="buttons" style={{ marginTop: "5%" }}>
-            <button
-              className="logout"
-              style={{ marginBottom: "20%" }}
-              onClick={handleLogout}
-            >
-              Logout
-            </button>
-            {user ? (
-  <>
-    <h1>{user.username}'s Profile</h1>
+        <div className="buttons" style={{ marginTop: "5%" }}>
+  <button
+    className="logout"
+    style={{ marginBottom: "20%" }}
+    onClick={handleLogout}
+  >
+    Logout
+  </button>
+  {user ? (
+    <>
+      <h1>{user.username}'s Profile</h1>
     {user && user.photo ? (
   <img 
     src={user.photo} 
@@ -512,94 +512,91 @@ useEffect(() => {
 ) : (
   <p>Loading user data...</p>
 )}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "10px",
-                marginLeft: "30%",
-              }}
-            >
-              <button
-                type="button"
-                className="upload-button"
-                style={stylesUp.updateButton}
-                onClick={handlePhotoUploadClick}
-              >
-                Upload
-              </button>
-              <button
-                type="button"
-                onClick={handleRefreshDataClick}
-                style={styles.updateButton}
-              >
-                Refresh
-              </button>
-            </div>
 
+  <div style={{ display: "flex", alignItems: "center", marginBottom: "10px" }}>
+    <button
+      type="button"
+      className="upload-button side-action-button" /* <--- use new class here */
+      onClick={handlePhotoUploadClick}
+    >
+      Upload
+    </button>
+    <button
+      type="button"
+      className="side-action-button"
+      onClick={handleRefreshDataClick}
+    >
+      Refresh
+    </button>
+  </div>
 
-            <button type="button" onClick={() => setShowActivitiesModal(true)}>
-                Activities
-            </button>
+  <button
+    type="button"
+    className="side-action-button"
+    onClick={() => setShowActivitiesModal(true)}
+  >
+    Activities
+  </button>
 
-            <button
-              id="SleepLogs"
-              type="button"
-              onClick={() => setShowSleepLogsModal(true)}
-            >
-              Sleep Logs
-            </button>
-            <button
-              id="meetings"
-              type="button"
-              onClick={handleMeetingsListClick}
-              style={{ position: "relative" }}
-            >
-              Meetings
-              {hasTodayMeetings && (
-                <span style={styles.notificationIcon}></span>
-              )}
-            </button>
-            <button type="button" onClick={() => setShowNotesModal(true)}>
-              Tasks
-            </button>
-            <button type="button" onClick={handleFinancialRecordsListClick}>
-              Spendings
-            </button>
-            <button
-              id="income"
-              type="button"
-              onClick={handleIncomeRecordsListClick}
-            >
-              Income
-            </button>
-            <button
-              id="refresh"
-              type="button"
-              onClick={handleInvestRecordsListClick}
-            >
-              Investings
-            </button>
-            <button
-              id="contacts"
-              type="button"
-              onClick={handleContactsListClick}
-            >
-              Contacts
-            </button>            
-            {/* <button
-              id="InvestingComparison"
-              type="button"
-              onClick={() => setShowInvestingComparison(true)}
-            >
-              Stocks Data
-            </button> */}            
-            {/* <button variant="primary" type="button" onClick={handleShowModal}>
-                Manage Envelopes
-            </button> */}
-          </div>
+  <button
+    id="SleepLogs"
+    type="button"
+    className="side-action-button"
+    onClick={() => setShowSleepLogsModal(true)}
+  >
+    Sleep Logs
+  </button>
+  <button
+    id="meetings"
+    type="button"
+    className="side-action-button"
+    onClick={handleMeetingsListClick}
+    style={{ position: "relative" }}
+  >
+    Meetings
+    {hasTodayMeetings && <span style={styles.notificationIcon}></span>}
+  </button>
+  <button
+    type="button"
+    className="side-action-button"
+    onClick={() => setShowNotesModal(true)}
+  >
+    Tasks
+  </button>
+  <button
+    type="button"
+    className="side-action-button"
+    onClick={handleFinancialRecordsListClick}
+  >
+    Spendings
+  </button>
+  <button
+    id="income"
+    type="button"
+    className="side-action-button"
+    onClick={handleIncomeRecordsListClick}
+  >
+    Income
+  </button>
+  <button
+    id="refresh"
+    type="button"
+    className="side-action-button"
+    onClick={handleInvestRecordsListClick}
+  >
+    Investings
+  </button>
+  <button
+    id="contacts"
+    type="button"
+    className="side-action-button"
+    onClick={handleContactsListClick}
+  >
+    Contacts
+  </button>
+</div>
           <div className="data-rows">
-            <h1 style={{ marginLeft: "-40%" }}>User Data</h1>
+            <h1 style={{ marginLeft: "0%" }}>User Data</h1>
             <div
               style={{
                 display: "flex",

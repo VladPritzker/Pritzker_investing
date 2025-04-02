@@ -238,11 +238,13 @@ function InvestingRecordsModal({ user, onClose }) {
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
     width: "1200px",
     margin: "auto",
-    overflow: "hidden",
+    overflow: "auto",
     animation: "formAnimation 0.3s ease-out",
     position: "relative",
-    marginTop: "5%",
+    marginTop: "2%",
+    maxHeight: "-webkit-fill-available",
   };
+  
 
   return (
     <div className="investing-modal">
