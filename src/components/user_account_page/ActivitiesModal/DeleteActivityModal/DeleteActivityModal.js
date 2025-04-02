@@ -1,19 +1,23 @@
-// DeleteConfirmationModal.js
 import React from "react";
-import "./DeleteConfirmationModal.css";
+import "./DeleteActivityModal.css";
 
-const DeleteConfirmationModal = ({ onConfirm, onCancel }) => {
+const DeleteActivityModal = ({ onConfirm, onCancel }) => {
   return (
-    <div className="modal-overlay">
-      <div className="delete-modal">
-        <h3>Are you sure you want to delete this item?</h3>
-        <div className="buttons">
-          <button onClick={onConfirm} className="confirm-button">Delete</button>
-          <button onClick={onCancel} className="cancel-button">Cancel</button>
+    <div className="delete-activity-overlay">
+      <div className="delete-activity-modal">
+        <h3>Confirm Delete</h3>
+        <p>Are you sure you want to delete this activity?</p>
+        <div className="delete-activity-actions">
+          <button onClick={onConfirm} className="delete-confirm-btn">
+            Delete
+          </button>
+          <button onClick={onCancel} className="delete-cancel-btn">
+            Cancel
+          </button>
         </div>
       </div>
     </div>
   );
 };
 
-export default DeleteConfirmationModal;
+export default DeleteActivityModal;

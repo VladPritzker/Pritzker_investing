@@ -1,0 +1,87 @@
+/* add-activity-modal css */
+.add-activity-overlay {
+    position: fixed;
+    z-index: 2000; /* can be above the main modal if needed */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Arial", sans-serif;
+    overflow-y: auto;
+  }
+  
+  .add-activity-modal {
+    background-color: #fff;
+    width: 400px;
+    max-width: 90%;
+    padding: 20px;
+    border-radius: 8px;
+    position: relative;
+    /* animation: fadeIn 0.4s; */
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  .add-activity-close {
+    color: #aaa;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: -5px;
+  }
+  
+  .add-activity-close:hover {
+    color: #000;
+  }
+  
+  .add-activity-form-group {
+    margin-bottom: 15px;
+  }
+  
+  .add-activity-form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .add-activity-form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .add-activity-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  .save-activity-btn,
+  .cancel-activity-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    background-color: #007bff;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .save-activity-btn:hover,
+  .cancel-activity-btn:hover {
+    background-color: #0056b3;
+  }
+  

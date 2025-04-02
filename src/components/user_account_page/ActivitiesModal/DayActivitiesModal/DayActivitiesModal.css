@@ -1,0 +1,44 @@
+.day-activities-overlay {
+    position: fixed;
+    z-index: 9999;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Arial", sans-serif;
+  }
+  
+  .day-activities-modal {
+    background: #fff;
+    width: 400px;
+    max-width: 90%;
+    border-radius: 8px;
+    padding: 20px;
+    position: relative;
+    /* animation: fadeIn 0.4s ease; */
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+  
+  .day-activities-close {
+    color: #aaa;
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+  }
+  .day-activities-close:hover {
+    color: #333;
+  }
+  
+  .day-activity-entry {
+    margin-bottom: 1rem;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  

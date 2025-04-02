@@ -1,195 +1,272 @@
 import React, { useState, useEffect } from "react";
+import "./ActivitiesModal.css";
+import AddActivityTypeModal from "./AddActivityTypeModal/AddActivityTypeModal";
+import AddActivityModal from "./AddActivityModal/AddActivityModal";
+import DeleteActivityModal from "./DeleteActivityModal/DeleteActivityModal";
+import DayActivitiesModal from "./DayActivitiesModal/DayActivitiesModal"; // NEW modal
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-// If you want styles like the Sleep logs modal, reuse CSS or replicate as needed
-import "./ActivitiesModal.css"; 
-import AddActivityModal from "./AddActivityModal";  // We'll define this sub-modal below
-import DeleteConfirmationModal from "../TimeManagementModal/DeleteModalSleepLogs/DeleteModal";
+import ActivitiesChartModal from "./ActivitiesChartModal/ActivitiesChartModal"; // <-- import your new chart modal
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const ActivitiesModal = ({ userId, onClose }) => {
+  const [activityTypes, setActivityTypes] = useState([]);
   const [activities, setActivities] = useState([]);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  // Modals
+  const [showTypeModal, setShowTypeModal] = useState(false);
+  const [showAddActivityModal, setShowAddActivityModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  // New: For the day-details modal
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [selectedDateActivities, setSelectedDateActivities] = useState([]);
+
   const [deleteActivityId, setDeleteActivityId] = useState(null);
 
-  // For editing an activity
-  const [editActivityId, setEditActivityId] = useState(null);
-  const [editActivityData, setEditActivityData] = useState({
-    name: "",
-    date: "",
-  });
+  // Filters
+  const [selectedTypeFilter, setSelectedTypeFilter] = useState("all");
+  const [filterDate, setFilterDate] = useState("");
 
-  // For adding a new activity
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-
-  // For Calendar
+  // Calendar month/year
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  const [selectedActivity, setSelectedActivity] = useState(null);
 
-  // Fetch activities on mount
-  useEffect(() => {
-    const fetchActivities = async () => {
-      try {
-        const response = await fetch(`${apiUrl}/activities/${userId}/`);
-        if (response.ok) {
-          const data = await response.json();
-          setActivities(data);
-        } else {
-          console.error("Failed to fetch activities");
-        }
-      } catch (error) {
-        console.error("Error fetching activities:", error);
+  // Editing
+  const [editActivityId, setEditActivityId] = useState(null);
+  const [editData, setEditData] = useState({ activity_type_id: "", date: "" });
+
+  // Chart modal 
+  const [showChartModal, setShowChartModal] = useState(false);
+
+
+  /** -------------- Fetch Data -------------- **/
+  const fetchActivityTypes = async () => {
+    try {
+      const res = await fetch(`${apiUrl}/activity-types/${userId}/`);
+      if (res.ok) {
+        const data = await res.json();
+        setActivityTypes(data);
+      } else {
+        console.error("Failed to fetch activity types");
       }
-    };
+    } catch (err) {
+      console.error("Error fetching activity types:", err);
+    }
+  };
 
+  const fetchActivities = async (typeId = "all", dateFilter = "") => {
+    try {
+      let url = `${apiUrl}/activities/${userId}/?`;
+      if (typeId !== "all") url += `type_id=${typeId}&`;
+      if (dateFilter) url += `filter_date=${dateFilter}&`;
+
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        setActivities(data);
+      } else {
+        console.error("Failed to fetch activities");
+      }
+    } catch (err) {
+      console.error("Error fetching activities:", err);
+    }
+  };
+
+  useEffect(() => {
     if (userId) {
-      fetchActivities();
+      fetchActivityTypes();
+      fetchActivities("all", "");
     }
   }, [userId]);
 
-  // Close modal with ESC key
+  // Close on ESC
   useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") onClose();
     };
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
-  // Helper: Format date to YYYY-MM-DD
-  const formatDate = (dateString) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    return date.toISOString().split("T")[0];
+  /* Whenever filter changes, fetch automatically */
+  useEffect(() => {
+    fetchActivities(selectedTypeFilter, filterDate);
+    // eslint-disable-next-line
+  }, [selectedTypeFilter, filterDate]);
+
+  /** -------------- Filters -------------- **/
+  const handleFilterTypeChange = (e) => {
+    setSelectedTypeFilter(e.target.value);
+  };
+  const handleDateFilterChange = (e) => {
+    setFilterDate(e.target.value);
+  };
+  const handleResetFilter = () => {
+    setSelectedTypeFilter("all");
+    setFilterDate("");
   };
 
-  // Open delete confirmation
-  const handleDelete = (activityId) => {
-    setDeleteActivityId(activityId);
-    setIsDeleteModalOpen(true);
+  /** -------------- Add / Delete / Edit -------------- **/
+  const handleAddActivity = (newAct) => {
+    setActivities((prev) => [...prev, newAct]);
   };
 
-  // Confirm delete
+  const openDeleteModal = (id) => {
+    setDeleteActivityId(id);
+    setShowDeleteModal(true);
+  };
+  const closeDeleteModal = () => {
+    setDeleteActivityId(null);
+    setShowDeleteModal(false);
+  };
   const confirmDelete = async () => {
     try {
-      const response = await fetch(
-        `${apiUrl}/activities/${userId}/${deleteActivityId}/`,
-        { method: "DELETE" }
-      );
-      if (response.ok) {
-        setActivities((prev) =>
-          prev.filter((activity) => activity.id !== deleteActivityId)
-        );
-        setIsDeleteModalOpen(false);
-        setDeleteActivityId(null);
+      const res = await fetch(`${apiUrl}/activities/${userId}/${deleteActivityId}/`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setActivities((prev) => prev.filter((a) => a.id !== deleteActivityId));
       } else {
         console.error("Failed to delete activity");
       }
-    } catch (error) {
-      console.error("Error deleting activity:", error);
+    } catch (err) {
+      console.error("Error deleting activity:", err);
+    } finally {
+      closeDeleteModal();
     }
   };
 
-  // Cancel delete
-  const cancelDelete = () => {
-    setIsDeleteModalOpen(false);
-    setDeleteActivityId(null);
-  };
-
-  // Edit an activity
-  const handleEdit = (activity) => {
-    setEditActivityId(activity.id);
-    setEditActivityData({
-      name: activity.name,
-      date: formatDate(activity.date),
+  // Edit
+  const handleEditClick = (act) => {
+    setEditActivityId(act.id);
+    setEditData({
+      activity_type_id: act.activity_type_id,
+      date: act.date,
     });
   };
-
   const handleEditChange = (e) => {
     const { name, value } = e.target;
-    setEditActivityData((prev) => ({ ...prev, [name]: value }));
+    setEditData((prev) => ({ ...prev, [name]: value }));
   };
-
   const handleSaveEdit = async () => {
+    if (!editActivityId) return;
     try {
-      const response = await fetch(
-        `${apiUrl}/activities/${userId}/${editActivityId}/`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: editActivityData.name,
-            date: editActivityData.date,
-          }),
-        }
-      );
-      if (response.ok) {
-        const updated = await response.json();
+      const res = await fetch(`${apiUrl}/activities/${userId}/${editActivityId}/`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          activity_type_id: editData.activity_type_id,
+          date: editData.date,
+        }),
+      });
+      if (res.ok) {
+        const updated = await res.json();
         setActivities((prev) =>
-          prev.map((act) => (act.id === editActivityId ? updated : act))
+          prev.map((a) => (a.id === editActivityId ? updated : a))
         );
         setEditActivityId(null);
-        setEditActivityData({ name: "", date: "" });
+        setEditData({ activity_type_id: "", date: "" });
       } else {
         console.error("Failed to update activity");
       }
-    } catch (error) {
-      console.error("Error updating activity:", error);
+    } catch (err) {
+      console.error("Error updating activity:", err);
+    }
+  };
+  const handleCancelEdit = () => {
+    setEditActivityId(null);
+    setEditData({ activity_type_id: "", date: "" });
+  };
+
+  /** --------------  Click on Calendar Day => Show details -------------- **/
+  const handleClickDay = (value, event) => {
+    const clickedDateStr = value.toISOString().split("T")[0];
+    // Filter out the activities for that day
+    const dayActivities = activities.filter((a) => a.date === clickedDateStr);
+
+    if (dayActivities.length > 0) {
+      setSelectedDateActivities(dayActivities);
+      setShowDetailsModal(true);
+    } else {
+      // Optional: Show an alert or do nothing if there's no activity
+      console.log("No activities for this date.");
     }
   };
 
-  const handleCancelEdit = () => {
-    setEditActivityId(null);
-    setEditActivityData({ name: "", date: "" });
-  };
-
-  // Add new activity
-  const handleAddActivity = (newActivity) => {
-    // Insert into the local state
-    setActivities((prev) => [...prev, newActivity]);
-  };
-
-  const handleOpenAddModal = () => {
-    setIsAddModalOpen(true);
-  };
-
-  const handleCloseAddModal = () => {
-    setIsAddModalOpen(false);
-  };
-
-  // Calendar tile content or styling (optional)
+  /** --------------  Calendar Tile Content  -------------- **/
   const renderTileContent = ({ date, view }) => {
     if (view === "month") {
-      // Check if there's an activity for this day
-      const dayStr = date.toISOString().split("T")[0]; // "YYYY-MM-DD"
-      const hasActivity = activities.some(
-        (act) => formatDate(act.date) === dayStr
-      );
-      if (hasActivity) {
-        // Return an icon or highlight
-        return <i className="fas fa-check-circle calendar-activity-icon" />;
+      const dayStr = date.toISOString().split("T")[0];
+      const dayActivities = activities.filter((a) => a.date === dayStr);
+      if (dayActivities.length > 0) {
+        return (
+          <div style={{ display: "flex", gap: "2px" }}>
+            {[...Array(dayActivities.length)].map((_, i) => (
+              <i key={i} className="fas fa-check-circle calendar-activity-icon"></i>
+            ))}
+          </div>
+        );
       }
     }
     return null;
   };
 
+  const getTypeName = (typeId) => {
+    const found = activityTypes.find((t) => t.id === typeId);
+    return found ? found.name : "Unknown";
+  };
+
   return (
-    <div className="modal-overlay">
+    <div className="activities-modal-overlay">
       <div className="activities-modal">
-        <i className="fas fa-times modal-close" onClick={onClose}></i>
+        <i className="fas fa-times activities-modal-close" onClick={onClose}></i>
         <h2>Activities</h2>
 
-        <div className="button-container">
-          <button onClick={handleOpenAddModal} className="add-button">
+        <div className="activities-button-container">
+          <button
+            onClick={() => setShowTypeModal(true)}
+            className="add-activity-button"
+          >
+            Manage Activity Types
+          </button>
+
+          <button
+            onClick={() => setShowAddActivityModal(true)}
+            className="add-activity-button"
+          >
             Add Activity
+          </button>
+
+          <button onClick={() => setShowChartModal(true)} className="add-activity-button">
+            View Chart
           </button>
         </div>
 
-        {/* Calendar to visually show which days have activities */}
+        {/* Filters */}
+        <div className="filter-container">
+          <label>Type:</label>
+          <select value={selectedTypeFilter} onChange={handleFilterTypeChange}>
+            <option value="all">All</option>
+            {activityTypes.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}
+              </option>
+            ))}
+          </select>
+
+          <label>Date:</label>
+          <input
+            type="date"
+            value={filterDate}
+            onChange={handleDateFilterChange}
+          />
+
+          <button onClick={handleResetFilter}>Reset</button>
+        </div>
+
+        {/* Calendar with onClickDay */}
         <Calendar
           value={new Date(currentYear, currentMonth)}
           tileContent={renderTileContent}
@@ -197,33 +274,46 @@ const ActivitiesModal = ({ userId, onClose }) => {
             setCurrentMonth(activeStartDate.getMonth());
             setCurrentYear(activeStartDate.getFullYear());
           }}
+          onClickDay={handleClickDay} // <--- Click date => open details
         />
 
-        {/* List of Activities */}
-        <div className="activities-list">
+        <div className="activities-container">
           {activities.map((act) => (
             <div key={act.id} className="activity-entry">
               {editActivityId === act.id ? (
                 <div className="edit-activity-form">
-                  <label>Activity Name:</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={editActivityData.name}
+                  <label>Activity Type:</label>
+                  <select
+                    name="activity_type_id"
+                    value={editData.activity_type_id}
                     onChange={handleEditChange}
-                  />
+                  >
+                    <option value="">-- Select Type --</option>
+                    {activityTypes.map((t) => (
+                      <option key={t.id} value={t.id}>
+                        {t.name}
+                      </option>
+                    ))}
+                  </select>
+
                   <label>Date:</label>
                   <input
                     type="date"
                     name="date"
-                    value={editActivityData.date}
+                    value={editData.date}
                     onChange={handleEditChange}
                   />
-                  <div className="buttons-row">
-                    <button onClick={handleSaveEdit} className="save-button">
+                  <div className="activities-button-container">
+                    <button
+                      onClick={handleSaveEdit}
+                      className="save-activity-button"
+                    >
                       Save
                     </button>
-                    <button onClick={handleCancelEdit} className="cancel-button">
+                    <button
+                      onClick={handleCancelEdit}
+                      className="cancel-activity-button"
+                    >
                       Cancel
                     </button>
                   </div>
@@ -231,19 +321,24 @@ const ActivitiesModal = ({ userId, onClose }) => {
               ) : (
                 <>
                   <p>
-                    <strong>Activity:</strong> {act.name}
+                    <strong>Type:</strong> {getTypeName(act.activity_type_id)}
                   </p>
                   <p>
-                    <strong>Date:</strong>{" "}
-                    {new Date(act.date).toLocaleDateString()}
+                    <strong>Date:</strong> {act.date}
                   </p>
-                  <div className="buttons-row">
-                    <button onClick={() => handleEdit(act)} className="edit-button">
+                  <div className="activities-button-container">
+                    <button
+                      onClick={() => handleEditClick(act)}
+                      className="edit-activity-button"
+                    >
                       Edit
                     </button>
                     <button
-                      onClick={() => handleDelete(act.id)}
-                      className="delete-button"
+                      onClick={() => {
+                        setDeleteActivityId(act.id);
+                        setShowDeleteModal(true);
+                      }}
+                      className="delete-activity-button"
                     >
                       Delete
                     </button>
@@ -255,20 +350,49 @@ const ActivitiesModal = ({ userId, onClose }) => {
         </div>
       </div>
 
+      {/* Manage Types Modal */}
+      {showTypeModal && (
+        <AddActivityTypeModal
+          userId={userId}
+          activityTypes={activityTypes}
+          setActivityTypes={setActivityTypes}
+          onClose={() => setShowTypeModal(false)}
+        />
+      )}
+
       {/* Add Activity Modal */}
-      {isAddModalOpen && (
+      {showAddActivityModal && (
         <AddActivityModal
           userId={userId}
-          onClose={handleCloseAddModal}
+          onClose={() => setShowAddActivityModal(false)}
+          activityTypes={activityTypes}
           onAddActivity={handleAddActivity}
         />
       )}
 
-      {/* Delete Confirmation */}
-      {isDeleteModalOpen && (
-        <DeleteConfirmationModal
+      {/* Confirm Delete Modal */}
+      {showDeleteModal && (
+        <DeleteActivityModal
           onConfirm={confirmDelete}
-          onCancel={cancelDelete}
+          onCancel={closeDeleteModal}
+        />
+      )}
+
+      {/* NEW: Day Activities Modal */}
+      {showDetailsModal && (
+        <DayActivitiesModal
+          activities={selectedDateActivities} // pass the array of day activities
+          onClose={() => setShowDetailsModal(false)}
+          getTypeName={getTypeName} // to resolve type name
+        />
+      )}
+
+       {/* NEW: ActivitiesChartModal */}
+       {showChartModal && (
+        <ActivitiesChartModal
+          onClose={() => setShowChartModal(false)}
+          allActivities={activities}    // pass all activity data
+          activityTypes={activityTypes} // pass type list for filtering
         />
       )}
     </div>

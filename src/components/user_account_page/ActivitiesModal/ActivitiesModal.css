@@ -1,177 +1,205 @@
-/* Overlay for the Activities modal */
+/* 
+  Modern 3D + Glassy ActivitiesModal 
+  Using your existing class names 
+*/
+
+/* The full overlay with a slight 3D perspective */
 .activities-modal-overlay {
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: "Arial", sans-serif;
-    overflow-y: auto; /* Allow vertical scrolling */
-  }
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto; /* scroll if content too tall */
+  font-family: 'Arial', sans-serif;
+
+  /* for 3D tilt of the modal itself */
+  /* perspective: 1200px; */
+}
+
+/* The main modal container: glassy + 3D tilt */
+.activities-modal {
+  position: relative;
+  width: 80%;
+  max-width: 1000px;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
   
+  /* Glassmorphism style */
+  background: rgba(23, 0, 233, 0.15);
+  backdrop-filter: blur(14px) saturate(180%) brightness(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%) brightness(120%);
+  border: 1px solid rgba(255,255,255,0.3);
+
+  /* 3D tilt & transition */
+  transform: rotateY(0deg) scale(1);
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease, box-shadow 0.4s ease, opacity 0.4s ease;
+  animation: fadeIn 0.5s forwards;
+}
+
+/* Slight 3D tilt on hover for the "wow" effect */
+.activities-modal:hover {
+  transform: rotateY(-5deg) scale(1.01);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.25);
+}
+
+/* fadeIn keyframes */
+@keyframes fadeIn {
+  0% {
+    transform: translateY(20px) scale(0.95) rotateY(10deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0) scale(1) rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+/* Close icon */
+.activities-modal-close {
+  color: #ffffff;
+  font-size: 28px;
+  cursor: pointer;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  transition: color 0.3s;
+}
+.activities-modal-close:hover,
+.activities-modal-close:focus {
+  color: #fff;
+  text-decoration: none;
+  perspective: 12px
+}
+
+/* The button row near top for "Add" or "Manage" etc. */
+.activities-button-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* The filter container (Type & Date) */
+.filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.filter-container select {
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #bbb;
+  font-size: 0.95rem;
+  min-width: 120px;
+}
+.filter-container button {
+  padding: 6px 12px;
+  background-color: #6c757d;
+  color: #fff;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+}
+.filter-container button:hover {
+  background-color: #5a6268;
+  transform: translateY(-2px);
+}
+
+/* Common button styles for add, edit, delete, etc. */
+.add-activity-button,
+.edit-activity-button,
+.delete-activity-button,
+.save-activity-button,
+.cancel-activity-button {
+  padding: 10px;
+  background-color: #2d5682;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+  margin: 5px;
+  width: 110px; /* consistent width */
+  font-size: 0.95rem;
+}
+.add-activity-button:hover,
+.edit-activity-button:hover,
+.delete-activity-button:hover,
+.save-activity-button:hover,
+.cancel-activity-button:hover {
+  background-color: #6aacac;
+  transform: translateY(-2px);
+}
+
+/* Activities list container: subtle glass box inside */
+.activities-container {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 12px;
+  padding: 15px;
+  margin-top: 20px;
+  box-shadow: inset 0 4px 10px rgba(0,0,0,0.05);
+  background: rgba(54, 197, 233, 0.2);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.activities-container:hover {
+  border-color: #007bff;
+  box-shadow: inset 0 6px 15px rgba(0,0,0,0.1);
+}
+
+/* Each activity row */
+.activity-entry {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+.activity-entry:last-child {
+  border-bottom: none;
+}
+
+/* Edit form in each activity entry */
+.edit-activity-form {
+  margin-top: 10px;
+}
+.edit-activity-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+.edit-activity-form select,
+.edit-activity-form input[type='date'] {
+  margin-bottom: 10px;
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+/* Calendar icon or repeated icons if multiple */
+.calendar-activity-icon {
+  font-size: 1.2em;
+  color: #3adb76; /* a bright green color, for instance */
+}
+
+/* Media Queries for smaller screens */
+@media (max-width: 768px) {
   .activities-modal {
-    background-color: #ffffff;
-    margin: 5% auto;
-    padding: 20px;
-    border: none;
-    border-radius: 8px;
-    width: 80%;
-    max-width: 600px;
-    max-height: 80vh; /* Limit the height to 80% of the viewport */
-    overflow-y: auto; /* Enable vertical scrolling within the modal */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    animation: fadeIn 0.4s;
-  }
-  
-  /* Keyframe animation */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  
-  /* Adjustments for mobile screens */
-  @media (max-width: 768px) {
-    .activities-modal {
-      width: 90%;
-      max-width: 100%;
-      max-height: 80vh; /* Maintain max-height for scrolling on mobile */
-    }
-  }
-  
-  .activities-modal-close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  
-  .activities-modal-close:hover,
-  .activities-modal-close:focus {
-    color: #000;
-    text-decoration: none;
-  }
-  
-  /* Buttons and container styling */
-  .activities-button-container {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-  
-  .add-activity-button,
-  .delete-activity-button,
-  .edit-activity-button,
-  .save-activity-button,
-  .cancel-activity-button,
-  .chart-activity-button {
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    margin: 5px;
-    width: 100px; /* consistent width */
-  }
-  
-  .add-activity-button:hover,
-  .delete-activity-button:hover,
-  .edit-activity-button:hover,
-  .save-activity-button:hover,
-  .cancel-activity-button:hover,
-  .chart-activity-button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* The main container that lists activities */
-  .activities-container {
-    max-height: 300px; /* Adjust height as needed */
+    width: 90%;
+    max-width: 100%;
+    max-height: 80vh;
     overflow-y: auto;
-    border: 1px solid #ccc;
-    border-radius: 12px;
-    padding: 15px;
-    margin-top: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    background: linear-gradient(145deg, #f0f0f0, #ffffff);
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .activities-container:hover {
-    border-color: #007bff;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-  }
-  
-  /* Each activity item row */
-  .activity-entry {
-    border-bottom: 1px solid #ddd;
-    padding: 10px 0;
-  }
-  
-  .activity-entry:last-child {
-    border-bottom: none;
-  }
-  
-  /* Delete Confirmation Modal for Activities */
-  .activities-delete-confirmation-modal {
-    background-color: white;
-    padding: 30px;
     border-radius: 10px;
-    width: 400px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    animation: fadeIn 0.3s ease-in-out;
   }
-  
-  .activities-delete-modal-actions {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
+  .activities-button-container,
+  .filter-container {
+    justify-content: center;
   }
-  
-  .delete-activity-confirm-button,
-  .delete-activity-cancel-button {
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 5px;
-    border: none;
-    font-size: 16px;
-    transition: background-color 0.3s;
-    margin-left: 10px;
-    width: 100px; /* consistent width */
-    background-color: #6c757d;
-    color: white;
-  }
-  
-  .delete-activity-confirm-button:hover,
-  .delete-activity-cancel-button:hover {
-    background-color: #5a6268;
-  }
-  
-  /* If you add any info text or instructions */
-  .activities-info-text {
-    text-align: center;
-    margin: 20px 0;
-    padding: 15px;
-    background-color: #f9f9f9; 
-    border: 1px solid #ccc; 
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .activities-info-text p {
-    margin: 0;
-    font-size: 1.1em;
-    color: #333;
-  }
-  
+}

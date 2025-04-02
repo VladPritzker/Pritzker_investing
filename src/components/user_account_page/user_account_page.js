@@ -12,14 +12,16 @@ import "../user_account_page/user_account_page.css";
 import SleepLogsModal from "../user_account_page/TimeManagementModal/TimeManagementModal";
 import InvestingComparison from "./StockData/StockData";
 import VirtualAssistant from "./VirtualAssistant/VirtualAssistant";
-import EnvelopeModal from './Docusign/docusign_modal';
-import DailyGoalsModal from "../user_account_page/DailyGoalsModal/DailyGoalsModal"; // Import the modal
+// import EnvelopeModal from './Docusign/docusign_modal';
+// import DailyGoalsModal from "../user_account_page/DailyGoalsModal/DailyGoalsModal"; // Import the modal
+import ActivitiesModal from "./ActivitiesModal/ActivitiesModal";
+
 
 
 
 const customRedStyle = { color: "#a60101", marginLeft: "10px" };
 const apiUrl = process.env.REACT_APP_API_URL;
-const token = sessionStorage.getItem("authToken"); // Or localStorage.getItem("authToken")
+// const token = sessionStorage.getItem("authToken"); // Or localStorage.getItem("authToken")
 
 
 
@@ -64,8 +66,10 @@ function UserAccountPage() {
   const [showInvestingComparison, setShowInvestingComparison] = useState(false);
   const [isBalanceVisible, setIsBalanceVisible] = useState(false); // Default to false
   const [isBalanceGoalVisible, setIsBalanceGoalVisible] = useState(false); // Default to false
-  const [showModal, setShowModal] = useState(false);
-  const [showDailyGoalsModal, setShowDailyGoalsModal] = useState(false);
+  // const [showModal, setShowModal] = useState(false);
+  // const [showDailyGoalsModal, setShowDailyGoalsModal] = useState(false);
+  const [showActivitiesModal, setShowActivitiesModal] = useState(false);
+
 
 
 // Navigate to the login page if token expired 
@@ -257,14 +261,36 @@ useEffect(() => {
   };
 
   const handleRefreshDataClick = async () => {
+    let token = sessionStorage.getItem("authToken");
+    const refreshToken = sessionStorage.getItem("refreshToken");
+  
     try {
-      const token = sessionStorage.getItem("authToken");
-      const response = await fetch(`${apiUrl}/users/${user.id}/`, {
+      let response = await fetch(`${apiUrl}/users/${user.id}/`, {
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
         },
       });
+  
+      if (response.status === 401 && refreshToken) {
+        // Token invalid, try refreshing it
+        const refreshResponse = await axios.post(`${apiUrl}/api/token/refresh/`, {
+          refresh: refreshToken,
+        });
+  
+        const newAccessToken = refreshResponse.data.access;
+        sessionStorage.setItem("authToken", newAccessToken);
+        token = newAccessToken;
+  
+        // Retry the original request with new token
+        response = await fetch(`${apiUrl}/users/${user.id}/`, {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+      }
+  
       if (response.ok) {
         const updatedUser = await response.json();
         console.log("Data refreshed successfully:", updatedUser);
@@ -277,10 +303,10 @@ useEffect(() => {
       }
     } catch (error) {
       console.error("Error refreshing data:", error);
-
       alert("Failed to refresh data. Please try again later.");
     }
   };
+  
 
   const handleUpdateClick = async (field) => {
     const newValue = prompt(`Enter new value for ${field}:`, user[field]);
@@ -441,11 +467,11 @@ useEffect(() => {
     },
   };
 
-  function getImageUrl(photoPath) {
-    if (!photoPath) return null;
-    if (photoPath.startsWith('http')) return photoPath;
-    return `${apiUrl}${photoPath}`;
-  }
+  // function getImageUrl(photoPath) {
+  //   if (!photoPath) return null;
+  //   if (photoPath.startsWith('http')) return photoPath;
+  //   return `${apiUrl}${photoPath}`;
+  // }
   
 
   return (
@@ -511,6 +537,29 @@ useEffect(() => {
               </button>
             </div>
 
+
+            <button type="button" onClick={() => setShowActivitiesModal(true)}>
+                Activities
+            </button>
+
+            <button
+              id="SleepLogs"
+              type="button"
+              onClick={() => setShowSleepLogsModal(true)}
+            >
+              Sleep Logs
+            </button>
+            <button
+              id="meetings"
+              type="button"
+              onClick={handleMeetingsListClick}
+              style={{ position: "relative" }}
+            >
+              Meetings
+              {hasTodayMeetings && (
+                <span style={styles.notificationIcon}></span>
+              )}
+            </button>
             <button type="button" onClick={() => setShowNotesModal(true)}>
               Tasks
             </button>
@@ -537,34 +586,14 @@ useEffect(() => {
               onClick={handleContactsListClick}
             >
               Contacts
-            </button>
-            <button
-              id="meetings"
-              type="button"
-              onClick={handleMeetingsListClick}
-              style={{ position: "relative" }}
-            >
-              Meetings
-              {hasTodayMeetings && (
-                <span style={styles.notificationIcon}></span>
-              )}
-            </button>
-
+            </button>            
             {/* <button
               id="InvestingComparison"
               type="button"
               onClick={() => setShowInvestingComparison(true)}
             >
               Stocks Data
-            </button> */}
-            <button
-              id="SleepLogs"
-              type="button"
-              onClick={() => setShowSleepLogsModal(true)}
-            >
-              Sleep Logs
-            </button>
-
+            </button> */}            
             {/* <button variant="primary" type="button" onClick={handleShowModal}>
                 Manage Envelopes
             </button> */}
@@ -916,6 +945,12 @@ useEffect(() => {
         onClose={() => setShowDailyGoalsModal(false)}
         user={user} // Ensure user is passed as a prop
       /> */}
+      {showActivitiesModal && (
+        <ActivitiesModal 
+          userId={user?.id} 
+          onClose={() => setShowActivitiesModal(false)} 
+        />
+      )}
 
       {showInvestList && (
         <InvestingRecordsModal
