@@ -16,6 +16,7 @@ import VirtualAssistant from "./VirtualAssistant/VirtualAssistant";
 // import DailyGoalsModal from "../user_account_page/DailyGoalsModal/DailyGoalsModal"; // Import the modal
 import ActivitiesModal from "./ActivitiesModal/ActivitiesModal";
 
+import ChangeControlModal from "./Change_control_form/Change_control_form"; // Import the modal
 
 
 
@@ -70,6 +71,8 @@ function UserAccountPage() {
   // const [showDailyGoalsModal, setShowDailyGoalsModal] = useState(false);
   const [showActivitiesModal, setShowActivitiesModal] = useState(false);
 
+  // change control form 
+  const [showChangeForms, setShowChangeForms] = useState(false);
 
 
 // Navigate to the login page if token expired 
@@ -537,6 +540,14 @@ useEffect(() => {
   >
     Activities
   </button>
+  
+  <button
+    type="button"
+    className="side-action-button"
+    onClick={() => setShowNotesModal(true)}
+  >
+    Tasks
+  </button>
 
   <button
     id="SleepLogs"
@@ -546,6 +557,7 @@ useEffect(() => {
   >
     Sleep Logs
   </button>
+
   <button
     id="meetings"
     type="button"
@@ -556,13 +568,7 @@ useEffect(() => {
     Meetings
     {hasTodayMeetings && <span style={styles.notificationIcon}></span>}
   </button>
-  <button
-    type="button"
-    className="side-action-button"
-    onClick={() => setShowNotesModal(true)}
-  >
-    Tasks
-  </button>
+
   <button
     type="button"
     className="side-action-button"
@@ -593,6 +599,14 @@ useEffect(() => {
     onClick={handleContactsListClick}
   >
     Contacts
+  </button>
+
+  <button
+  type="button"
+  className="side-action-button"
+  onClick={() => setShowChangeForms(true)}
+  >
+    Change Control Form
   </button>
 </div>
           <div className="data-rows">
@@ -1004,6 +1018,9 @@ useEffect(() => {
           onSave={handleSaveSleepLog}
           onDelete={handleDeleteSleepLog}
         />
+      )}
+      {showChangeForms && (
+      <ChangeControlModal onClose={() => setShowChangeForms(false)} />
       )}
     </div>
   );

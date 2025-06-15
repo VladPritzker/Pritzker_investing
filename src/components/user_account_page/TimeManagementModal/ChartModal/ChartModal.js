@@ -10,12 +10,15 @@ const ChartModal = ({ sleepLogs, onClose }) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
+  const WAKE_TIME_LIMIT = 6 + 10 / 60; // 6:10 AM = 6.1667
+  const SLEEP_TIME_LIMIT = 22 + 10 / 60; // 10:10 PM = 22.1667
+
   const filterLogsByPeriod = (logs) => {
     if (startDate && endDate) {
       const start = new Date(startDate);
       const end = new Date(endDate);
       return logs.filter(
-        (log) => new Date(log.date) >= start && new Date(log.date) <= end,
+        (log) => new Date(log.date) >= start && new Date(log.date) <= end
       );
     }
     return logs;
@@ -31,8 +34,14 @@ const ChartModal = ({ sleepLogs, onClose }) => {
         data: filteredLogs.map(
           (log) =>
             new Date(log.sleep_time).getHours() +
-            new Date(log.sleep_time).getMinutes() / 60,
+            new Date(log.sleep_time).getMinutes() / 60
         ),
+        pointBackgroundColor: filteredLogs.map((log) => {
+          const time =
+            new Date(log.sleep_time).getHours() +
+            new Date(log.sleep_time).getMinutes() / 60;
+          return time <= SLEEP_TIME_LIMIT ? "green" : "red";
+        }),
         fill: false,
         backgroundColor: "rgba(75, 192, 192, 0.6)",
         borderColor: "rgba(75, 192, 192, 1)",
@@ -43,8 +52,14 @@ const ChartModal = ({ sleepLogs, onClose }) => {
         data: filteredLogs.map(
           (log) =>
             new Date(log.wake_time).getHours() +
-            new Date(log.wake_time).getMinutes() / 60,
+            new Date(log.wake_time).getMinutes() / 60
         ),
+        pointBackgroundColor: filteredLogs.map((log) => {
+          const time =
+            new Date(log.wake_time).getHours() +
+            new Date(log.wake_time).getMinutes() / 60;
+          return time <= WAKE_TIME_LIMIT ? "green" : "red";
+        }),
         fill: false,
         backgroundColor: "rgba(153, 102, 255, 0.6)",
         borderColor: "rgba(153, 102, 255, 1)",
@@ -62,8 +77,8 @@ const ChartModal = ({ sleepLogs, onClose }) => {
         ticks: {
           callback: function (value) {
             const hours = Math.floor(value);
-            const minutes = (value - hours) * 60;
-            return `${hours}:${minutes === 0 ? "00" : minutes}`;
+            const minutes = Math.round((value - hours) * 60);
+            return `${hours}:${minutes === 0 ? "00" : minutes < 10 ? "0" + minutes : minutes}`;
           },
         },
         title: {
@@ -75,27 +90,27 @@ const ChartModal = ({ sleepLogs, onClose }) => {
     plugins: {
       annotation: {
         annotations: {
-          line1: {
+          sleepLine: {
             type: "line",
-            yMin: 22, // 10 PM
-            yMax: 22,
+            yMin: SLEEP_TIME_LIMIT,
+            yMax: SLEEP_TIME_LIMIT,
             borderColor: "green",
             borderWidth: 2,
             label: {
-              content: "10 PM",
+              content: "10:10 PM",
               enabled: true,
               position: "start",
               backgroundColor: "green",
             },
           },
-          line2: {
+          wakeLine: {
             type: "line",
-            yMin: 6, // 6 AM
-            yMax: 6,
+            yMin: WAKE_TIME_LIMIT,
+            yMax: WAKE_TIME_LIMIT,
             borderColor: "green",
             borderWidth: 2,
             label: {
-              content: "6 AM",
+              content: "6:10 AM",
               enabled: true,
               position: "start",
               backgroundColor: "green",

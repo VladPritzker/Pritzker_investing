@@ -176,41 +176,41 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose }) => {
   };
 
   const renderTileContent = ({ date, view }) => {
-    if (view === "month") {
-      const log = sleepLogs.find(
-        (log) =>
-          new Date(log.date).toISOString().split("T")[0] ===
-          date.toISOString().split("T")[0],
+  if (view === "month") {
+    const log = sleepLogs.find(
+      (log) =>
+        new Date(log.date).toISOString().split("T")[0] ===
+        date.toISOString().split("T")[0]
+    );
+
+    if (log) {
+      const sleepTime = new Date(log.sleep_time);
+      const wakeTime = new Date(log.wake_time);
+
+      const sleepDecimal =
+        sleepTime.getHours() + sleepTime.getMinutes() / 60;
+      const wakeDecimal =
+        wakeTime.getHours() + wakeTime.getMinutes() / 60;
+
+      const SLEEP_LIMIT = 22 + 10 / 60; // 22:10 = 22.1667
+      const WAKE_LIMIT = 6 + 10 / 60;   // 06:10 = 6.1667
+
+      const isSleepLate = sleepDecimal > SLEEP_LIMIT;
+      const isWakeLate = wakeDecimal > WAKE_LIMIT;
+
+      const iconColor = isSleepLate || isWakeLate ? "red" : "green";
+
+      return (
+        <i
+          className="fas fa-bed sleep-log-icon"
+          style={{ color: iconColor }}
+          onClick={() => setSelectedLog(log)}
+        />
       );
-      if (log) {
-        const sleepTime = new Date(log.sleep_time);
-        const wakeTime = new Date(log.wake_time);
-
-        const sleepHours = sleepTime.getHours();
-        const sleepMinutes = sleepTime.getMinutes();
-        const wakeHours = wakeTime.getHours();
-        const wakeMinutes = wakeTime.getMinutes();
-
-        // Check if sleep time is after 22:00 or before 06:00
-        const isSleepTimeLate = sleepHours >= 22 || sleepHours < 6;
-
-        // Check if wake time is after 06:00
-        const isWakeTimeEarly = wakeHours >= 6;
-
-        // Icon should be red if either condition is true
-        const iconColor = isSleepTimeLate || isWakeTimeEarly ? "red" : "green";
-
-        return (
-          <i
-            className="fas fa-bed sleep-log-icon"
-            style={{ color: iconColor }} // Set icon color
-            onClick={() => setSelectedLog(log)} // Set the selected log on click
-          />
-        );
-      }
     }
-    return null;
-  };
+  }
+  return null;
+};
 
   return (
     <div className="modal-overlay">
@@ -227,8 +227,8 @@ const SleepLogsModal = ({ userId, sleepLogs, setSleepLogs, onClose }) => {
         </div>
         <div className="info-text">
           <p>
-            If the sleep time is after 22:00 and the wake-up time is after
-            06:00, the icon on the calendar will be red. Otherwise, it will be
+            If the sleep time is after 22:10 and the wake-up time is after
+            06:10, the icon on the calendar will be red. Otherwise, it will be
             green.
           </p>
         </div>

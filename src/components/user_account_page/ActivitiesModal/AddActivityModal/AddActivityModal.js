@@ -3,22 +3,20 @@ import "./AddActivityModal.css";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
-function formatToday() {
+function formatNowForInput() {
   const now = new Date();
-  // Format as YYYY-MM-DD
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+  const offsetMs = now.getTimezoneOffset() * 60 * 1000;
+  const local = new Date(now.getTime() - offsetMs);
+  return local.toISOString().slice(0, 16);
 }
 
 const AddActivityModal = ({ userId, onClose, activityTypes, onAddActivity }) => {
   const [selectedTypeId, setSelectedTypeId] = useState("");
-  const [activityDate, setActivityDate] = useState(formatToday());
+  const [activityDatetime, setActivityDatetime] = useState(formatNowForInput());
 
   const handleSave = async () => {
-    if (!selectedTypeId || !activityDate) {
-      console.error("Missing type or date");
+    if (!selectedTypeId || !activityDatetime) {
+      console.error("Missing type or datetime");
       return;
     }
     try {
@@ -27,7 +25,7 @@ const AddActivityModal = ({ userId, onClose, activityTypes, onAddActivity }) => 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           activity_type_id: selectedTypeId,
-          date: activityDate,
+          datetime: activityDatetime,
         }),
       });
       if (response.ok) {
@@ -64,11 +62,11 @@ const AddActivityModal = ({ userId, onClose, activityTypes, onAddActivity }) => 
         </div>
 
         <div className="add-activity-form-group">
-          <label>Date:</label>
+          <label>Date & Time:</label>
           <input
-            type="date"
-            value={activityDate}
-            onChange={(e) => setActivityDate(e.target.value)}
+            type="datetime-local"
+            value={activityDatetime}
+            onChange={(e) => setActivityDatetime(e.target.value)}
           />
         </div>
 

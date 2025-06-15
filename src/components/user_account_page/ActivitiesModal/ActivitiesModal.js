@@ -9,6 +9,7 @@ import "react-calendar/dist/Calendar.css";
 import ActivitiesChartModal from "./ActivitiesChartModal/ActivitiesChartModal"; // <-- import your new chart modal
 
 const apiUrl = process.env.REACT_APP_API_URL;
+const ymdLocal = (d) => d.toLocaleDateString("sv-SE");
 
 const ActivitiesModal = ({ userId, onClose }) => {
   const [activityTypes, setActivityTypes] = useState([]);
@@ -182,10 +183,12 @@ const ActivitiesModal = ({ userId, onClose }) => {
 
   /** --------------  Click on Calendar Day => Show details -------------- **/
   const handleClickDay = (value, event) => {
-    const clickedDateStr = value.toISOString().split("T")[0];
+    const clickedDateStr = ymdLocal(value);
     // Filter out the activities for that day
-    const dayActivities = activities.filter((a) => a.date === clickedDateStr);
-
+    const dayActivities = activities.filter((a) => {
+      const actDate = ymdLocal(new Date(a.datetime || a.date));
+      return actDate === clickedDateStr;
+    });
     if (dayActivities.length > 0) {
       setSelectedDateActivities(dayActivities);
       setShowDetailsModal(true);
@@ -198,8 +201,11 @@ const ActivitiesModal = ({ userId, onClose }) => {
   /** --------------  Calendar Tile Content  -------------- **/
   const renderTileContent = ({ date, view }) => {
     if (view === "month") {
-      const dayStr = date.toISOString().split("T")[0];
-      const dayActivities = activities.filter((a) => a.date === dayStr);
+      const dayStr = ymdLocal(date);
+      const dayActivities = activities.filter((a) => {
+        const actDate = ymdLocal(new Date(a.datetime || a.date));
+        return actDate === dayStr;
+      });
       if (dayActivities.length > 0) {
         return (
           <div style={{ display: "flex", gap: "2px" }}>
@@ -232,15 +238,16 @@ const ActivitiesModal = ({ userId, onClose }) => {
             Manage Activity Types
           </button>
 
+          <button onClick={() => setShowChartModal(true)} className="add-activity-button">
+            View Chart
+          </button>
+
+
           <button
             onClick={() => setShowAddActivityModal(true)}
             className="add-activity-button"
           >
             Add Activity
-          </button>
-
-          <button onClick={() => setShowChartModal(true)} className="add-activity-button">
-            View Chart
           </button>
         </div>
 
@@ -324,7 +331,8 @@ const ActivitiesModal = ({ userId, onClose }) => {
                     <strong>Type:</strong> {getTypeName(act.activity_type_id)}
                   </p>
                   <p>
-                    <strong>Date:</strong> {act.date}
+                    <strong>Date & Time:</strong>{" "}
+                    {new Date(act.datetime || act.date).toLocaleString()}
                   </p>
                   <div className="activities-button-container">
                     <button
@@ -393,6 +401,8 @@ const ActivitiesModal = ({ userId, onClose }) => {
           onClose={() => setShowChartModal(false)}
           allActivities={activities}    // pass all activity data
           activityTypes={activityTypes} // pass type list for filtering
+          selectedTypeFilter={selectedTypeFilter}  // pass type filter
+          filterDate={filterDate}        
         />
       )}
     </div>

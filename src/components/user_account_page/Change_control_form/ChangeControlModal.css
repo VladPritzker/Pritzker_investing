@@ -1,0 +1,159 @@
+/* Overlay for modal */
+.change-control-overlay {
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Modal Container */
+.change-control-modal {
+  position: relative;
+  width: 80%;
+  max-width: 1000px;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(14px) saturate(180%) brightness(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%) brightness(120%);
+  border: 1px solid rgba(255,255,255,0.3);
+  transform: rotateY(0deg) scale(1);
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease, box-shadow 0.4s ease, opacity 0.4s ease;
+  animation: fadeIn 0.5s forwards;
+}
+
+.change-control-modal:hover {
+  transform: rotateY(-5deg) scale(1.01);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.25);
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  0% {
+    transform: translateY(20px) scale(0.95) rotateY(10deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0) scale(1) rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+/* Close Button */
+.change-control-close {
+  color: #ffffff;
+  font-size: 28px;
+  cursor: pointer;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  transition: color 0.3s;
+}
+.change-control-close:hover,
+.change-control-close:focus {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Button List */
+.change-control-button-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+/* Individual Button */
+.change-control-button {
+  padding: 10px;
+  background-color: #2d5682;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+  margin: 5px;
+  width: 140px;
+  font-size: 0.95rem;
+}
+.change-control-button:hover {
+  background-color: #6aacac;
+  transform: translateY(-2px);
+}
+
+/* Form Details Container */
+.change-control-details {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: inset 0 4px 10px rgba(0,0,0,0.05);
+  background: white;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.change-control-details:hover {
+  border-color: #007bff;
+  box-shadow: inset 0 6px 15px rgba(0,0,0,0.1);
+}
+
+/* Form Field Line */
+.change-control-entry {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+.change-control-entry:last-child {
+  border-bottom: none;
+}
+
+/* Action buttons (delete/patch/back) */
+.change-control-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  justify-content: flex-end;
+}
+.change-control-actions button {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.change-control-actions button:hover {
+  transform: translateY(-2px);
+}
+.change-control-delete {
+  background-color: #d9534f;
+}
+.change-control-patch {
+  background-color: #0275d8;
+}
+.change-control-back {
+  background-color: #5cb85c;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .change-control-modal {
+    width: 90%;
+    max-width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+  .change-control-button-list {
+    justify-content: center;
+  }
+}
